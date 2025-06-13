@@ -86,12 +86,14 @@ function Blog() {
     }
   ]);
 
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
   
-  const categories = ['All', ...new Set(posts.map(post => post.category))];
-  const filteredPosts = selectedCategory === 'All' 
-    ? posts 
-    : posts.filter(post => post.category === selectedCategory);
+  const filteredPosts = posts.filter(post => {
+    const searchLower = searchTerm.toLowerCase();
+    return post.title.toLowerCase().includes(searchLower) ||
+           post.excerpt.toLowerCase().includes(searchLower) ||
+           post.content.toLowerCase().includes(searchLower);
+  });
 
   return (
     <div className="page-content">
@@ -101,19 +103,15 @@ function Blog() {
       </div>
 
       <div className="content-section">
-        <div className="filter-section">
-          <h3>Filter by Category</h3>
-          <div className="category-filters">
-            {categories.map(category => (
-              <button
-                key={category}
-                className={`category-filter ${selectedCategory === category ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+        <div className="search-section">
+          <h3>Search Posts</h3>
+          <input
+            type="text"
+            placeholder="Search by title, excerpt, or content..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
         </div>
 
         <div className="blog-posts">
@@ -159,27 +157,9 @@ function Blog() {
 
         {filteredPosts.length === 0 && (
           <div className="empty-state">
-            <p>No posts found for the selected category.</p>
+            <p>No posts found matching your search.</p>
           </div>
         )}
-
-        <div className="blog-stats">
-          <h3>Blog Statistics</h3>
-          <div className="stats-grid">
-            <div className="stat-item">
-              <span className="stat-number">{posts.length}</span>
-              <span className="stat-label">Posts Published</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">{categories.length - 1}</span>
-              <span className="stat-label">Categories</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">{new Set(posts.flatMap(p => p.tags)).size}</span>
-              <span className="stat-label">Tags Used</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -17,7 +17,6 @@ function DevMode() {
     paperVenue: '',
     paperSummary: '',
     paperTags: '',
-    paperRating: 5,
     paperNotes: '',
     paperReadTime: '30 min'
   });
@@ -105,7 +104,6 @@ function DevMode() {
           <div className="preview-meta">
             <span>👥 {formData.paperAuthors}</span>
             <span>🏛️ {formData.paperVenue}</span>
-            <span>⭐ {'★'.repeat(formData.paperRating)}{'☆'.repeat(5 - formData.paperRating)}</span>
           </div>
           <p><strong>Summary:</strong> {formData.paperSummary}</p>
           <div className="preview-tags">

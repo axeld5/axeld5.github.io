@@ -10,7 +10,6 @@ function Papers() {
       date: "2024-01-15",
       summary: "Revolutionary paper introducing the Transformer architecture that has become the foundation of modern NLP models.",
       tags: ["NLP", "Transformers", "Deep Learning"],
-      rating: 5,
       notes: "This paper fundamentally changed how we approach sequence modeling. The self-attention mechanism is elegant and powerful.",
       readingTime: "45 min"
     },
@@ -22,22 +21,19 @@ function Papers() {
       date: "2024-01-10",
       summary: "Introduced residual connections that enable training of very deep neural networks.",
       tags: ["Computer Vision", "Deep Learning", "CNN"],
-      rating: 5,
       notes: "The skip connections solve the vanishing gradient problem elegantly. Still widely used today.",
       readingTime: "30 min"
     }
   ]);
 
-  const [selectedTag, setSelectedTag] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
   
-  const allTags = ['All', ...new Set(papers.flatMap(paper => paper.tags))];
-  const filteredPapers = selectedTag === 'All' 
-    ? papers 
-    : papers.filter(paper => paper.tags.includes(selectedTag));
-
-  const renderStars = (rating) => {
-    return '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
-  };
+  const filteredPapers = papers.filter(paper => {
+    const searchLower = searchTerm.toLowerCase();
+    return paper.title.toLowerCase().includes(searchLower) ||
+           paper.summary.toLowerCase().includes(searchLower) ||
+           paper.notes.toLowerCase().includes(searchLower);
+  });
 
   return (
     <div className="page-content">
@@ -47,19 +43,15 @@ function Papers() {
       </div>
 
       <div className="content-section">
-        <div className="filter-section">
-          <h3>Filter by Topic</h3>
-          <div className="tag-filters">
-            {allTags.map(tag => (
-              <button
-                key={tag}
-                className={`tag-filter ${selectedTag === tag ? 'active' : ''}`}
-                onClick={() => setSelectedTag(tag)}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
+        <div className="search-section">
+          <h3>Search Papers</h3>
+          <input
+            type="text"
+            placeholder="Search by title, summary, or notes..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
         </div>
 
         <div className="papers-grid">
@@ -83,11 +75,6 @@ function Papers() {
                   ))}
                 </div>
 
-                <div className="paper-rating">
-                  <span className="rating-label">Rating: </span>
-                  <span className="stars">{renderStars(paper.rating)}</span>
-                </div>
-
                 <div className="paper-notes">
                   <h4>My Notes:</h4>
                   <p>{paper.notes}</p>
@@ -103,27 +90,9 @@ function Papers() {
 
         {filteredPapers.length === 0 && (
           <div className="empty-state">
-            <p>No papers found for the selected tag.</p>
+            <p>No papers found matching your search.</p>
           </div>
         )}
-
-        <div className="reading-stats">
-          <h3>Reading Statistics</h3>
-          <div className="stats-grid">
-            <div className="stat-item">
-              <span className="stat-number">{papers.length}</span>
-              <span className="stat-label">Papers Read</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">{allTags.length - 1}</span>
-              <span className="stat-label">Topics Covered</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">{(papers.reduce((acc, p) => acc + p.rating, 0) / papers.length).toFixed(1)}</span>
-              <span className="stat-label">Avg Rating</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

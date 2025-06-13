@@ -230,46 +230,39 @@ body {
 }
 
 /* Papers Page Styles */
-.filter-section {
+.search-section {
   margin-bottom: 2rem;
 }
 
-.filter-section h3 {
+.search-section h3 {
   font-size: 1.3rem;
   color: #2d3748;
   margin-bottom: 1rem;
 }
 
-.tag-filters,
-.category-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tag-filter,
-.category-filter {
-  background: #f1f5f9;
+.search-input {
+  width: 100%;
+  max-width: 600px;
+  padding: 1rem 1.5rem;
   border: 2px solid #e2e8f0;
-  color: #64748b;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  cursor: pointer;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #ffffff;
   transition: all 0.3s ease;
-  font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.tag-filter:hover,
-.category-filter:hover {
+.search-input:focus {
+  outline: none;
   border-color: #667eea;
-  color: #667eea;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+  transform: translateY(-1px);
 }
 
-.tag-filter.active,
-.category-filter.active {
-  background: #667eea;
-  border-color: #667eea;
-  color: white;
+.search-input::placeholder {
+  color: #a0aec0;
+  font-weight: 400;
 }
 
 .papers-grid,

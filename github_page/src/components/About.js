@@ -11,7 +11,6 @@ function About() {
       <div className="content-section">
         <div className="profile-section">
           <div className="profile-image">
-            <div className="placeholder-avatar">👨‍💻</div>
           </div>
           <div className="profile-info">
             <h2>Axel</h2>
@@ -26,7 +25,7 @@ function About() {
               <a href="https://github.com/axeld5" target="_blank" rel="noopener noreferrer">
                 📧 GitHub
               </a>
-              <a href="mailto:your.email@example.com">
+              <a href="mailto:axeldarmouni@gmail.com">
                 📧 Email
               </a>
             </div>
@@ -40,22 +39,6 @@ function About() {
             <div className="skill-tag">Web Development</div>
             <div className="skill-tag">Research</div>
             <div className="skill-tag">Open Source</div>
-          </div>
-        </div>
-
-        <div className="recent-activity">
-          <h3>Recent Activity</h3>
-          <div className="activity-item">
-            <span className="activity-date">📚</span>
-            <span>Latest paper review on machine learning architectures</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-date">🔬</span>
-            <span>New experiment with React and modern web APIs</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-date">🚀</span>
-            <span>Launched a new project on GitHub</span>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Papers() {
   const [papers] = useState([
@@ -75,10 +76,13 @@ function Papers() {
                   ))}
                 </div>
 
-                <div className="paper-notes">
-                  <h4>My Notes:</h4>
-                  <p>{paper.notes}</p>
-                </div>
+                <Link 
+                  to={`/papers/${paper.id}`}
+                  state={{ content: paper }}
+                  className="read-full-paper-btn"
+                >
+                  Read Full Review →
+                </Link>
               </div>
 
               <div className="paper-footer">

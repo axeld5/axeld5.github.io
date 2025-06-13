@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Blog() {
   const [posts] = useState([
@@ -135,21 +136,13 @@ function Blog() {
                   ))}
                 </div>
 
-                <details className="post-full-content">
-                  <summary className="read-more">Read full post</summary>
-                  <div className="full-content">
-                    {post.content.split('\n').map((paragraph, index) => {
-                      if (paragraph.trim().startsWith('##')) {
-                        return <h3 key={index}>{paragraph.replace('##', '').trim()}</h3>;
-                      } else if (paragraph.trim().startsWith('-')) {
-                        return <li key={index}>{paragraph.replace('-', '').trim()}</li>;
-                      } else if (paragraph.trim()) {
-                        return <p key={index}>{paragraph.trim()}</p>;
-                      }
-                      return null;
-                    })}
-                  </div>
-                </details>
+                <Link 
+                  to={`/blog/${post.id}`}
+                  state={{ content: post }}
+                  className="read-full-post-btn"
+                >
+                  Read Full Post →
+                </Link>
               </div>
             </article>
           ))}

@@ -4,11 +4,18 @@ import './App.css';
 import About from './components/About';
 import Papers from './components/Papers';
 import Blog from './components/Blog';
+import Post from './components/Post';
 import DevMode from './components/DevMode';
+import BackToTop from './components/BackToTop';
 
 function Navigation() {
   const location = useLocation();
   const [devMode, setDevMode] = useState(false);
+  
+  // Check if running on localhost
+  const isLocalhost = window.location.hostname === 'localhost' || 
+                     window.location.hostname === '127.0.0.1' || 
+                     window.location.hostname === '::1';
   
   return (
     <div className="app-container">
@@ -41,19 +48,21 @@ function Navigation() {
               Blog
             </Link>
           </li>
-          <li>
-            <button 
-              onClick={() => setDevMode(!devMode)}
-              className={`dev-toggle ${devMode ? 'active' : ''}`}
-            >
-              {devMode ? '✏️ Exit Dev' : '🛠️ Dev Mode'}
-            </button>
-          </li>
+          {isLocalhost && (
+            <li>
+              <button 
+                onClick={() => setDevMode(!devMode)}
+                className={`dev-toggle ${devMode ? 'active' : ''}`}
+              >
+                {devMode ? '✏️ Exit Dev' : '🛠️ Dev Mode'}
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
       
       <main className="main-content">
-        {devMode ? (
+        {devMode && isLocalhost ? (
           <DevMode />
         ) : (
           <Routes>
@@ -61,9 +70,12 @@ function Navigation() {
             <Route path="/about" element={<About />} />
             <Route path="/papers" element={<Papers />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/:type/:id" element={<Post />} />
           </Routes>
         )}
       </main>
+      
+      <BackToTop />
     </div>
   );
 }

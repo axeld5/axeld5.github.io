@@ -621,6 +621,183 @@ body {
   font-style: italic;
 }
 
+/* Post Page Styles */
+.post-navigation {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.back-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.back-link:hover {
+  color: #5a6fd8;
+  transform: translateX(-2px);
+}
+
+.full-post {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.full-post-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.full-post-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.full-post-meta {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.full-post-meta span {
+  background: #f7fafc;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+}
+
+.full-post-tags {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.full-post-tag {
+  background: #667eea;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.full-post-content {
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.post-excerpt-full {
+  background: #f7fafc;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  border-left: 4px solid #667eea;
+}
+
+.post-excerpt-full strong {
+  font-size: 1.2rem;
+  color: #2d3748;
+}
+
+.post-content-full h2 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin: 2rem 0 1rem 0;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+.post-content-full h3 {
+  font-size: 1.4rem;
+  color: #4a5568;
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+.post-content-full p {
+  margin-bottom: 1.5rem;
+  color: #4a5568;
+}
+
+.post-content-full li {
+  margin-bottom: 0.5rem;
+  margin-left: 1.5rem;
+  color: #4a5568;
+}
+
+.paper-summary-full,
+.paper-notes-full {
+  margin-bottom: 2rem;
+}
+
+.paper-summary-full h2,
+.paper-notes-full h2 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+.paper-summary-full p,
+.paper-notes-full p {
+  color: #4a5568;
+  line-height: 1.8;
+}
+
+/* Read More Button Styles */
+.read-full-post-btn,
+.read-full-paper-btn {
+  display: inline-block;
+  background: #667eea;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.read-full-post-btn:hover,
+.read-full-paper-btn:hover {
+  background: #5a6fd8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Back to Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.back-to-top:hover {
+  background: #5a6fd8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .navbar {

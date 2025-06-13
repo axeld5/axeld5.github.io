@@ -1,10 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
+import dataManager from '../utils/dataManager';
 
 function Post() {
   const { type, id } = useParams();
   const location = useLocation();
-  const content = location.state?.content;
+  const [content, setContent] = useState(location.state?.content || null);
+  const [isLoading, setIsLoading] = useState(!content);
+
+  // Load content from dataManager if not passed through router state
+  useEffect(() => {
+    const loadContent = async () => {
+      if (!content && id) {
+        try {
+          const loadedContent = type === 'blog'
+            ? await dataManager.getBlogPost(id)
+            : await dataManager.getPaperPost(id);
+          
+          setContent(loadedContent);
+        } catch (error) {
+          console.error(`Error loading ${type} post:`, error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadContent();
+  }, [type, id, content]);
+
+  if (isLoading) {
+    return (
+      <div className="page-content">
+        <div className="page-header">
+          <h1>Loading...</h1>
+        </div>
+        <div className="content-section">
+          <p>Loading content...</p>
+          <Link to={`/${type}`} className="back-link">
+            ← Back to {type === 'blog' ? 'Blog' : 'Papers'}
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!content) {
     return (
@@ -37,26 +76,8 @@ function Post() {
           <h1 className="full-post-title">{content.title}</h1>
           
           <div className="full-post-meta">
-            {isBlogPost ? (
-              <>
-                <span className="post-date">📅 {content.date}</span>
-                <span className="post-category">📂 {content.category}</span>
-                <span className="post-read-time">⏱️ {content.readTime}</span>
-              </>
-            ) : (
-              <>
-                <span className="paper-authors">👥 {content.authors}</span>
-                <span className="paper-venue">🏛️ {content.venue}</span>
-                <span className="paper-read-time">📖 {content.readingTime}</span>
-                <span className="paper-read-date">📅 Read on {content.date}</span>
-              </>
-            )}
-          </div>
-
-          <div className="full-post-tags">
-            {content.tags.map(tag => (
-              <span key={tag} className="full-post-tag">{tag}</span>
-            ))}
+            <span className="post-type">{isBlogPost ? '📝 Blog Post' : '📚 Paper Review'}</span>
+            <span className="post-id">#{content.id}</span>
           </div>
         </header>
 

@@ -1,0 +1,27 @@
+## Attention Is All You Need
+
+Revolutionary paper introducing the Transformer architecture that has become the foundation of modern NLP models.
+
+**Authors**: Vaswani et al.  
+**Venue**: NIPS 2017
+
+### Summary
+
+This paper introduced the Transformer architecture, which relies entirely on attention mechanisms without recurrence or convolution. The key innovation is the self-attention mechanism that allows the model to weigh the importance of different parts of the input sequence when processing each element.
+
+### Key Contributions
+
+- **Self-Attention Mechanism**: Eliminates the need for recurrent or convolutional layers
+- **Parallelization**: Training can be fully parallelized, unlike RNNs
+- **Long-Range Dependencies**: Better at capturing long-range dependencies in sequences
+- **Multi-Head Attention**: Multiple attention heads capture different types of relationships
+
+### My Notes
+
+This paper fundamentally changed how we approach sequence modeling. The self-attention mechanism is elegant and powerful - it's fascinating how removing recurrence actually improved performance while making training more efficient.
+
+The impact has been enormous - practically every major NLP breakthrough since 2017 has built on this architecture. BERT, GPT, T5, and countless others all use the Transformer as their foundation.
+
+### Rating: ⭐⭐⭐⭐⭐
+
+A true paradigm shift in deep learning. Essential reading for anyone working in NLP or sequence modeling. 

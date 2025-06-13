@@ -1,127 +1,174 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import dataManager from '../utils/dataManager';
 
 function DevMode() {
   const [activeTab, setActiveTab] = useState('blog');
-  const [formData, setFormData] = useState({
-    // Blog post form
-    blogTitle: '',
-    blogCategory: 'Web Development',
-    blogTags: '',
-    blogExcerpt: '',
-    blogContent: '',
-    blogReadTime: '5 min read',
-    
-    // Paper review form
-    paperTitle: '',
-    paperAuthors: '',
-    paperVenue: '',
-    paperSummary: '',
-    paperTags: '',
-    paperNotes: '',
-    paperReadTime: '30 min'
-  });
+  const [content, setContent] = useState('');
+  const [stats, setStats] = useState({ blogCount: 0, paperCount: 0, total: 0 });
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  // Load stats
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const currentStats = await dataManager.getStats();
+        setStats(currentStats);
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    };
+    loadStats();
+  }, []);
+
+  const handleContentChange = (value) => {
+    setContent(value);
   };
 
-  const handleSubmit = (type) => {
-    const data = type === 'blog' ? {
-      title: formData.blogTitle,
-      category: formData.blogCategory,
-      tags: formData.blogTags.split(',').map(tag => tag.trim()),
-      excerpt: formData.blogExcerpt,
-      content: formData.blogContent,
-      readTime: formData.blogReadTime,
-      date: new Date().toISOString().split('T')[0]
-    } : {
-      title: formData.paperTitle,
-      authors: formData.paperAuthors,
-      venue: formData.paperVenue,
-      summary: formData.paperSummary,
-      tags: formData.paperTags.split(',').map(tag => tag.trim()),
-      rating: formData.paperRating,
-      notes: formData.paperNotes,
-      readingTime: formData.paperReadTime,
-      date: new Date().toISOString().split('T')[0]
-    };
+  const handleSubmit = async (type) => {
+    if (!content.trim()) {
+      alert('Please enter some content!');
+      return;
+    }
 
-    // For now, just log the data (in real app, you'd save to state/database)
-    console.log(`New ${type} entry:`, data);
-    alert(`${type === 'blog' ? 'Blog post' : 'Paper review'} created! Check the console for the data structure.`);
-    
-    // Reset form
-    if (type === 'blog') {
-      setFormData(prev => ({
-        ...prev,
-        blogTitle: '',
-        blogExcerpt: '',
-        blogContent: '',
-        blogTags: ''
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        paperTitle: '',
-        paperAuthors: '',
-        paperVenue: '',
-        paperSummary: '',
-        paperTags: '',
-        paperNotes: ''
-      }));
+    // Check if content starts with ## for title
+    if (!content.trim().startsWith('## ')) {
+      alert('Content must start with a title line beginning with "## ". For example:\n\n## My Blog Post Title\n\nYour content here...');
+      return;
+    }
+
+    try {
+      const result = type === 'blog' 
+        ? await dataManager.generateBlogPost(content)
+        : await dataManager.generatePaperPost(content);
+      
+      // Download the file
+      dataManager.downloadFile(content, result.filename);
+      
+      alert(`${type === 'blog' ? 'Blog post' : 'Paper review'} file generated!
+        
+Filename: ${result.filename} (Post #${result.postNumber})
+Title: ${result.title}
+
+The file has been downloaded. To add it to your site:
+1. Save the file to public/${type === 'blog' ? 'blog' : 'papers'}/
+2. Refresh the page to see your new post!
+
+No need to edit any index files - the system will automatically discover it!`);
+      
+      // Clear content after successful generation
+      setContent('');
+      
+      // Refresh stats
+      loadStats();
+    } catch (error) {
+      console.error(`Error generating ${type} file:`, error);
+      alert(`Error generating ${type} file. Please try again.`);
     }
   };
 
-  const previewContent = () => {
-    if (activeTab === 'blog') {
-      return (
-        <div className="preview-content">
-          <h3>{formData.blogTitle || 'Blog Post Title'}</h3>
-          <div className="preview-meta">
-            <span>📂 {formData.blogCategory}</span>
-            <span>⏱️ {formData.blogReadTime}</span>
-          </div>
-          <p><strong>Excerpt:</strong> {formData.blogExcerpt}</p>
-          <div className="preview-tags">
-            {formData.blogTags.split(',').map((tag, index) => (
-              <span key={index} className="preview-tag">{tag.trim()}</span>
-            ))}
-          </div>
-          <div className="preview-content-text">
-            {formData.blogContent.split('\n').map((line, index) => (
-              <p key={index}>{line}</p>
-            ))}
-          </div>
-        </div>
-      );
+  const loadStats = async () => {
+    try {
+      const currentStats = await dataManager.getStats();
+      setStats(currentStats);
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
+
+  const refreshData = async () => {
+    try {
+      await dataManager.refresh();
+      await loadStats();
+      alert('Data refreshed successfully!');
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+      alert('Error refreshing data. Please try again.');
+    }
+  };
+
+  const getPlaceholderContent = (type) => {
+    if (type === 'blog') {
+      return `## Your Blog Post Title Here
+
+Write a brief description or excerpt of your blog post here.
+
+### Introduction
+
+Start writing your blog post content here. You can use markdown formatting:
+
+- Use **bold** for emphasis
+- Use *italics* for emphasis
+- Use \`code\` for inline code
+- Use \`\`\`code blocks\`\`\` for code examples
+
+### Main Content
+
+Write your main content here. The system will automatically:
+- Extract the title from the first line (## Your Blog Post Title Here)
+- Generate a numbered filename (post_X.txt)
+- Create an excerpt from the first paragraph
+- Make it available for download
+
+### Conclusion
+
+Wrap up your blog post here.`;
     } else {
-      return (
-        <div className="preview-content">
-          <h3>{formData.paperTitle || 'Paper Title'}</h3>
-          <div className="preview-meta">
-            <span>👥 {formData.paperAuthors}</span>
-            <span>🏛️ {formData.paperVenue}</span>
-          </div>
-          <p><strong>Summary:</strong> {formData.paperSummary}</p>
-          <div className="preview-tags">
-            {formData.paperTags.split(',').map((tag, index) => (
-              <span key={index} className="preview-tag">{tag.trim()}</span>
-            ))}
-          </div>
-          <p><strong>Notes:</strong> {formData.paperNotes}</p>
-        </div>
-      );
+      return `## Paper Title: Amazing Research Paper
+
+Brief summary or excerpt of what this paper is about.
+
+**Authors**: Smith et al.  
+**Venue**: Conference/Journal Name  
+**Year**: 2024
+
+### Summary
+
+Write a summary of the paper here. What problem does it solve? What are the key contributions?
+
+### Key Contributions
+
+- First major contribution
+- Second major contribution  
+- Third major contribution
+
+### My Notes
+
+Write your personal thoughts and notes about the paper here:
+
+- What did you find interesting?
+- How does it relate to your work?
+- What are the limitations?
+- What questions does it raise?
+
+### Rating
+
+Give your rating here (e.g., ⭐⭐⭐⭐⭐)
+
+### Verdict
+
+Would you recommend this paper? Why or why not?`;
     }
   };
 
   return (
     <div className="dev-mode">
       <div className="dev-header">
-        <h1>🛠️ Dev Mode</h1>
-        <p>Quick content creation and editing</p>
+        <h1>🛠️ Dev Mode - Numbered Post Generator</h1>
+        <p>Create blog posts and paper reviews with automatic numbering</p>
+      </div>
+
+      <div className="stats-summary">
+        <div className="stat-item">
+          <span className="stat-number">{stats.blogCount}</span>
+          <span className="stat-label">Blog Posts</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-number">{stats.paperCount}</span>
+          <span className="stat-label">Paper Reviews</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-number">{stats.total}</span>
+          <span className="stat-label">Total</span>
+        </div>
       </div>
 
       <div className="dev-tabs">
@@ -129,204 +176,82 @@ function DevMode() {
           className={`tab-button ${activeTab === 'blog' ? 'active' : ''}`}
           onClick={() => setActiveTab('blog')}
         >
-          ✍️ New Blog Post
+          ✍️ Blog Post
         </button>
         <button 
           className={`tab-button ${activeTab === 'paper' ? 'active' : ''}`}
           onClick={() => setActiveTab('paper')}
         >
-          📚 New Paper Review
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'preview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('preview')}
-        >
-          👀 Preview
+          📚 Paper Review
         </button>
       </div>
 
       <div className="dev-content">
-        {activeTab === 'blog' && (
-          <div className="form-section">
-            <h2>Create Blog Post</h2>
-            <form onSubmit={(e) => { e.preventDefault(); handleSubmit('blog'); }}>
-              <div className="form-group">
-                <label>Title *</label>
-                <input
-                  type="text"
-                  value={formData.blogTitle}
-                  onChange={(e) => handleInputChange('blogTitle', e.target.value)}
-                  placeholder="Enter blog post title"
-                  required
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Category</label>
-                  <select
-                    value={formData.blogCategory}
-                    onChange={(e) => handleInputChange('blogCategory', e.target.value)}
-                  >
-                    <option>Web Development</option>
-                    <option>Experiments</option>
-                    <option>AI/ML</option>
-                    <option>Projects</option>
-                    <option>Tutorials</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Read Time</label>
-                  <input
-                    type="text"
-                    value={formData.blogReadTime}
-                    onChange={(e) => handleInputChange('blogReadTime', e.target.value)}
-                    placeholder="5 min read"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Tags (comma-separated)</label>
-                <input
-                  type="text"
-                  value={formData.blogTags}
-                  onChange={(e) => handleInputChange('blogTags', e.target.value)}
-                  placeholder="React, JavaScript, Web Development"
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Excerpt *</label>
-                <textarea
-                  value={formData.blogExcerpt}
-                  onChange={(e) => handleInputChange('blogExcerpt', e.target.value)}
-                  placeholder="Brief description of the blog post"
-                  rows="3"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Content *</label>
-                <textarea
-                  value={formData.blogContent}
-                  onChange={(e) => handleInputChange('blogContent', e.target.value)}
-                  placeholder="Write your blog post content here..."
-                  rows="15"
-                  required
-                />
-              </div>
-
-              <button type="submit" className="submit-btn">Create Blog Post</button>
-            </form>
+        <div className="content-editor">
+          <div className="editor-header">
+            <h2>Create {activeTab === 'blog' ? 'Blog Post' : 'Paper Review'}</h2>
+            <p>Write your content below. The first line starting with <code>##</code> will be used as the title.</p>
           </div>
-        )}
 
-        {activeTab === 'paper' && (
-          <div className="form-section">
-            <h2>Create Paper Review</h2>
-            <form onSubmit={(e) => { e.preventDefault(); handleSubmit('paper'); }}>
-              <div className="form-group">
-                <label>Paper Title *</label>
-                <input
-                  type="text"
-                  value={formData.paperTitle}
-                  onChange={(e) => handleInputChange('paperTitle', e.target.value)}
-                  placeholder="Enter paper title"
-                  required
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Authors</label>
-                  <input
-                    type="text"
-                    value={formData.paperAuthors}
-                    onChange={(e) => handleInputChange('paperAuthors', e.target.value)}
-                    placeholder="Smith et al."
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Venue</label>
-                  <input
-                    type="text"
-                    value={formData.paperVenue}
-                    onChange={(e) => handleInputChange('paperVenue', e.target.value)}
-                    placeholder="ICML 2024"
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Rating</label>
-                  <select
-                    value={formData.paperRating}
-                    onChange={(e) => handleInputChange('paperRating', parseInt(e.target.value))}
-                  >
-                    <option value={5}>5 Stars</option>
-                    <option value={4}>4 Stars</option>
-                    <option value={3}>3 Stars</option>
-                    <option value={2}>2 Stars</option>
-                    <option value={1}>1 Star</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Reading Time</label>
-                  <input
-                    type="text"
-                    value={formData.paperReadTime}
-                    onChange={(e) => handleInputChange('paperReadTime', e.target.value)}
-                    placeholder="30 min"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Tags (comma-separated)</label>
-                <input
-                  type="text"
-                  value={formData.paperTags}
-                  onChange={(e) => handleInputChange('paperTags', e.target.value)}
-                  placeholder="Machine Learning, NLP, Deep Learning"
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Summary *</label>
-                <textarea
-                  value={formData.paperSummary}
-                  onChange={(e) => handleInputChange('paperSummary', e.target.value)}
-                  placeholder="Brief summary of the paper"
-                  rows="4"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>My Notes *</label>
-                <textarea
-                  value={formData.paperNotes}
-                  onChange={(e) => handleInputChange('paperNotes', e.target.value)}
-                  placeholder="Your thoughts and notes about the paper"
-                  rows="8"
-                  required
-                />
-              </div>
-
-              <button type="submit" className="submit-btn">Create Paper Review</button>
-            </form>
+          <div className="editor-section">
+            <textarea
+              value={content}
+              onChange={(e) => handleContentChange(e.target.value)}
+              placeholder={getPlaceholderContent(activeTab)}
+              className="content-textarea"
+              rows="25"
+            />
           </div>
-        )}
 
-        {activeTab === 'preview' && (
-          <div className="preview-section">
-            <h2>Preview</h2>
-            {previewContent()}
+          <div className="editor-actions">
+            <button 
+              onClick={() => handleSubmit(activeTab)}
+              className="submit-btn"
+              disabled={!content.trim()}
+            >
+              📥 Generate & Download {activeTab === 'blog' ? 'Blog Post' : 'Paper Review'}
+            </button>
+            
+            <button 
+              onClick={() => setContent(getPlaceholderContent(activeTab))}
+              className="template-btn"
+            >
+              📋 Load Template
+            </button>
+            
+            <button 
+              onClick={() => setContent('')}
+              className="clear-btn"
+            >
+              🗑️ Clear
+            </button>
           </div>
-        )}
+        </div>
+
+        <div className="help-section">
+          <h3>📖 How to Use</h3>
+          <ol>
+            <li><strong>Write your content</strong> in the textarea above</li>
+            <li><strong>Start with a title</strong> line beginning with <code>## </code></li>
+            <li><strong>Click "Generate & Download"</strong> to create the file</li>
+            <li><strong>Save the file</strong> to <code>public/{activeTab === 'blog' ? 'blog' : 'papers'}/</code> with the exact filename</li>
+            <li><strong>Refresh the page</strong> to see your new post!</li>
+          </ol>
+
+          <h3>💡 Tips</h3>
+          <ul>
+            <li>Files are automatically numbered: <code>post_1.txt</code>, <code>post_2.txt</code>, etc.</li>
+            <li>Use <strong>markdown formatting</strong> for better styling</li>
+            <li>Keep titles <strong>descriptive but concise</strong></li>
+            <li>The system automatically finds the next available number</li>
+            <li>No need to maintain index files anymore!</li>
+          </ul>
+
+          <h3>🔧 Management</h3>
+          <button onClick={refreshData} className="refresh-btn">
+            🔄 Refresh Data
+          </button>
+        </div>
       </div>
     </div>
   );

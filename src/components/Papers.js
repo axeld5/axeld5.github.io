@@ -1,33 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import dataManager from '../utils/dataManager';
 
 function Papers() {
-  const [papers] = useState([
-    {
-      id: 1,
-      title: "Attention Is All You Need",
-      authors: "Vaswani et al.",
-      venue: "NIPS 2017",
-      date: "2024-01-15",
-      summary: "Revolutionary paper introducing the Transformer architecture that has become the foundation of modern NLP models.",
-      tags: ["NLP", "Transformers", "Deep Learning"],
-      notes: "This paper fundamentally changed how we approach sequence modeling. The self-attention mechanism is elegant and powerful.",
-      readingTime: "45 min"
-    },
-    {
-      id: 2,
-      title: "ResNet: Deep Residual Learning for Image Recognition",
-      authors: "He et al.",
-      venue: "CVPR 2016",
-      date: "2024-01-10",
-      summary: "Introduced residual connections that enable training of very deep neural networks.",
-      tags: ["Computer Vision", "Deep Learning", "CNN"],
-      notes: "The skip connections solve the vanishing gradient problem elegantly. Still widely used today.",
-      readingTime: "30 min"
-    }
-  ]);
-
+  const [papers, setPapers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load papers from dataManager on component mount
+  useEffect(() => {
+    const loadPapers = async () => {
+      try {
+        const allPapers = await dataManager.getPaperPosts();
+        setPapers(allPapers);
+      } catch (error) {
+        console.error('Error loading paper posts:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPapers();
+  }, []);
   
   const filteredPapers = papers.filter(paper => {
     const searchLower = searchTerm.toLowerCase();
@@ -55,47 +49,46 @@ function Papers() {
           />
         </div>
 
-        <div className="papers-grid">
-          {filteredPapers.map(paper => (
-            <div key={paper.id} className="paper-card">
-              <div className="paper-header">
-                <h3 className="paper-title">{paper.title}</h3>
-                <div className="paper-meta">
-                  <span className="authors">{paper.authors}</span>
-                  <span className="venue">{paper.venue}</span>
-                  <span className="reading-time">📖 {paper.readingTime}</span>
-                </div>
-              </div>
-
-              <div className="paper-content">
-                <p className="paper-summary">{paper.summary}</p>
-                
-                <div className="paper-tags">
-                  {paper.tags.map(tag => (
-                    <span key={tag} className="paper-tag">{tag}</span>
-                  ))}
-                </div>
-
-                <Link 
-                  to={`/papers/${paper.id}`}
-                  state={{ content: paper }}
-                  className="read-full-paper-btn"
-                >
-                  Read Full Review →
-                </Link>
-              </div>
-
-              <div className="paper-footer">
-                <span className="read-date">Read on {paper.date}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filteredPapers.length === 0 && (
-          <div className="empty-state">
-            <p>No papers found matching your search.</p>
+        {isLoading ? (
+          <div className="loading-state">
+            <p>Loading papers...</p>
           </div>
+        ) : (
+          <>
+            <div className="papers-grid">
+              {filteredPapers.map(paper => (
+                <div key={paper.id} className="paper-card">
+                  <div className="paper-header">
+                    <h3 className="paper-title">{paper.title}</h3>
+                                      <div className="paper-meta">
+                    <span className="paper-type">📚 Paper Review</span>
+                    <span className="paper-id">#{paper.id}</span>
+                  </div>
+                  </div>
+
+                                  <div className="paper-content">
+                  <p className="paper-summary">{paper.excerpt}</p>
+
+                    <Link 
+                      to={`/papers/${paper.id}`}
+                      state={{ content: paper }}
+                      className="read-full-paper-btn"
+                    >
+                      Read Full Review →
+                    </Link>
+                  </div>
+
+                  
+                </div>
+              ))}
+            </div>
+
+            {filteredPapers.length === 0 && !isLoading && (
+              <div className="empty-state">
+                <p>No papers found matching your search.</p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

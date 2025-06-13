@@ -20,7 +20,7 @@ jobs:
       - run: npm ci                 # or: npm ci --include=dev  (see option 2)
 
       # quick sanity check – will fail early if react-scripts is missing
-      - run: npx react-scripts --version
+      - run: npm install react-scripts
 
       - run: npm run build
 

@@ -1,0 +1,23 @@
+## Read 12: Octopus v2: On-device model for super agent, by Wei Chen and Zhiyuan Li from Stanford University
+
+https://arxiv.org/pdf/2404.01744.pdf
+
+The main struggles that an on-device model face is its trade-off between latency and accuracy. You want your AI model to be good, but you also want it to be fast.
+
+The authors present in this paper how they solve this challenge, by finetuning a Gemma-2B model specifically to map textual inputs to function tokens for function calling.
+
+As a proof-of-concept, they start with 20 android APIs that were split into 3 categories:  system APIs (calls, brightness, bluetooth…), app APIs (Youtube, Chrome, Google Maps…), and smart device management APIs (apis related to connected devices).
+
+To construct their training dataset, they proceed the following way:
+1- Generate queries using the Gemini API, for each of the chosen Android APIs to answer and that can be answered through 1 API call.
+2- Use the queries to generate arguments for the API to use.
+3- Generate as well negative samples, ie queries that cannot be answered through any API that we are provided with.
+4- Test function calls to verify if the generated examples are working or not (most notably, if the arguments were generated properly).
+
+They test then between complete finetuning and LoRA finetuning, and make different versions that are based on the amount of generated examples.
+
+On their specific use case, their method is on-par with GPT-4 using in-context learning (an accuracy of near 99%) , which is huge. And their model runs in less than 0.4s, compared to proprietary models that take more than 1.5s to run (and Llama2-7B with function rag is completely outclassed, taking more than 10s to run).
+
+All methods are detailed within the paper if you want to see more detail on their finetuning process as well.
+
+Personal Thoughts: A really interesting method to tackle the use of on-device model. Since we’re speaking about on-device models, I’d be curious to see, given how it is, if jailbreaking attacks could work on it! I’d hope that due to the forceful finetuning and to the base model (Gemma-2B is considerably less smart than GPT-4), it might be harder to break through it. :)

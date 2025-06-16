@@ -1,0 +1,28 @@
+## Read 16 : MAGIS : LLM-Based Multi-Agent Framework for Github Issue Resolution
+
+https://arxiv.org/pdf/2403.17927.pdf
+
+After the success of Devin, an AI-based software engineer, a few people have tried to reproduce its capacities on the SWE-Bench. 
+
+The first one of these is MAGIS, which boasts similar performances to Cognition’s tool. 
+
+Their methodology, given a github issue:
+1- Find all relevant files related to the issue using BM25 algorithm
+2- Summarize file using LLM (if a modification is done to the file, summarize as well modifications and add them to summary as commit message). 3- Repo manager agent uses the summaries to identify which files are relevant to the issue. 
+4- Manager agent analyses the issue and breaks it into file tasks, for each file found previously
+5- Manager then defines for each task the personality of the developer LLM that will solve it
+6- A kick-off meeting is organized, as a circular discussion guided by the manager, in order for the Developers and Manager to validate that each task is doable
+7- In addition, they establish on that meeting the task dependencies.
+8- The manager summarizes the results of the discussions
+9- Afterwards, the developers’ descriptions are changed accordingly for each task, and the manager makes a main work plan, that will be code to be followed for the task resolution
+10- For each task, the developer associated creates an associated QA engineer agent
+11- The developer then identifies the lines to be modified, and modifies them
+12- Using the generated code change by github, the QA engineer examines the changes and produces a review_comment and a review_decision
+13- Once the review_decision is set to true, the code modification is fixed.
+14- Once all code modifs are done, the issue is considered solved.
+
+As this study appears to have been finished before Claude 3, they choose GPT-4 as their model for all tasks, as it was the best code model at the time.
+
+Their agent-framework performance is allegedly good, but they do not disclose nor their code nor their prompts. It appears their framework is also to the point, generating code efficiently to solve their given problems.
+
+Personal Thoughts: Pretty interesting read, as the method is dense and smart. An open-source version for the same problem, SWE-agent, has been released, which I will be covering around the day they release their paper (April 10th). Seems like a good topic to follow, as there will be quite the advances!

@@ -1,0 +1,25 @@
+## Read 31: MiniCheck: Efficient Fact-Checking of LLMs on Grounding Documents, by @LiyanTang4 et al from the University of Texas
+
+https://arxiv.org/pdf/2404.10774.pdf
+
+When you build an LLM-based document reading tool, some contexts can make you want to minimize as much as possible hallucinations related to your answer. One approach, for instance, is to check if the generated answer uses truly and solely the information provided as context.
+
+While our very strong LLMs like GPT-4 or Opus perform extremely well at this, they are hardly usable for that matter in production due to the answer delays they come with.
+
+Here comes MiniCheck, a finetuned version of smaller models, on a custom dataset, that provides us with a lightweight model that can perform the fact-checking noted above.
+
+The authors create their custom training dataset using two different methods: 
+1- The first one creates positive and negative (document, claim, label) triplets from a group of claims. To do so, they decompose the claims into atomic facts, which are themselves decomposed into two sentences. They then synthesize documents using an LLM like GPT-3.5 based on subsets of facts and sentences, creating their labels from facts that are taken or not. Because the facts do not overlap, this creation process gives them the first group of training examples they want.
+2- From groups of documents, they decompose the document into summaries that become claims. Using the first technique and a few other data augmentations methods, they manage to enrich their training data.
+
+Method 1 and 2 build respectively from 400 wikipedia claims that have cited web articles and 300 google news articles since nov 2023 of approximately 500 words each, for a total of 14K synthetic datapoints.
+
+To evaluate their models’ performances, the authors create LLM-AggreFact, which gathers several human annotated (Document, Claim, Label) triplets from multiple datasets. They compare on their benchmark the newly created models to several available ones, both proprietary and open source.
+
+The results of their finetuned models on that benchmark are great, rivaling those of GPT-4, at much lower inference time and cost!
+
+The authors also check if claim decomposition (splitting as much the claim into atomic facts) and decontextualisation (making it so that the claim is complete on its own) modified performances of the fact-checkers, but it seems it does not.
+
+Details and qualitative examples can be found on the paper’s appendix.
+
+Personal Thoughts: Really interesting read, as this is quite a peculiar method to leverage synthetic data to generate a training dataset! I feel as well that the models could be real treasures. It’s not uncommon for instance to perform relevance checking in RAG search outputs, to identify whether or not the retrieved documents are truly relevant to the question. By tweaking the method, it might be possible to leverage lightweight classifiers to do so faster and cheaper than performing LLM API calls!

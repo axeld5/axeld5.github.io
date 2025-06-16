@@ -1,0 +1,28 @@
+## Read 39: Large Language Models can Learn Rules, from @zhu_zhaocheng for Google Deepmind
+
+https://arxiv.org/pdf/2310.07064
+
+Lots of problems can be caracterised as rule-based. Find your set of rules, apply them, and get answers. Human beings can do that. This study advances LLMs can do that as well.
+
+The authors call their method to do so « Hypotheses to Theories », which follows 3 steps.
+
+The first step is learning rules from training examples. For each Q/A pair, they generate a rule that allowed the model to reach the answer. To check the correctness of that rule, they then apply it to the question and see whether or not the LLM hallucinated. 
+
+To filter the rules that are chosen, they then choose hyper parameters to select on both rule occurence and correctness. This constitutes a corpus of rules for the model to use.
+
+Once that is done, the authors prepend the rules to a deductive reasoning prompt like CoT. In order to make the model leverage its rules, they append examples which were modified to teach the LM to retrieve the rules and use them. The main trick that makes this effective is one that can be found afterwards in many Claude 3 prompts: hierarchising the rules and XML tagging them.
+
+The authors mainly evaluate gpt-3.5 and gpt-4 on three datasets: 
+- CLUTRR, a relational dataset that evaluates if a model is able to predict the relationship between two family members based on a family tree 
+- Arithmetic, which contains several summation problems in different bases. 
+- List Functions, which corresponds to identifying the method that maps input_list to output_list given both of them.
+
+On all these datasets, HtT provides a slight boost on average for GPT-3.5, but a substantial boost for GPT-4.
+
+The authors additionally note two constraints for HtT to succeed:
+- Rules must fit within the prompt, so problems should require less than 500 rules for solving.
+- Model should have a reasonable performance (superior to 20%) on the training examples given for the CoT.
+
+Further details, qualitative results and prompts can be found within the appendix.
+
+Personal Thoughts: Really interesting read! As @VictorTaelin ‘s A-B problem showed us, I’m actually sure this method would be even more effective on the Claude 3 suite… would love to see it reproduced!

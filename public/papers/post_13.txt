@@ -1,0 +1,23 @@
+##  Read 13 : Can language models recognize convincing arguments?, from the EPFL
+
+https://arxiv.org/pdf/2404.00750.pdf
+
+The potential of LLMs as a tool, for good or for bad, has been recognized and proven. A study conducted by one of the co-authors recorded that LLMs are far better at human at convincing them in a debate, if they can take into account personal information from their opponent. (https://arxiv.org/pdf/2403.14380.pdf)
+
+This paper is about answering the 3 following questions:
+1- Can LLMs judge the quality of arguments as well as humans?
+2- Can LLMs judge the influence of demographics and beliefs on people’s stances on a topic?
+3- Can LLMs determine how arguments appeal to individuals depending on demographics?
+
+The authors test 4 llms for that matter: GPT3.5, GPT4, Llama2-7b and Mistral-7b. The dataset they use is a dataset made of annotated debates on different topics. The annotations were the following:
+1- Which side made the most compelling arguments 
+2- Which side the annotators agreed with before the debates
+3- Which side the annotators agreed with after the debates
+
+Models can only choose, just like annotators, between « Pro », « Con », or « Tie ».
+
+The results are that actually, GPT4 is on par with the human annotators (which have a respective success rate of 60%, 40%, and 40% on the 3 questions, which is better than random), while the other models do lag behind. 
+
+All code, dataset and prompts are open sourced.
+
+Personal Thoughts: I think there’s more to explore on the topic. The authors solely prompted a zero-shot LLM on the given data, but I’d be inclined to think that with careful prompt engineering or agent maneuvering, LLMs can get better results on all their research questions. Seems like another neat topic to follow. :)

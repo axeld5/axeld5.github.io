@@ -1,0 +1,25 @@
+## Read 9 : MagicLens: Self-supervised image retrieval with open-ended instructions, authored by @DrogoKhal4 et al., working under Google Deepmind and the Ohio State University 
+
+https://arxiv.org/pdf/2403.19651.pdf
+
+While text retrieval is a highly covered topic, image retrieval is less on the menu. This paper brings on the field image retrieval, using as well textual instruction to enhance the search.
+
+Three contributions are to be singled out:
+1- Construction of a 36.7M (image_query, instruction, image_target) dataset
+2- Construction of the MagicLens dual-encoder models, that heavily outperform SOTA while being 50 times lighter
+3- Realization of a qualitative study on a 1.4M-sized retrieval pool, showing MagicLens’ brilliance in practice
+
+The dataset’s construction process is extremely interesting and goes as follows:
+1- Gathering of images from Common Crawl Webpages
+2- Cleaning of the images from the webpages 
+3- Captioning images
+4- Using both ClipScores and Text-To-Text scores to assess relevant image pairs. A maximum of 3 image pairs per web pages is allowed to maximize dataset diversity.
+5- Use of PALM-2 to generate an instruction linking images using one as the queried, and the other as the targeted one.
+
+Once that dataset is done, MagicLens is constructed using Text and Visual encoders, along multiple self-attention layers finalized by a pooling one. The model is then trained using contrastive loss between the outputs for MagicLens((image_query, instruction)) and MagicLens((image_target, ""))
+
+The model was then benchmarked on Image Retrieval, Domain Transfer Retrieval, and Conditional Image Similarity. Those benchmarks were followed up by benchmarks on Image to Image retrieval, Image to Text retrieval, and Text to Image retrieval.
+
+For each, the models either trample the SOTA, or stand toe-to-toe with it, which is honestly impressive. To top it all off, the models and datasets will be open sourced for the whole community to use. What a win.
+
+Personal Thoughts : Awesome paper, awesome idea, awesome results. Really worth the read, and can’t wait to see what will spawn from having a really good retriever model that exploits images.

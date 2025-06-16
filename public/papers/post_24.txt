@@ -1,0 +1,19 @@
+## Read 24: LLM agents can autonomously exploit one-day vulnerabilities, by Fang et al.
+
+https://arxiv.org/pdf/2404.08144.pdf
+
+Sometimes, it happens critical safety bugs slip by. Those bugs can generate a lot of harm, as they can be the source of an exploitable vulnerability. However, once they are discovered, they are usually quickly patched quick enough so that nobody has the time to attack on them.
+
+But what if it was possible to automate vulnerability exploitation? This is what is shown on this paper.
+
+Given 91 lines of code exploiting GPT-4 agent system based on ReAct framework and the OpenAI Assistant API, the authors declare 87% of their 15 test vulnerabilities can be autonomously exploited.
+
+This result is impressive, but a few good news is that for now, solely GPT4-level models are able to exploit them: 3.5 fails, and so does any model less strong than Mixtral 8x7B. 
+
+The runs were not done with the latest models yet (Claude 3 Opus, Mistral Large, Drbx to cite only them) so who knows if there aren’t more models that can succeed.
+
+What is interesting as well is that the GPT-4-based system needs the vulnerability description to succeed: otherwise, success rate drops to a measly 7%.
+
+Their test runs were done with the agreement of OpenAI, and they chose for safety reasons to disclose neither their code nor their prompts.
+
+Personal Thoughts: Worrying results, provided they can be reproduced. While this is harder to perform than script kiddies attacks, there’s no doubt that the day LLM hacking capacities are cemented, cybersecurity experts will have much harder work to do, especially if the models get better, without any way to prevent them from going rogue. There’ll likely be more papers like that to come, and I can’t say that I’m not curious to see the defense methods it will lead to.

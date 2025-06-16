@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import './App.css';
 import About from './components/About';
@@ -10,12 +10,25 @@ import BackToTop from './components/BackToTop';
 
 function Navigation() {
   const location = useLocation();
-  const [devMode, setDevMode] = useState(false);
+  const [devMode, setDevMode] = useState(() => {
+    // Initialize devMode from localStorage
+    const saved = localStorage.getItem('devMode');
+    return saved === 'true';
+  });
   
   // Check if running on localhost
   const isLocalhost = window.location.hostname === 'localhost' || 
                      window.location.hostname === '127.0.0.1' || 
                      window.location.hostname === '::1';
+
+  // Persist devMode state to localStorage
+  useEffect(() => {
+    localStorage.setItem('devMode', devMode.toString());
+  }, [devMode]);
+
+  const toggleDevMode = () => {
+    setDevMode(!devMode);
+  };
   
   return (
     <div className="app-container">
@@ -51,7 +64,7 @@ function Navigation() {
           {isLocalhost && (
             <li>
               <button 
-                onClick={() => setDevMode(!devMode)}
+                onClick={toggleDevMode}
                 className={`dev-toggle ${devMode ? 'active' : ''}`}
               >
                 {devMode ? '✏️ Exit Dev' : '🛠️ Dev Mode'}

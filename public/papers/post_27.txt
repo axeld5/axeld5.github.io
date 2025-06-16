@@ -1,0 +1,24 @@
+## Read 27: Many shot In-Context Learning, by @avisingh599, @agarwl_ et al from Google Deepmind
+
+https://arxiv.org/pdf/2404.11018.pdf
+
+In-Context Learning is exploiting the capacities of an LLM to learn from prompt information. Give it a few examples, and you enhance its task performance. But what if you give it a huge amount of examples?
+
+This wasn’t possible beforehand, as models before Gemini Pro 1.5 were not known for a massive context length, that allowed one to fill the prompt with examples. But now that it is possible, let’s see the results.
+
+The authors in this paper test adding lots of in-context examples related to several tasks. The approach they test is what they call Reinforced ICL, ie adding problem-solutions pairs within the prompts, with fact-checked generated solutions.
+
+They find that going up to 500 examples within the prompt improves LLM performance up by a significant margin on the tasks of Translation, Summarization, Planning, Code Verification, and Algorithmic Reasoning.
+
+They also compare Reinforced ICL to ICL and Unsupervised ICL, which is only presenting in-context problems to the LM. They remark that ICL and Unsup ICL show relatively good performance in the case of Mathematical Datasets, but are less better in fact than Reinforced ICL.
+
+They also oddly find that this ICL method works as well in the case of sentiment analysis if the labels get flipped (ie positive becomes negative, negative becomes neutral…) or are turned into abstract labels (negative -> A, neutral -> B…).
+
+The authors note as well the following:
+- This many shot in learning capacity expands itself to non-language problems like classifying from a linear boundary, or identifying sequential parity
+- In a mathematical benchmark, they note the performance is sensitive to example ordering, which means there is still more to discover
+- They also remark that NLL on ground truth test sets is not a good predictor of the model’s problem solving capacity, as Reinforced ICL’s does not lower with the amount of shots (compared to Unsup ICL and ICL with gold truths) while being the one that performs the best.
+
+More details on NLL and qualitative examples can be found within the appendix.
+
+Personal Thoughts: A result that was to be expected since Anthropic’s many shot jailbreaking paper, but that I’m glad to see officialised. Cool paper to read. However, it’s important to note that in practice for us data scientists, API calls will be gated by number of tokens, which means 512 examples is usually costly and hard to reach. However, if it can be reached and has no limits in being reached, it is very important to note it can be a highly substantial gain in performance!

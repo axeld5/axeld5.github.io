@@ -1,0 +1,23 @@
+## Read 38: LLM Evaluators Recognize and Favor their Own Generation, by @panickssery et al.
+
+https://arxiv.org/pdf/2404.13076
+
+LLM as a judge has been a commonly adopted approach to perform automatic judgement of texts on certain criteria. While this approach of course has some limitations, what’s actually funny is that another one that was recently discovered by the authors of this paper is that strong LMs tend to favor their own generation.
+
+In fact, they also are pretty good at recognizing themselves. If compared to another text from another LM or a human, GPT-4 has an above average chance to know it’s the one that wrote it (which is less pronounced for Llama-2 and GPT-3.5).
+
+When it comes to self-preference, the results are even worse: GPT-4 texts, if compared pairwise to ones of humans or other LMs (in this case GPT-3.5 and Llama-2), will be heavily favored by GPT-4.
+
+And if you thought the ride was over, just you wait: if finetuned for self-recognition, the three LLMs mentioned in the study exhibit way stronger self-preference. In fact, the authors even remark there is a linear correlation between model self-preference and self-recognition!
+
+Do note though that there are two limits to this study.
+
+The first one is that the authors mainly look at self-recognition and self-preference in a summarization task. Results could thus vary for other tasks.
+
+The second one is that the authors mainly included three LMs within the study: Llama-2, GPT-3.5, and GPT-4. This study could have completely different results for instance in a comparison between GPT-4 and Claude 3 Opus.
+
+So, we’ll have to see how their findings extend. 
+
+Personal Thoughts: A really thought-provoking study, that deserves to be done at a higher scale. What I feel would be extremely interesting along with the aforementioned additions is also to have qualitative explanation from the models for their choices. 
+
+This is especially something that can be done in the case of summarization, and that can perhaps either turn the tables, or give us more insight!

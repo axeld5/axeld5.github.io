@@ -1,0 +1,19 @@
+## Read 11 : Many Shot Jailbreaking, by @cem__anil et al under Anthropic
+
+https://cdn.sanity.io/files/4zrzovbb/website/af5633c94ed2beb282f6a53c595eb437e8e7b630.pdf
+
+Jailbreaking is making a production LM be able to bypass security measures in order to produce harmful content.
+
+The authors produce in this paper a very simple, yet very effective method, that exploits the high contextual length of our newest LLMs.
+
+The idea? Simply give him a history of harmful topics with their related harmful answers. But not 2, not 4, not 10 topics! How about 500 instead? 
+
+And doing so has a very, very high attack success rate. That ASR follows as well a power scaling law! 
+
+What’s even worse is that:
+- Finetuning and Reinforcement Learning do not make the model better at handling the attack
+- This attack can be paired with both white-box and black-box attacks for stronger results!
+
+Using prompt-based mitigations does help a bit in defense, but it is very light in terms of diminishing the Attack Success Rate.
+
+Personal Thoughts: A truly frightening paper. The method is simple, yet effective. Impressive. I feel however that a defense the authors didn’t try was to use a classification model to detect the prompt as harmful, in order for it not to pass the LLM. Perhaps that would be a future topic of study, and even jailbreaking that classifier could be another topic!

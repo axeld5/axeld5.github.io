@@ -1,0 +1,20 @@
+## Read 35: Retrieval Head Mechanistically Explains Long Context Factuality, by Wenhao Wu et al
+
+https://arxiv.org/pdf/2404.15574
+
+The « Needle in a haystack » task corresponds in answering a question using a context in which the answer was artificially injected within. This task has served as the de facto evaluation task for showing the strength of models with long context windows. It was in fact the main denominator in demonstrating Gemini Pro 1.5´s superb context length of 1M. There exists several methods to enhance a model’s context window, like using Rotary Positional Embeddings based methods like YaRN, which were in fact used this week to enhance Llama 3´s. 
+
+But a question lingers. What in the model makes it in fact have that long context factuality? The answer provided by the authors of this paper is that there exist attention heads, within the transformer model, that are called the retrieval heads. Those heads specialize in finding the data within the context that will help at guiding the model to the answer.
+
+They identify those heads based on a needle-in-a-haystack approach. To put it shortly, they compute a retrieval score, which is equivalent to the amount of tokens from the needle to be found that were generated and which indexes were the argmax of the attention head’s values. 
+
+The authors test their approach for models within the Llama-2 series, the Mistral series, the Yi series, and Qwen1.5-14B-chat. They diversify within testing both context lengths and needle positions. 
+
+The results are bluffing:
+- All models exhibit a few percentage of heads (around 5%) in which retrieval score is superior to 0.1 in average, and around 0.5% heads consistently in which retrieval score is superior to 0.5 (which means activating themselves on average on 50% of the tokens asked)!
+- Some of the lesser strong heads activate only on specific contexts rather than the whole needle
+- Models within the same family have similar retrieval heads 
+- Masking out the retrieval heads severely damages a model’s performances on retrieval, while masking out random heads yields no change in performance
+- Those retrieval heads also have an impact on CoT, reducing performance if severed in CoT use-cases, but not changing it if CoT is not used
+
+Personal Thoughts: There’s a lot to uncover here. This paper looks really like a strong finding, especially for RAG or CoT. Makes me eager to see what will come out of it! Perhaps refining or boosting of the retrieval heads to enhance RAG performance? Enrichment of the retrieval heads through specialized continued pretraining methods? Can’t say I’m not excited there!

@@ -1,0 +1,23 @@
+## Read 25: Can language models solve Olympiad Programming?, by @_michaeltang_, @benshi34 et al from @princeton_nlp
+
+https://arxiv.org/pdf/2404.10952v1.pdf
+
+If there’s something anyone can agree on, it’s that Olympiad-level problems are tough. They require high reasoning levels, and for some of the hardest problems, a profound understanding of the structures at hand. So why not see if our advanced LLMs can tackle them?
+
+The authors in that paper present the dataset USACO, a benchmark of 307 problems from past USA Computer Olympiad contests. Those problems come with a lot of additional data, that make them an ideal playing ground:
+1- Problem description
+2- Sample tests, both visible and hidden
+3- Complexity constraints to be verified
+4- Python code solution with complete human-written problem analysis
+
+Problems are as well graded in difficulty, from bronze to platinum.
+
+The authors test first pass@1 of several LLMs, to find as expected that GPT-4 is the strongest one. They then boost performance by pairing reflexion with RAG, in a peculiar way: they construct two databases, one called the « semantic knowledge store », made from textbooks on the subject ; and one called the « episodic knowledge store », which contains the solution to all problems from USACO except the one the model is trying to solve.
+
+Results from that boost are pretty good, as both GPT-3.5 and GPT-4 show substantial gains from using Reflexion and Episodic Retrieval. The authors go more into the specific details of the models’ performance and outputs within the paper’s section 4.3 and 4.4, which are quite worth the read.
+
+The authors also reported a « Human in the Loop » approach, on which they help the models to correct mistakes, without being specific about their contents, in order not to directly skew them towards the answer. The approach works really well on GPT-4, having it be able to solve 13 out of 15 problems identified to be solvable this way (ie problems on which the mistakes were that gpt-4 was slightly off from the answer), but didn’t work on GPT-3.5 as well.
+
+All prompts and details of experiments are within the paper and its appendix. All data and code are released at : https://princeton-nlp.github.io/USACOBench/
+
+Personal Thoughts: Really great paper. A likely cooler benchmark than HumanEval to evaluate as well programming agent systems, as this one will require more thought to be solved! I really wonder as well how much can their findings (namely episodic retrieval vs semantic) can be applied to other problems, like most notably solving math olympiad level problems!

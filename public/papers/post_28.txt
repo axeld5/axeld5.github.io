@@ -1,0 +1,18 @@
+## Read 28: Will GPT-4 run doom?
+
+https://arxiv.org/pdf/2403.05468.pdf
+
+The goal of this paper is to prove an agent LLM Framework is able to tackle Doom! The approach is different from Mistral’s hackathon’s winners :
+- It uses directly vision info from GPT4-V rather than feeding ASCII representation of the image
+- It does not do finetuning, relying on base GPT-4 agents instead
+
+The approach goes like this:
+1- Use gpt-4v to interpret the image from the game
+2- Feed its interpretation to an agent that takes an action based on the image and move history
+3- That agent can be accompanied by a planning agent that will output a plan in natural language, or by a « group of experts » that will give it another opinion to sample the best choice (an expert is just a separate agent call)
+
+The author runs its experiences on Matplotlib’s C Doom Engine. They compare « naive prompting » (just feeding history and image description) to a more complex, smarter prompting that bases itself on a walkthrough (by feeding the walkthrough directly to the agent, or to the planners, or to the experts). In the experts case, they also report having an additional agent that takes into account all their opinions to synthesize it. They name it « k-levels », with k=2.
+
+They evaluate the framework on the first map of the first episode, at medium difficulty. While the agents were not able to complete it, the Planner and k-levels framework were quite close to finish it. It is note worthy the agents did die a lot.
+
+Personal Thoughts: Very fun paper to read. Lots of detailed technical choices that are hard to sum up in a recap, so I heavily encourage you to read it. The author did mention that they could not finetune GPT-4 using reward modeling… so perhaps the best of both worlds could be interesting? A GPT-4V to describe the content, and a finetuned Mistral framework to perform?

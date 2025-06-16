@@ -1,0 +1,22 @@
+## Read 37: AutoCrawler: A progressive understanding web agent for web crawler generation, by Huang et al.
+
+https://arxiv.org/pdf/2404.12753
+
+Automatic web page information extraction is no easy matter. Rule-based wrappers usually take a lot of annotations in order to extract information… but here come LLM to automate that!
+
+While LLMs can be used in conjunction with reflexion to perform information extraction, the authors note a lack of reusability, which makes for « a strategy a page », even when the pages are highly similar.
+
+Their method is thus the following, in order to extract an information from a page:
+1- Collect html of the page, in XPath format
+2- Prompt an agent to select xpath in which the information supposedly is (top-down step)
+3- Prompt another agent to verify if that xpath leads rightly to the information
+4- If that does not, prompt another agent to look whether or not the slightly broader xpath has the information, repeat until it does (step-back step)
+5- Repeat step 2 to 4 until convergence or max iter have been reached
+
+Once that is done for a few pages, action sequences made to extract the information are established. The authors then perform the synthesis part, on which they take the action sequence that can be the most extended to other webpages on the same websites.
+
+Results are strong, as that framework has a quite higher extraction score than just prompting the LMs with reflexion.
+
+More details about the results and all the prompts can be found within the appendix.
+
+Personal Thoughts: Quite the interesting read, as there can be some value in automating information extraction! Interesting part is that it is mainly based on reading the html text: perhaps it could be improved in fact, with reading the website’s image as well using an MLM? 😉

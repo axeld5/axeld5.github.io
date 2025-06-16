@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import dataManager from '../utils/dataManager';
 
 function DevMode() {
-  const [activeTab, setActiveTab] = useState('blog');
-  const [content, setContent] = useState('');
+  const [activeTab, setActiveTab] = useState('papers');
+  const [content, setContent] = useState('## ');
   const [stats, setStats] = useState({ blogCount: 0, paperCount: 0, total: 0 });
   const [lastCreated, setLastCreated] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,6 +20,13 @@ function DevMode() {
     };
     loadStats();
   }, []);
+
+  // Reset content with ## when switching tabs (if content is empty or just ##)
+  useEffect(() => {
+    if (!content.trim() || content.trim() === '##') {
+      setContent('## ');
+    }
+  }, [activeTab]);
 
   const handleContentChange = (value) => {
     setContent(value);
@@ -83,7 +90,7 @@ function DevMode() {
               method: 'saved'
             });
             
-            setContent('');
+            setContent('## ');
             
             // Clear success message after a few seconds
             setTimeout(() => setLastCreated(null), 3000);
@@ -104,7 +111,7 @@ function DevMode() {
         message: 'Please ensure the dev server is running to save posts'
       });
       
-      setContent('');
+      setContent('## ');
       
       // Clear message after a few seconds
       setTimeout(() => setLastCreated(null), 3000);
@@ -275,7 +282,7 @@ Would you recommend this paper? Why or why not?`;
             </button>
             
             <button 
-              onClick={() => setContent('')}
+              onClick={() => setContent('## ')}
               className="clear-btn"
             >
               🗑️ Clear

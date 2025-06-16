@@ -1,0 +1,23 @@
+## Read 30: The unreasonable ineffectiveness of the deeper layers, by @Andr3yGR et al from Meta FAIR
+
+https://arxiv.org/pdf/2403.17887.pdf
+
+A very surprising study. The authors announce the following: it is possible to remove at least one fifth of a LLM, and still maintain high performances !
+
+How do they do that?
+1- Pick a number n of layers you want to prune
+2- Compute for each intermediate layer l, a distance between the output of the layers l and l+n, for all examples within a dataset accordingly chosen
+3- Remove the n layers starting from l* where the average distance is minimal
+4- Perform PEFT to whip the model back into shape
+
+Each experiment was performed on a single A100 GPU, which is pretty big. This method is studied on the MMLU dataset. 
+
+The results are impressive, as stated before: removing more than a fifth of the layers maintain model performance in the 5-shot setting!
+
+The PEFT Healing does appear to have an importance in setting the model straight though, otherwise it is way more unstable on validation.
+
+It would also appear that surprisingly, the « most useless » layers that are pruned, except in the case of the Qwen series, happen to be in the end of the model.
+
+Personal Thoughts: This is the kind of study that makes me especially curious, as tackling scaling laws is without a doubt a very important fight in the realm of AI. 
+
+The results have been reported mainly for the QA case and more specifically for the MMLU, but I’m interested to see how if the pruning holds from a benchmark to another, or if task specific pruning is needed.

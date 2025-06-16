@@ -1,0 +1,18 @@
+## Read 15 : More agents is all you need
+
+https://arxiv.org/pdf/2402.05120.pdf
+
+Have you ever wondered about LLM calls scaling laws? Well, this paper is about an ensembling method that exploits sampling multiple llm calls to perform majority votes!
+
+How they do that:
+1- Query the model N times
+2- Evaluate the similarity of answers based on a score (BLEU score, occurence frequency…)
+3- Select the answer with the highest similarity score
+
+May seem simple, but it works really well in practice! Models of lower size can reach performance of higher sizes after ensembling 20 calls, which is pretty impressive!
+
+After 20 calls, it seems to converge for just a slight increase. The authors stopped the graph at 40 calls, but not much difference of performances between 40 and 20.
+
+What’s interesting as well is that this method can be combined with other result enhancement methods, like CoT or Reflexion! It also seems as well that the less strong the LLM is, the higher the relative performance increase.
+
+Personal Thoughts: Very simple, yet very effective. Pretty interesting method overall. Interested in seeing the results while being paired with different method of prompting, or even different LLM variations!

@@ -1,0 +1,25 @@
+## Read 23: StateFlow: Enhancing LLM task-solving through state driven workflows, by Wu et al. from Pennsylvania state university 
+
+https://arxiv.org/pdf/2403.11322.pdf
+
+Llm optimal task-solving frameworks have yet to be found, and this paper is another proof of that! The authors propose a novel approach in improving LLM-task solving, through the use of finite state machines for modelling.
+
+They represent a task solving process as a suite of state-actions taken by the LLM, through which they can enter multiple times
+
+For example, in the SQL task solving StateFlow:
+1- First observe the tables to understand what will be relevant to the query
+2- Then attempt an answer
+3- Verify if this response correctly answers the query
+4- Correct any errors along the way, looping between Select, Verify and Error States
+5- End if Verify is correct
+
+All states correspond to LM prompts, which have the same format:
+1- Instructions given to the LM
+2- Thought examples in a ReAct-like way
+3- Response format
+
+They test this framework against different task-solving framework using solely gpt-3.5 for SQL, Bash, or ALFWorld task solving, and the results are quite impressive: it is on a similar level to a refined version of ReAct, with 3-5 times less the cost!
+
+All prompts are within the appendix of the paper and all code is open-sourced here https://github.com/kevin666aa/StateFlow
+
+Personal Thoughts: Really interesting workflow! Insightful to see strongest workflows are those iterative ones that match more real development than just prompting « solve my issue ». Pretty interesting area to follow ! I feel that those solutions will be the backbone of more focused and specialized problem-solving frameworks, on which layers will be added at each state to make them more optimized. ;)

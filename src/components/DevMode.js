@@ -5,6 +5,8 @@ function DevMode() {
   const [activeTab, setActiveTab] = useState('blog');
   const [content, setContent] = useState('');
   const [stats, setStats] = useState({ blogCount: 0, paperCount: 0, total: 0 });
+  const [lastCreated, setLastCreated] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Load stats
   useEffect(() => {
@@ -23,46 +25,101 @@ function DevMode() {
     setContent(value);
   };
 
+  // Check if dev server is available
+  const checkDevServer = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/health');
+      return response.ok;
+    } catch {
+      return false;
+    }
+  };
+
   const handleSubmit = async (type) => {
     if (!content.trim()) {
-      alert('Please enter some content!');
       return;
     }
 
     // Check if content starts with ## for title
     if (!content.trim().startsWith('## ')) {
-      alert('Content must start with a title line beginning with "## ". For example:\n\n## My Blog Post Title\n\nYour content here...');
       return;
     }
+
+    setIsSubmitting(true);
 
     try {
       const result = type === 'blog' 
         ? await dataManager.generateBlogPost(content)
         : await dataManager.generatePaperPost(content);
       
-      // Download the file
-      dataManager.downloadFile(content, result.filename);
+      // Check if dev server is available for direct file writing
+      const devServerAvailable = await checkDevServer();
       
-      alert(`${type === 'blog' ? 'Blog post' : 'Paper review'} file generated!
-        
-Filename: ${result.filename} (Post #${result.postNumber})
-Title: ${result.title}
-
-The file has been downloaded. To add it to your site:
-1. Save the file to public/${type === 'blog' ? 'blog' : 'papers'}/
-2. Refresh the page to see your new post!
-
-No need to edit any index files - the system will automatically discover it!`);
+      if (devServerAvailable) {
+        // Use dev server to write files directly
+        try {
+          const response = await fetch('http://localhost:3001/api/write-post', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              type: type,
+              content: content,
+              filename: result.filename,
+              postNumber: result.postNumber
+            })
+          });
+          
+          const serverResult = await response.json();
+          
+          if (serverResult.success) {
+            // Show success info and clear content
+            setLastCreated({
+              type: type,
+              title: result.title,
+              filename: result.filename,
+              postNumber: result.postNumber,
+              method: 'saved'
+            });
+            
+            setContent('');
+            
+            // Clear success message after a few seconds
+            setTimeout(() => setLastCreated(null), 3000);
+            
+            setIsSubmitting(false);
+            return;
+          }
+        } catch (serverError) {
+          console.log('Dev server write failed:', serverError);
+        }
+      }
       
-      // Clear content after successful generation
+      // If dev server is not available, just clear content and show message
+      setLastCreated({
+        type: type,
+        title: 'Dev server not available',
+        error: true,
+        message: 'Please ensure the dev server is running to save posts'
+      });
+      
       setContent('');
       
-      // Refresh stats
-      loadStats();
+      // Clear message after a few seconds
+      setTimeout(() => setLastCreated(null), 3000);
+      
     } catch (error) {
       console.error(`Error generating ${type} file:`, error);
-      alert(`Error generating ${type} file. Please try again.`);
+      setLastCreated({
+        type: type,
+        title: 'Error',
+        error: true
+      });
+      setTimeout(() => setLastCreated(null), 3000);
     }
+    
+    setIsSubmitting(false);
   };
 
   const loadStats = async () => {
@@ -156,33 +213,31 @@ Would you recommend this paper? Why or why not?`;
         <p>Create blog posts and paper reviews with automatic numbering</p>
       </div>
 
-      <div className="stats-summary">
-        <div className="stat-item">
-          <span className="stat-number">{stats.blogCount}</span>
-          <span className="stat-label">Blog Posts</span>
+      {lastCreated && (
+        <div className={`success-message ${lastCreated.error ? 'error' : 'success'}`}>
+          {lastCreated.error ? (
+            <span>❌ Error creating post</span>
+          ) : (
+            <span>
+              ✅ <strong>{lastCreated.title}</strong> {lastCreated.method === 'saved' ? 'saved' : 'downloaded'} 
+              as {lastCreated.filename} (#{lastCreated.postNumber})
+            </span>
+          )}
         </div>
-        <div className="stat-item">
-          <span className="stat-number">{stats.paperCount}</span>
-          <span className="stat-label">Paper Reviews</span>
-        </div>
-        <div className="stat-item">
-          <span className="stat-number">{stats.total}</span>
-          <span className="stat-label">Total</span>
-        </div>
-      </div>
+      )}
 
       <div className="dev-tabs">
+        <button 
+          className={`tab-button ${activeTab === 'papers' ? 'active' : ''}`}
+          onClick={() => setActiveTab('papers')}
+        >
+          📚 Paper Review
+        </button>
         <button 
           className={`tab-button ${activeTab === 'blog' ? 'active' : ''}`}
           onClick={() => setActiveTab('blog')}
         >
           ✍️ Blog Post
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'paper' ? 'active' : ''}`}
-          onClick={() => setActiveTab('paper')}
-        >
-          📚 Paper Review
         </button>
       </div>
 
@@ -207,9 +262,9 @@ Would you recommend this paper? Why or why not?`;
             <button 
               onClick={() => handleSubmit(activeTab)}
               className="submit-btn"
-              disabled={!content.trim()}
+              disabled={!content.trim() || isSubmitting}
             >
-              📥 Generate & Download {activeTab === 'blog' ? 'Blog Post' : 'Paper Review'}
+              {isSubmitting ? '⏳ Creating...' : `✍️ Create ${activeTab === 'blog' ? 'Blog Post' : 'Paper Review'}`}
             </button>
             
             <button 
@@ -233,9 +288,9 @@ Would you recommend this paper? Why or why not?`;
           <ol>
             <li><strong>Write your content</strong> in the textarea above</li>
             <li><strong>Start with a title</strong> line beginning with <code>## </code></li>
-            <li><strong>Click "Generate & Download"</strong> to create the file</li>
-            <li><strong>Save the file</strong> to <code>public/{activeTab === 'blog' ? 'blog' : 'papers'}/</code> with the exact filename</li>
-            <li><strong>Refresh the page</strong> to see your new post!</li>
+            <li><strong>Click "Create"</strong> to save the post</li>
+            <li><strong>Content will be cleared</strong> so you can create another post immediately</li>
+            <li><strong>Posts are saved automatically</strong> when the dev server is running</li>
           </ol>
 
           <h3>💡 Tips</h3>
@@ -244,7 +299,8 @@ Would you recommend this paper? Why or why not?`;
             <li>Use <strong>markdown formatting</strong> for better styling</li>
             <li>Keep titles <strong>descriptive but concise</strong></li>
             <li>The system automatically finds the next available number</li>
-            <li>No need to maintain index files anymore!</li>
+            <li><strong>Dev server must be running</strong> for posts to be saved automatically</li>
+            <li>Content clears after each post so you can quickly create multiple posts</li>
           </ul>
 
           <h3>🔧 Management</h3>

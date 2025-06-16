@@ -1,0 +1,25 @@
+## Read 6 : Cosmopedia
+
+https://huggingface.co/blog/cosmopedia
+
+Microsoft published a few months ago the phi-1.5 model, followed by phi-2. Those models were said to be majoritarily trained on synthetic data. 
+
+However, the authors did not elaborate on the generation process on such data. They just said the approach was inspired from TinyStories (a read I heavily recommend which I may cover), and that the data was taken from web pages.
+
+The idea behind Cosmopedia, a 25 billions token synthetic data, is thus to be able to somewhat reproduce that synthetic data generation process. Model used is Mixtral 7x8B. Code and dataset are opensourced. A model, cosmo-1b, is also trained purely on the generated data.
+
+The sauce goes as follows:
+1- Collect data to leverage: they collect here from both known textbooks, and web gathered data
+2- Rewrite from parts of textbook data: apply specific prompt engineering to target an audience (for instance young children) and writing style (for instance blogpost) to apply diversity 
+3- Rewrite from parts of web data: Clusterize text data and labellize clusters using Mixtral 7x8B. For a given cluster topic, sample an element from said cluster and generate over that element, diversifying style and audience.
+4- Add additional base knowledge from other datasets (namely ultrachat and openhermes) rewriting them as stories targeted at different audiences to help the model understand common sense
+
+Dataset can be found and studied on huggingface’s website. Due to the amount of texts, the prompts were heavily diverse, leading to an impressively low amount of dataset contamination between cosmopedia and existing benchmarks.
+
+Personal Thoughts: The whole blogpost is a ride. There is a lot to be enjoyed about discovering this generation process, and the prompts are also extremely well documented, which leaves no stone unturned. 
+
+Really excited to see how synthetic data generation goes forward, as the models get better and better by the day. We once thought our amounts of texts were limited : but if LLMs can generate diverse and unique texts, perhaps that will not be the case.
+
+Two things that could be interesting to try that I could love to see:
+- Performing dataset analysis to study common formulations. Most notably, in the detect ai generated text competitions, (3,5) ngrams were quite a strong discriminant of textual generated data. Could cosmopedia’s diversity be enough, or it is still easy to discriminate real from generated?
+- Applying data aug methods to amplify dataset diversity. Back-translation, or word embedding replacement would be actually interesting, to tackle LLM common formulations.

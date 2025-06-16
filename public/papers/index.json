@@ -1,0 +1,36 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "filename": "post_1.txt"
+    },
+    {
+      "id": 2,
+      "filename": "post_2.txt"
+    },
+    {
+      "id": 3,
+      "filename": "post_3.txt"
+    },
+    {
+      "id": 4,
+      "filename": "post_4.txt"
+    },
+    {
+      "id": 5,
+      "filename": "post_5.txt"
+    },
+    {
+      "id": 6,
+      "filename": "post_6.txt"
+    },
+    {
+      "id": 7,
+      "filename": "post_7.txt"
+    },
+    {
+      "id": 8,
+      "filename": "post_8.txt"
+    }
+  ]
+}

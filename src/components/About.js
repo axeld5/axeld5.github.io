@@ -13,13 +13,30 @@ function About() {
           <div className="profile-image">
           </div>
           <div className="profile-info">
-            <h2>Axel</h2>
-            <p className="role">Developer & Researcher</p>
-            <p className="bio">
-              I'm passionate about technology, research, and sharing knowledge. 
-              This blog serves as my digital notebook where I document my journey 
-              through papers I read, experiments I conduct, and projects I build.
-            </p>
+            <h2>Axel Darmouni</h2>
+            <p className="role">AI Engineer</p>
+            <div className="bio">
+              <p>
+                Hello! My name is Axel Darmouni, and I am currently an AI Engineer at <a href="https://www.sia-partners.com/en/about-us/heka" target="_blank" rel="noopener noreferrer">Sia AI</a>.
+                This site serves as my digital notebook that allows me to document my reads, experiments, projects, and thoughts.
+                My main area of expertise, currently, is in the field of GenAI systems and their applications.
+                The main projects I have built so far are in the following areas:
+              </p>
+              <ul>
+                <li>RAG systems that can leverage both documents and knowledge graphs/SQL databases to answer questions.</li>
+                <li>LLM-powered data structuration pipelines with respect to database schemas.</li>
+                <li>Retrieval-Tools with expertise-focused improvements.</li>
+                <li>Report Automation with LLM pipelines, pre-agentic.</li>
+                <li>Small agentic experimentations in order to test frameworks, tools and limits.</li>
+              </ul>
+              <p>
+                The paper section of the blog presents the papers I have read, my notes and thoughts on them.
+                The blog section is a collection of experience returns and thoughts about projects and experiments I have worked on.
+                Projects are personal projects, mainly POC experiments in order to test technologies.
+                Experiments are small research experiments, usually on small language models renting a H100, conducted to follow ideas inspired by my reads.
+                Hope you have an enjoyable stay here!
+              </p>
+            </div>
             
             <div className="contact-links">
               <a href="https://github.com/axeld5" target="_blank" rel="noopener noreferrer">
@@ -28,17 +45,10 @@ function About() {
               <a href="mailto:axeldarmouni@gmail.com">
                 📧 Email
               </a>
+              <a href="https://www.linkedin.com/in/axel-darmouni-916722196" target="_blank" rel="noopener noreferrer">
+                📧 LinkedIn
+              </a>
             </div>
-          </div>
-        </div>
-
-        <div className="skills-section">
-          <h3>Areas of Interest</h3>
-          <div className="skills-grid">
-            <div className="skill-tag">Machine Learning</div>
-            <div className="skill-tag">Web Development</div>
-            <div className="skill-tag">Research</div>
-            <div className="skill-tag">Open Source</div>
           </div>
         </div>
       </div>

@@ -1,0 +1,20 @@
+## Read 5 : AgentCoder: Multiagent code generation with iterative testing and optimization
+
+What if one could automatize both tests and function coding? This is the story of AgentCoder.
+
+AgentCoder’s idea for improving LLM code generation is to have a group of three agents, tasked to iterate based on the prompt:
+1- A unittest generator that will take into account basic testing, edge cases, and large scale testing
+2- A programming agent that will generate the code it is asked to tackle
+3- An executor that will make the generated code run through the generated tests
+
+If the tests fail, the code will be sent back to the programming agent for refinement. The test generating agent is not assumed to be wrong.
+
+The method shows a definitive improvement versus approaches like reflexion, boasting as well massive improvements compared to the base models (of at least 30% passing!).
+
+Code does not appear to be opensourced, but prompts are written in the appendix for reproducibility.
+
+Personal thoughts: The approach is simple, more akin to good development code practices than simply throwing the code docstring and praying for it to work. Really cool paper.
+
+To add something, I am currently working as well on an open-source method of unittest generation, using LLMs to do so! Check out in the repo right here: https://github.com/axeld5/code_to_test
+
+So far, I’ve only implemented generating unittests from an already working code (to make consistency tests), but I am also looking into reproducing results from AgentCoder to generate unittests and code from a natural query! Only openAI models are currently used, but that will also be subject to change ;)

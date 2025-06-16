@@ -11,11 +11,14 @@ function Blog() {
   useEffect(() => {
     const loadPosts = async () => {
       try {
+        console.log('Blog component: Starting to load posts...');
         const allPosts = await dataManager.getBlogPosts();
+        console.log('Blog component: Loaded posts:', allPosts);
         setPosts(allPosts);
       } catch (error) {
         console.error('Error loading blog posts:', error);
       } finally {
+        console.log('Blog component: Finished loading posts');
         setIsLoading(false);
       }
     };

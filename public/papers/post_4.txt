@@ -1,0 +1,19 @@
+## Read 4 : Unlocking the conversion of screenshots into HTML with the WebSight dataset
+
+https://arxiv.org/pdf/2403.09029.pdf
+
+The question answered by that paper is simple: what if we had a screenshot-to-html dataset, for our web page codes to be generated from an image?
+
+Nowadays, there are lots of solutions to make concept arts of your webpages, but solutions to go from art-to-code have quite a long ways to go… or so we thought.
+
+This paper introduces a synthetically generated dataset of 2M Screenshots-to-Html elements, an impressive number to say the least.
+
+What is even more impressive is the generation process, combining multiple models and approaches:
+1- Concept generation using mistral-7b
+2- Code specialized LLM (Deepseek-coder-33b) to generate html codes.
+3- Use of external tools to add images and take screenshots of the pages
+4- Dataset curation based on content
+
+The paper does not stop here. What they do afterwards is train a VLM, based on Mistral-7b  and Siglip-so400. This model is then finetuned on Websight for quite the good results.
+
+Personal Thoughts : The dataset seems really interesting. There are quite the applications to be cracked from it, and there’s no doubt that opensourcing that will lead to people trying to make something out of it. One case that comes to my mind could be trying a wordpress-to-html pipeline.

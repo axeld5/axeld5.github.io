@@ -11,11 +11,14 @@ function Papers() {
   useEffect(() => {
     const loadPapers = async () => {
       try {
+        console.log('Papers component: Starting to load papers...');
         const allPapers = await dataManager.getPaperPosts();
+        console.log('Papers component: Loaded papers:', allPapers);
         setPapers(allPapers);
       } catch (error) {
         console.error('Error loading paper posts:', error);
       } finally {
+        console.log('Papers component: Finished loading papers');
         setIsLoading(false);
       }
     };
@@ -26,8 +29,8 @@ function Papers() {
   const filteredPapers = papers.filter(paper => {
     const searchLower = searchTerm.toLowerCase();
     return paper.title.toLowerCase().includes(searchLower) ||
-           paper.summary.toLowerCase().includes(searchLower) ||
-           paper.notes.toLowerCase().includes(searchLower);
+           paper.excerpt.toLowerCase().includes(searchLower) ||
+           paper.content.toLowerCase().includes(searchLower);
   });
 
   return (
@@ -42,7 +45,7 @@ function Papers() {
           <h3>Search Papers</h3>
           <input
             type="text"
-            placeholder="Search by title, summary, or notes..."
+            placeholder="Search by title, excerpt, or content..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"

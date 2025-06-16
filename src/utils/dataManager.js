@@ -29,16 +29,84 @@ class FileDataManager {
     return 'No excerpt available';
   }
 
-  // Discover available post files by trying sequential numbers
+  // Load post files using manifest approach
   async discoverPostFiles(type) {
+    const posts = [];
+
+    try {
+      console.log(`Loading ${type} manifest...`);
+      
+      // First, load the manifest file
+      const manifestResponse = await fetch(`/${type}/index.json`);
+      if (!manifestResponse.ok) {
+        console.log(`No manifest found for ${type}, falling back to discovery mode`);
+        return await this.discoverPostFilesLegacy(type);
+      }
+      
+      const manifest = await manifestResponse.json();
+      console.log(`Found manifest with ${manifest.posts.length} ${type} posts`);
+      
+      // Load each post file listed in the manifest
+      for (const postInfo of manifest.posts) {
+        try {
+          const url = `/${type}/${postInfo.filename}`;
+          console.log(`Loading: ${url}`);
+          
+          const response = await fetch(url);
+          if (response.ok) {
+            const content = await response.text();
+            const title = this.extractTitle(content);
+            const excerpt = this.extractExcerpt(content);
+            
+            posts.push({
+              id: postInfo.id,
+              title,
+              excerpt,
+              content,
+              filename: postInfo.filename,
+              type
+            });
+            
+            console.log(`Successfully loaded: ${postInfo.filename}`);
+          } else {
+            console.log(`Failed to load ${url}: ${response.status}`);
+          }
+        } catch (error) {
+          console.log(`Error loading ${postInfo.filename}:`, error);
+        }
+      }
+      
+    } catch (error) {
+      console.log(`Error loading ${type} manifest:`, error);
+      return await this.discoverPostFilesLegacy(type);
+    }
+
+    console.log(`Loaded ${posts.length} ${type} posts from manifest`);
+    return posts;
+  }
+
+  // Legacy discovery method (fallback)
+  async discoverPostFilesLegacy(type) {
     const posts = [];
     let postNumber = 1;
     let consecutiveFailures = 0;
-    const maxConsecutiveFailures = 5; // Stop after 5 consecutive missing posts
+    const maxConsecutiveFailures = 3; // Reduced from 5 to 3
 
-    while (consecutiveFailures < maxConsecutiveFailures) {
+    console.log(`Using legacy discovery for ${type} files...`);
+
+    while (consecutiveFailures < maxConsecutiveFailures && postNumber <= 10) { // Cap at 10 attempts
       try {
-        const response = await fetch(`/${type}/post_${postNumber}.txt`);
+        const url = `/${type}/post_${postNumber}.txt`;
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // Reduced timeout to 3 seconds
+        
+        const response = await fetch(url, { 
+          signal: controller.signal,
+          cache: 'no-cache'
+        });
+        clearTimeout(timeoutId);
+        
         if (response.ok) {
           const content = await response.text();
           const title = this.extractTitle(content);
@@ -53,7 +121,7 @@ class FileDataManager {
             type
           });
           
-          consecutiveFailures = 0; // Reset failure counter
+          consecutiveFailures = 0;
         } else {
           consecutiveFailures++;
         }
@@ -64,6 +132,7 @@ class FileDataManager {
       postNumber++;
     }
 
+    console.log(`Legacy discovery found ${posts.length} ${type} posts`);
     return posts;
   }
 

@@ -1,0 +1,23 @@
+## Read 70: Contextual Position Encoding: Learning to count what’s important, by @OlgaNLP, @Tianlu_Wang, @jaseweston and @tesatory from @AIatMeta
+
+https://arxiv.org/pdf/2405.18719
+
+Current positional embedding present failure modes, which makes it hard for transformers to solve simple tasks like counting, or copying all characters but one of a word. 
+
+Those failure modes can translate at the higher level of an LM and prevent it from being stronger.
+
+What the authors of this paper propose is a Contextual Positional Encoding (CoPE), that leverages the query and key vector pairs to compute parameters that enable the use of a learnable embedding vector. 
+
+The way it works is as follows:
+- For each qi, kj, compute gij = sigmoid(qi^T kj)
+- Compute pij = sum gik (from k = i to j)
+- Once it is done, interpolate e[pij] from e[floor(pij)] and e[ceil(pij)]
+- Use then e[pij] as the positional encoding in a relative positional encoding way
+
+Additional details for practice use (like limiting e[pij] computations) are detailed within the paper.
+
+The authors test these embeddings on different use cases on a small transformer, and find that they are noticeably stronger on each of those than current positional embedding methods.
+
+Even better, it yields to stronger results in language modeling! Val Perplexity is lowest when training a gpt2-like-model on WikiText with CoPE. It also is at its lowest when using CoPE if training a 20M transformer solely on code data.
+
+Personal Thoughts: Smart method, great finding, might be something that’s here to stay. :)

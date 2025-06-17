@@ -1,0 +1,25 @@
+## Read 79: Improving Alignment and Robustness with Short Circuiting, by @andyzou_jiaming et al from Black Swan AI
+
+https://arxiv.org/pdf/2406.04313
+
+Authors introduce a very nice method to improve refusal rate for harmful requests without harming performance.
+
+Method needs to have two sets established: a Rerouting set and a Retain set. The rerouting set is composed of harmful request, while the retain set is composed of requests that need not to be refused.
+
+Then, the model studied is finetuned using both Rerouting and Retain sets, assuming one has a representation function of the outputs of the models:
+- First loss is the relu of the cosine similarity of the representations of the outputs of the original model and model that needs to be finetuned on the harmful queries. This is done so the output of the finetuned model is orthogonal to the one of the original model on harmful queries, thus triggering a refusal.
+- Second loss is the L2 loss of the representations of the outputs of the original model and model that needs to be finetuned on harmless queries. This is done so that the output of the finetuned model remains the same on the questions that need to be answered.
+
+Results evaluated on Mistral-7B and Llama-3-8B are incredible. Datasets used and training details can be found within the paper. These methods drastically reduce ASR, no matter the method tested. This comes with barely any modification in performance!
+
+The authors also test: 
+- on Llava-Next-Mistral-7B to find ASR is also massively reduced in the vision-language case
+- on Llama-3-8B with function calling and find harmful function calls are less triggered
+
+They find as well cosine similarity reduction operates strongly at the layer level: starting from layer 10 of llama-3-8b, cosine similarity drastically decreases!
+
+Additional results can be found within the paper and its appendix.
+
+Code is meant to be open-sourced within the following github link: https://github.com/blackswan-ai/short-circuiting
+
+Personal Thoughts: Impressive results, honestly. Hope this holds on to the several new attacks on prompt level, but I’m eager to see how this performs and if it is a tough nut to break or not.

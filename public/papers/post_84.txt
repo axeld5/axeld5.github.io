@@ -1,0 +1,15 @@
+## Read 84: Are we done with MMLU? by @aryopg et al
+
+https://arxiv.org/pdf/2406.04127
+
+The authors of this paper examine MMLU, a widely used benchmark meant to examinate common knowledge capabilities of LLMs.
+
+What they find is that some questions in MMLU are not done right, especially in some categories. Mistakes can occur either at the question side, or at the answer side, poisoning and invalidating some parts of the benchmark. The authors of the paper also find this not to be an anecdotic phenomenon: 57% of examples in the virology category contain errors.
+
+The autjors then propose a manually annotated version of MMLU, called MMLU-Redux. On this one, they look at wrong questions for several categories, and evaluate the LLMs on the corrected ones. They find out in doing so that the LLMs notably improve their score now that they are not forced to be wrong, and that their rankings are shuffled. This proves their demand for a proper reevaluation of our benchmarking tools.
+
+They then also try to use said LLMs to automatize error detection, following a taxonomy  established within the paper. LLMs on their own show bad recall on detecting if a question is wrong. However, Claude 3 Opus assisted by retrieval on Ms Marco dataset has a recall strictly superior to 80% in identifying wrong questions, and is largely better than all other models on that matter, which cannot go over 60% recall. This proves however that automatizing MMLU error detection is a hard task.
+
+Dataset is available at the following link: https://huggingface.co/datasets/edinburgh-dawg/mmlu-redux
+
+Personal Thoughts: Such a paper proves there’s a real need for introspection on our benchmarks. Making sure they are right is obviously hard, but it is at least important to be aware of their fallacies to make sure that we do not overfit model performances on erroneous data. Perhaps however, there could be an use for the open source community in providing a platform that could allow benchmarks to be rechecked and reannotated.

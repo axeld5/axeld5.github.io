@@ -1,0 +1,27 @@
+##  Read 56: SpeechGuard: Exploring the adversarial robustness of multimodal large language models, by Peri, @jsmuralidhar et al from AWS AI Labs, @amazon
+
+https://arxiv.org/pdf/2405.08317
+
+Jailbreaking of models is the new mode as of late. With the focus on audio assistants that is coming as of late, safeguarding them from being broken is a non-negligible priority, especially if they were to be added on devices.
+
+The authors of this paper first introduce the attack they’ll be testing on speech-language models. It’s a simple attack, yet very effective if the model is unguarded. Following the work done in CV, they aim to find an audio perturbation they add to their question in order to bypass the models’ safety checks. 
+
+They also try to establish the transferability of the attack in two settings:
+- Cross-models, ie if a perturbation works from a model to another
+- Cross-prompt, ie if a perturbation works from a prompt to another
+
+They then proceed to show a powerful defense vs this type of attack, which is simply adding random white gaussian noise to the input of the model to destroy the impact of the perturbation.
+
+The architecture they test this on is a classic SLM architecture, working just like a VLM one: speech encoder that is adapted so that its tokens can be fed to the LLM. Audio encoder is a trained Conformer, and LLMs used are either Flan-T5-XL or Mistral-7B.
+
+What is of note is the following:
+- Their models are very close to the current open source models having same number of parameters.
+- The adversarial procedure shows very strong ASR (~90%).
+- Its cross-model and cross-prompt expansion is much less strong, showing from 10% to 20% ASR.
+- Their defense method is very powerful, obliterating the ASR of their adversarial procedure, going from ~0% to 5%. The defense method does not even affect model performance!
+
+Additional details on models and evaluation procedure can be found within the paper and its appendix.
+
+Personal Thoughts: Was really nice to see papers finally getting on jailbreaking audio models. This is a well done paper, that details well its objectives, evaluation methods and results, although it could likely use an update with Gemini 1.5 and Gpt-4o, even though one can only black-box attack them. 
+
+Would love to see more of that, especially on the defense methods before Siri and Project Astra are finally officialised ;)

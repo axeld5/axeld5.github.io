@@ -1,0 +1,17 @@
+## Read 80: Does your data spark joy? Performance gains from domain upsampling at the end of training, by @code_star, @mansiege, @_BrettLarsen et al from @DrbxMosaicAI
+
+https://arxiv.org/pdf/2406.03476
+
+The authors of the paper try to improve results of 7B decoder-only model while matching FLOPS of Llama-2-7B.
+
+The main thing they focus on here is the data. They group publicly available datasets into 4 categories: Large-Scale Common Crawl, Small-Scale CC (a much more filtered version of previous one), Domain Specific Data, and Code Data.
+
+They then arrange the data mix so that it makes 1T tokens, with putting more emphasis on the quality data (Small-Scale CC, Domain Specific and even more for Code) during the training process. This allows their 7B model to match Llama-2-7B performance on some benchmarks with 1T tokens less.
+
+What they then try is performing domain upsampling on the last bits of training. They actually restrict the training set to the quality data, and train the model only on that… to show a very nice increase in performance, reaching even Llama-2-13B levels of perfs on some benchmarks!
+
+Ablation studies give two key findings:
+- Some benchmarks peak with upsampling in the last 10%, other in the last 20% ; although with only very small differences.
+- Math data is very important for model performance with this level of training.
+
+Personal Thoughts: Great to read research that finally looks into the data mix. Early 2024 has introduced this problematic, and I feel like data mix ordering may be a key factor in improving LLM performance!

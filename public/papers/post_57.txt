@@ -1,0 +1,31 @@
+## Read 57: Chameleon: Mixed-Modal Early-Fusion Foundation Models, by @sriniiyer88, Huang, Pasunuru et al from the FAIR team of @AIatMeta
+
+https://arxiv.org/pdf/2405.09818
+
+Current main vision language open source approaches aim at usually adapting a pretrained LLM for handling vision input on top of textual ones.
+
+This approach from FAIR is not that. Its goal is to train an end-to-end multimodal model, that can take both textual and visual inputs, and output both textual and visual content.
+
+They proceed by having two tokenizers, one for textual and one for visual. Text and image tokens are then concatenated to form the full input. This representation is the same at the output of the model, with text and image tokens concatenated and separated.
+
+How is this model trained? First, for pretraining, it is done in two stages:
+- The first stage is a massive mixture of textual and visual data, along documents that interleave both from, for a total of 4.8 billion tokens (both image and text).
+- The second one is a more filtered approach that waters down the weight of the first stage data, while introducing higher quality datasets and instruction tuning tests.
+
+A special attention is given to stabilizing the training. One key component was the application of query-key normalization, ie applying layer norm to both query and key vectors to control parameter growth. For the 34B model, the authors also used the Swin transform normalization strategy, to bound as well the growth of the feedforward layers. Hyperparameters, dropout use and loss functions are detailed within the paper as well. A special strategy was also performed to boost the model’s inference capacities, detailed within the paper.
+
+The second stage of training of the model was supervised finetuning on six categories of data: text, code, visual chat, image generation, interleaved text/image generation, and safety. For all image datasets, data curation was applied to keep only high quality data. Most notably, an aesthetic classifier was applied to filter the image generation SFT dataset. Safety data is a collection of harmful prompts from different sources, paired with the model being told to be unable to answer. A multimodal refusal dataset was also crafted by the Chameleon team. Hyperparameters can be found within the paper.
+
+In order to evaluate their models, they perform both a model vs model winrate human annotation check on 1050 hand-crafted prompts categorized in 12 different categories, and a benchmark run-through to assess the model’s capacities.
+
+In terms of benchmark :
+- Text only, the chameleon model series is on par with fully textual models of the same size, which is really strong. Chameleon-34B shows as well perfs on par with Llama-2 70B and higher than Mixtral 8x7B.
+- Regarding image-to-text performance, Chameleon-34B is at the level of Idefics-80B and Flamingo-80B, which is extremely promising.
+
+The model shines even more in the model vs model annotation. Chameleon 34B’s responses are more often than not judged to be better than Gemini Pro 1.5 and GPT-4V’s, and its image generation capabilities better than Dall-E 3 empowered by those models’ captioning! Considering the strength of the models, this is an actually really strong result that is announced here.
+
+Chameleons (7B and 34B) were also tested for safety on 20000 prompts, and red teamed as well for 445 others. The models produced very few harmful answers on those benchmarks, nearing 99.5% safety on the 20000 prompts and having only 6% ASR in the red team prompts.
+
+Additional details and qualitative results can be found within the paper and its appendix.
+
+Personal Thoughts: Overall, this paper is very dense, yet amazingly interesting. This paper felt very smooth to read, and each concept was clearly explained and illustrated. It raises so many questions as well. Like the data curation process. I’m super curious as well as how the model wins vs the titans that are gpt-4 and gemini pro without preference tuning.

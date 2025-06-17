@@ -1,0 +1,33 @@
+##  Read 73: 🍷 FineWeb: decanting the web for the finest text data at scale, by @gui_penedo, @HKydlicek, @LoubnaBenAllal1, @anton_lozhkov, @colinraffel, @lvwerra and @thom_wolf from @huggingface
+
+https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1
+
+Data is currently the biggest topic for LLM performance. What made Llama-3 and phi-3 breakthroughs, according to their technical reports, were their data mix and how it was constructed.
+
+The authors of this technical report attempt to reproduce that data mix, using Common Crawl extracts. Their goal is to identify how to extract quality data from this very noisy set of 386 TiB of uncompressed html text content. All experiments are verified training 1.82B sized models progressively on at most 350B tokens.
+
+What they do is the following:
+1- Removal of adult content through url filtering
+2- Keeping mainly english texts using fasttext language classifier
+3- Applying quality and repetition filters from the Gopher paper.
+
+The main pain point afterwards (they had 36T tokens once they were done) was how to perform deduplication of the examples. Several attempts are recorded within the report, but the one that succeeded was taking each common crawl extract individually, and deduplicating within itself rather than deduplicating the extracts as a whole. This approach somewhat counter-intuitively lead to improved results.
+
+Then, the authors applied additional quality filters based on methods related to the C4 dataset. This method managed to reach C4 dataset performance, yet not really overcome it.
+
+Hence why they needed to add new filters, which they determined heuristically by comparing Global Deduped (less quality) and Independantly Deduped (higher quality) versions of Common Crawls with extracts going from 2013 to 2015. Through plot of histograms of fifty metrics, they found three text-based filters that appeared to lead to substantial performance gain. This way, they surpassed the C4 dataset, and created FineWeb, a high quality dataset of 15T tokens.
+
+But it was not over yet. We might have the same size as Llama-3’s dataset here, but we are nowhere near phi-3, which was 3.3T for the mini model.
+
+So Huggingface tried looking into that. What the phi-3 authors (and llama-3 as well) stated was that they used LLMs as judges to filter text based on its educational properties. The authors then decided to look into that.
+
+They prompted Llama-3-70B over 500k examples to rank using additive scale (0 to 5, with llm attributing 1 point per quality). Once that was done, they trained a small classifier to match Llama-3’s ranking performance. The classifier used was a Snowflake-artic-embed model, finetuned for the use case and open-sourced. It showed an f1-score of 82% on the validation set, which was quite satisfying to the authors.
+
+By removing all samples with educational value at strictly less than 2, an 1.82B model trained for 350B tokens yields a much better result curve on MMLU (and on multiple other benchmarks) than for all other datasets. And thus, FineWeb-Edu was born.
+
+FineWeb is opensourced here: https://huggingface.co/datasets/HuggingFaceFW/fineweb
+FineWeb-Edu is opensourced here: https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu
+
+Personal Thoughts: Great report, it’s an amazing read and I am so amazed by how open-source catches up at the titans. The report feels very smooth to read as well, and I am really impressed to see it acknowledges what worked and what did not, while backing up each of it claims. An impressive work overall.
+
+PS: If we were as well to look back at my curriculum learning hypothesis: FineWeb Edu would thus be the Textbook-data put at 2, and FineWeb the « Noisy »-data put at 3. ;)

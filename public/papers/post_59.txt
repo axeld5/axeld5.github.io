@@ -1,0 +1,27 @@
+## Read 59: Vision Transformers need registers, by @timdarcet et al from @aiatmeta and @inria_grenoble
+
+https://arxiv.org/pdf/2309.16588
+
+Inspection of the DinoV2 model reveals that there are certain tokens with specific particularities. Those tokens exhibit a much higher norm than the others, making them outlier tokens.
+
+The authors of this paper take note of these tokens and examine their capacities. They find:
+- They are mainly located within large models.
+- They appear mainly on spots where the density of similar tokens is high.
+- They do not hold strong local info. To prove that, they perform two regression: one to identify pixel position and the other to identify pixel value, using a specific set of tokens only. What they note is that on both those tasks, the normal tokens exhibit far stronger performance than the outlier ones.
+- On the contrary, they hold strong global information. The authors train a linear classifier based on DinoV2 information patches, and realize the model trained on outlier tokens show far stronger performances than the model trained on the normal ones.
+
+What do they conclude? That the large model identifies the redundant tokens and use them as places to store information. The fix they do is the following: append a certain amount of tokens at the end of the model, specifically to be used as « registers » during training and serve as the places that store information.
+
+The results from that modified training are as expected:
+- No more norm outliers within the large models.
+- What is to be noted is that it does not modify model performances… except for object discovery, on which the model performances is highly improved.
+
+In fact, registers even allows for much more interpretable attention maps! 
+
+More details and qualitative results can be found within the appendix of the paper as well.
+
+Personal Thoughts: A really great paper, worthy of its ICLR status. It is a very clear paper, which results and claims are all illustrated properly, that exhibits well all the results it shows. 
+
+While it seems linear probing does not show many impact on classification results, I’m still very curious about something: could registers help improving Vision-Language models? 
+
+I recall having noted in the idefics2 paper that the vision backbone did not necessarily have a strong impact as of today, yet this method modifies the balance of information within the model. The intuition I have is mainly motivated by the models’ higher results on Image Discovery. My thought is that registers, through their sequencing of information, could perhaps allow to enhance encoding and thus performances of vision-language models?

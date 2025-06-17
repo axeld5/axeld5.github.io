@@ -1,0 +1,17 @@
+## Read 42: Vibe-Eval: A hard evaluation suite for measuring progress of multimodal language models, by @PiotrPadlewski and @maxhbain from @RekaAILabs
+
+https://publications.reka.ai/reka-vibe-eval.pdf
+
+Reka Labs published today a benchmark made of 269 diverse and annotated examples to evaluate the performances of multimodal models. 
+
+Two sets are made: the normal one of 169 examples, and the hard one of 100 examples that Reka Core is not able to solve as of today. 
+
+Those examples are meant to test potential usage of Multimodal LMs, like restructuring information from graphs, understanding the contents of a menu, reading a handwritten graph… Through that set, the authors’ goal is to push the models to their limits, as several subtasks are usually contained within a question.
+
+Once the benchmark was fully done, the authors proceeded to evaluate the models using both Reka Core and an elo system based on human annotators.  
+
+They report the findings, which are not too surprising: the top 4 is composed of Gemini-Pro 1.5, GPT-4V, Reka Core and Claude 3 Opus. Open Source is at the bottom, with the exception of Llava-1.6-34b, slightly worse than Haiku.
+
+Detailed qualitative examples can be found within the appendix. Dataset can be found here: https://huggingface.co/datasets/RekaAI/VibeEval
+
+Personal Thoughts: Seems like VibeEval would be an amazing benchmark to test agent systems. Their examples look complex, tough, with multiple steps of thinking which make for a perfect think-before-answering kind of approach that leverages multiple models. Cool benchmark to look at, hope it will be used!

@@ -1,0 +1,20 @@
+## Read 68: NV-Embed: Improved techniques from training LLMs as Generalist Embedding Models, from @chankyul77 et al
+
+https://arxiv.org/pdf/2405.17428
+
+The authors finetuned a Mistral-7B model to create a new embedding model, NV-Embed.
+
+What they do is:
+1- Remove Causal Attention and turn it into Bidirectional Attention
+2- Use a trainable latent attention layer that follows a softmax, instead of commonly used mean pooling 
+3- Finetune the model in two-step instruction tuning, performing constrastive tuning at first on retrieval datasets (with in-batch negatives and hard curated negatives), and then on a combination of retrieval and non-retrieval datasets (only using hard curated negatives as negative examples)
+
+Main non-retrieval datasets are taken from classification, clustering and sentence similarity datasets.
+
+Mistral-7B model is PEFTd using LoRA. All hyperparameters are within the paper.
+
+All results are indicated within the paper. Model is in fact sota or near sota on all benchmarks.
+
+It will be open sourced under cc-by-nc licence at: https://huggingface.co/nvidia/NV-Embed-v1
+
+Personal Thoughts: Everything regarding this paper is pretty cool. Model looks terrific good, architecture looks simple, and it actually looks reproducible. What I’m wondering now is if Vision-Language Models can be repurposed as multimodal embeddings using a similar process.

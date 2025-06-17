@@ -1,0 +1,27 @@
+## Read 77: Mobile-Agent: Mobile Device Operation Assistant via Effective Navigation via Multi-Agent Collaboration, by Wang et al
+
+https://arxiv.org/pdf/2406.01014
+
+The authors of the paper introduce an MLLM-based agent framework to perform app navigation and instruction completion.
+
+Their framework is handled the following way:
+1- Assist the MLLM using three different tools: one for text description, one for icon recognition, and one for icon description
+2- Have a short term memory unit, used for the MLLM to store info from the previous steps
+3- Use a planning agent to decide on what actions to do to solve the problem
+4- Use a decision agent to perform the action and store content within the memory unit
+5- Use a reflexion agent that analyses the output and decide whether the operation was correct, incorrect or irrelevant to the goal that needs to be reached
+
+The authors use for the tools: ConvNext-ViT-document from ModelScope as OCR for text extraction, GroundingDino for icon recognition, Qwen-VL-Int for icon description. They use GPT-4V as the main model of experimentation. 
+
+To operate the devices, they use Android Debug Bridge. They make up different scenarios, using 5 system apps and 5 external apps, for each they design 2 single-step tasks and 2 multi-step tasks. They do this process both for english and non english versions of the apps, along adding 8 multi-app instructions. This makes for a total of 88 instructions.
+
+For each of their instructions, their framework performs massively well compared to using solely the base model, both in the single and multi-step paths. They also try using knowledge injection to improve the agent (ie giving it hints on the operations to do), and find it greatly boosts its scores. In fact, on non-english tasks, without knowledge injection, the agent reaches a complete success rate of 32/44 ; and for english tasks 34/44, which is really good.
+
+Said performance is as well only achievable so far on GPT4-V. Qwen-VL-Max and Gemini 1.5 Pro based agents do perform much worse than the GPT4-V based agents, but still much better than GPT4-V on its own.
+
+Planning agent appears to be the most crucial as well, as removing it is highly detrimental to the overall score.
+
+Instructions and qualitative results can be found within the appendix.
+Github code is open-sourced at: https://github.com/X-PLUG/MobileAgent
+
+Personal Thoughts: Very, very interesting paper. Seeing an MLLM-based agent framework perform so well is a pleasure, and it looks like a smart thought process and execution overall. Am surprised of Gemini 1.5 Pro score, and would have loved to see scores of the Claude 3 suite of models. Hope to see more exploitation of agentic MLLMs!

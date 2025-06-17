@@ -1,0 +1,22 @@
+## Read 65: WordGame: Efficient&Effective LLM Jailbreak Via Simultaneous Obfuscation in Query and Response, by Zhang, Cao, @YuanpuC, @LuLin006, Mitra, and @JinghuiChen001 from @ISTatPennstate
+
+https://arxiv.org/pdf/2405.14023v1
+
+Strong prompt jailbreaking attacks exist. Strong prompt jailbreaking attacks from a simple template, only based on natural language, are actually much scarcer.
+
+This is what this paper introduces. A simple to understand jailbreaking attack that consistently fools even the strongest models.
+
+How does it work?
+1- Take a harmful query
+2- Ask an LLM to identify the most harmful word and obfuscate it
+3- Ask an LLM to make a word game with several hints to guess the masked word
+4- Send the request with the masked word and the guessing game, and make the LLM solve it
+5- (Optional) Make the quizz & answering process happen after 3 other benign questions so the LLM doesn’t suspect a thing.
+
+It works. It works really well. It’s much stronger than other natural language based attacks, and the strongest version (with the 5th step) breaks GPT-3.5, GPT-4, Claude 3, Gemini Pro and Llama 3 on AdvBench. 
+
+On top of that, it is an extremely cheap attack to perform as both input tokens and output tokens are very low. Ablation studies are performed to show the impact of auxiliary questions and specific impact of said questions. The authors also prove it’s possible to improve other methods through reapplying some ideas of wordgame.
+
+Prompts and qualitative details can be found within the appendix.
+
+Personal Thoughts: Very scary attack. Models aren’t prepared to defend against that, and it goes over their barriers in a very smooth way. Quite scary, to say the least.

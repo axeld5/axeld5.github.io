@@ -1,0 +1,19 @@
+## Read 75: Improved Few-Shot Jailbreaking can Circumvent Aligned Language Models and their Defenses, by @xszheng2020 et al from Singapore Management University
+
+https://arxiv.org/pdf/2406.01288
+
+Jailbreaking has been proven to work on different levels, and several prompt based white box attacks have already made their way into the community.
+
+This paper is yet another nail in the coffin of open source models being fully safe, even if red teamed. But what they do here is make a simple modification and exploit well a set of few shot examples.
+
+Their method:
+1- Use the [/INST] tokens and add them between the user’s answer and the prefabricated assistant answers.
+2- In order to get the few shot examples, perform random search and select few shot set that minimizes the loss of generating target harmful token at first position.
+
+This method is pretty simple… and with 8 examples has an ASR of over 85% and near 95% on all small-sized (~7B) open source LLMs. The random search component over the few shot examples is actually important, as it makes ASR shoot up for models from the Llama family.
+
+Even better, after testing on Llama-2-7B with several defense model-level methods… their improved few-shot attack still cracks it, even with a defensive system message.
+
+Code is open-sourced at the following github: https://github.com/sail-sg/I-FSJ
+
+Personal Thoughts: Amazing results here. Am pretty curious about distributions of selected samples related to the task asked. Is there a correlation (or non-correlation) between the few shot examples that make loss minimal and the target task to be generated? Would be interesting if rules could be extracted to change the attack to go Black-Box.

@@ -1,0 +1,26 @@
+## Read 46: What matters when building vision-language models? by @HugoLaurencon, @LeoTronchon et al from @huggingface and Sorbonne Université
+
+Multimodality is becoming as the days go one of the hottest topics, due to its considerable amount of use cases. The authors of this paper introduce both their findings on how to train VLMs the best way, and Idefics2, a state of the art 8B VLM. Idefics2 is based on Mistral-7B for the LLM and SigLip-SO400M for the Vision Encoder.
+
+Their findings are pretty complete and well-detailed during the paper, going over all details of the training structure:
+- Selecting best Vision Model vs  best Language Model
+- Architecture selection & freezing vs unfreezing the backbones
+- How to reduce number of tokens seen while improving accuracy
+- How to preprocess the images related to the vision encoder & to improve performances
+
+When it comes to Idefics2, every part of the training and fine-tuning is detailed. 
+
+For the training, they use:
+- OBELICS, a massive dataset of interleaved image-text documents released by the same main authors 
+- Filtered image-text pairs 
+- PDF documents to help the model at OCR and document understanding
+
+For their finetuning, they leverage The Cauldron, a collection of 50 vision-language datasets where each sample is under a Q/A format. Finetuning is performed using DoRA.
+
+Idefics2 is then compared to all other models. This comparison yields to SoTA results on its size, toppling even the 30B models on some benchmarks… and even the strong multimodal models in the MathVista and VQA v2 benchmarks!
+
+Idefics2 is also fine-tuned on dialogue data and red teamed to get a « chatty » version of itself for user interaction.
+
+Model is available at huggingface, and additional details and qualitative examples of Idefics2-chatty can be found within the appendix.
+
+Personal Thoughts: Really complete read! Was thoroughly enjoyable to see all details of the data mix and training informations, no doubt it will help for reproducibility. In fact, if you consider that the Backbone Language Model is the strongest… feeling like swapping their Mistral-7B for phi-3 or Llama-3 will yield for an even stronger model! Can’t help as well but be curious about their findings on the vision embedding model: is there no way for open source to make a leap on that matter?

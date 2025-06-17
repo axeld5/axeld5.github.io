@@ -1,0 +1,13 @@
+## Read 83: The Prompt Report, a systematic survey of reporting techniques, by @sanderschulhoff, Ilie et al
+
+https://arxiv.org/pdf/2406.06608
+
+The authors of this paper make a very dense review of all prompting techniques, from the basics to the more complex ones.
+
+The study goes beyond simple English prompting, and goes as well over multilingual and multimodal prompting.
+
+It discusses as well pairing LM prompting with external tools, and different kind of operational agents that exist with referenced methods.
+
+Lastly, it goes over issues with prompting, how to benchmark different prompts and goes over a case study for how to approach as a prompt engineer a difficult real world problem.
+
+Personal Thoughts: Paper is a complete read over the different techniques at the moment, and quite the interesting read or refresher when it comes to prompting. A read I recommend!

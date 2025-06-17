@@ -1,0 +1,19 @@
+## Read 62: Your transformer is secretly linear, by Razzhigaev et al from AIRI
+
+https://arxiv.org/pdf/2405.12250
+
+The authors of this paper examine transformer layers to look for linearity of the input vs output of each layer.
+
+What they actually find is that in decoder-only transformers, there are several layers if not most that are in fact nearly linear! While one could think this is mainly due to the residuals, they notice as well it is sometimes not the case.
+
+This eyebrow raising remark only gets even better to look at when you study the impact of pretraining and finetuning on linearity:
+- Pretraining tends to reduce average linearity of the model
+- Finetuning, on the contrary, consistantly increases said aspect!
+
+The authors then look at a method to regularize said linearity, using a loss component based on both mse and cosine similarity of sequential embeddings. They test that method on small Mistral-like models (150M and 650M) trained on Tiny-Stories and Tiny-Textbooks. Surprisingly, this method decreases linearity and improves results, allegedly because of the non-residual stream parts of the layers getting increased capacities to compensate for the model’s internal dynamics being modified.
+
+Finally, the authors notice it’s possible to use that method to remove or replace model layers. Approximating them by linear layers and then retraining the model yields nearly same perplexity results for a Llama-2 7B.
+
+Github code is open sourced and can be found here: https://github.com/AIRI-Institute/LLM-Microscope
+
+Personal Thoughts: A very intriguing finding, that would be interesting to extend to more complex models with higher scales as well. The layer pruning/replacement part is a pretty interesting method, and the finding overall is quite thought-provoking.

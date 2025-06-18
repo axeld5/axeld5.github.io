@@ -1,0 +1,73 @@
+## Read 169: « SWE-RL: Advancing LLM Reasoning via Reinforcement Learning on Open Software Evolution », by Wei, Duchenne, Copet, Carbonneaux, Zhang, Fried, Synnaeve, Singh and Wang from Meta FAIR
+
+https://arxiv.org/pdf/2502.18449
+
+After the release of R1, a lot of research goes into RL-ing. As in what can be RL-ed and how to create environments for it.
+
+For math, it’s easy. An arithmetic problem has a solution. Reward over reach of solution.
+
+For code, harder. An approach is using test sets. But problems with complete and dense test sets that can evaluate code completeness and performance are rare, which makes a large scale RL considerably harder.
+
+What does Meta do here? RL over PR. Basically you have a PR, and the model is RL-ed to reproduce the output of the PR, with format constraints: namely, think.
+
+Deep diving below ⬇️ 
+
+——-
+
+First, the data collection process. They take all PR from GitHub Archives from 2015 to late 2024. Repositories were cloned to retrieve the repos with commit history. 4.6M repositories overall were gathered through that step.
+
+Then, for PRs:
+- Only merged PR are kept. Conversational events related to those PR are retrieved and sorted in chronological order.
+- Using the hashes of the PR, all modified patches are obtained. Cumulative change patch is retrieved along the complete change history. 
+- Aggregated PRs are scanned to identify patterns representing issues, and if match the PR is linked the matched issues. This leads to 24M PR instances.
+- PR are completed through additional non-modified code patches to help the model understand noisy code. To get those, Llama 3.3 70B is prompted to get relevant code files and those files are fully appended to the PR code.
+- Bot-generated PRs are removed. PRs with empty changes, very large changes, or irrelevant (version updates…) changes are also removed. This process yields 11M PRs.
+
+——-
+
+However, the authors do not use this raw dataset for RL!
+
+The actual PR that are used are those linked to an issue, related to bug fixing, and that involve programming files.
+
+The RL is performed the following way:
+1- A -1 reward for formatting that does not include thinking xml tags
+2- A reward that uses difflib SequenceMatcher between predicted modified patch and ground truth if the formatting is right
+
+GRPO is then applied over the filtered dataset. Hyperparameters are described within the paper.
+
+——
+
+To evaluate its performance in real code environment, the authors create the « Agentless Mini » Framework. To sum it up quickly, given an issue:
+1- Locate files related to the issue and generate answer patches
+2- Generate test sample files based on issues and relevant retrieved test guiding file
+3- Use tests that succeeded on previous code (that are meant to still work after bugfix -inference step to determine that-) as regression tests to perform reranking and select patches
+
+The actual fun part is that it is all done by the GRPO’d model! Applying RL to it still maintains its reasoning capacities, which makes it able to perform file selection, generate and evaluate relevant tests along predicting code patches. This is very, very interesting in my opinion.
+
+—-
+
+The RL-ed model is then evaluated and compared to other models on SWE-Bench verified, using this « Agentless » framework approach.
+
+On the same framework, it is better than GPT-4o, and at the level of o1-preview and near Deepseek v3. Impressive !
+
+——-
+
+It is also compared on greedy decoding vs the base model and a version that was SFT on quality synthetic data (generated on the PR, which process is in the appendix).
+
+In this setup again, the model fares better : both in formatting, and especially in oracle success.
+
+—- 
+
+In fact, the RL’d model also generalizes better than the SFT’d one! Especially for the MATH benchmark, which is quite impressive.
+
+Yet another way of looking at « SFT specializes, RL generalizes » we keep on seeing I guess.
+
+—-
+
+Test time scaling is also useful. The more the attempts and the more the generated tests, the better the perfs.
+
+Overall, it’s a quite interesting paper to me. The RL process at first seemed like « Finetuning with Extra Steps », considering the Difflib reward could be assimilated to BCE over Oracle Tokens, but the results of the finetuned model do make it appear there is something underlying.
+
+Which is very, very exciting! Am not entirely sure if this will redefine the way we look at post-training, or if it is just a neat result, but it screams potential to me.
+
+Especially with such a loss. I feel that the loss that is given capture patch reproduction but not the true objective, which is in the end « solve the PR ». However, designing such a reward would mean we have a model able to design precise test cases: which is much, much easier said than done. Intrigued to see where this will lead us. :)

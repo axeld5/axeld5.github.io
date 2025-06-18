@@ -1,0 +1,32 @@
+## Read 177: « Kimi-VL technical report », by the Kimi Team from Moonshot AI
+
+https://arxiv.org/pdf/2504.07491
+
+Introduces the Kimi-VL model, an open source multimodal MoE of 16B parameters with only 2.8B active.
+
+And despite behaving like a 3B at inference time, it beats models like Llama 3.2 11B or even Gpt-4o mini. How so? Through clever training and data processing.
+
+First of all, the authors train their own ViT, MoonViT, initialized from SigLIP-SO-400M. This ViT improves using RoPE and modifying the way images are input: they are now divided into patches, flattened, and concatenated into 1D sequences. 
+
+After encoding the image, a pixel shuffle operation is then done on the outputs to do 2x2 downsampling in the spatial domain, and the features are then fed into a 2 layer MLP for projection into the LLM space. The base MoE used is the Kimi team’s Moonlight model, initialized from an intermediary checkpoint.
+
+Regarding the pretraining, first, a slightly enhanced version of the Muon optimizer leveraging weight decay is used.
+
+Second, it follows multiple steps which we’ll summarize below:
+1- MoonViT training stage using multiple Image-Text pairs with a CoCa-inspired loss ; alignment step is done at the end with 100B tokens where ViT + Projector are plugged into the LLM and trained while the LLM is frozen
+2- Joint pretraining of ViT + Projector + LLM, starting with text data and upscaling to multimodal
+3- Continued training with quality multimodal data along synthesized quality textual QA data ; a small amount of multimodal data is also rewritten into QA format
+4- Long context training, extending the context length of the model ; long data is set to 25% of data mix and includes not only long texts, but videos, interleaved data or documents
+
+Now, onto the post training:
+1- Joint SFT is applied with multimodal and pure text data
+2- Lightweight Long CoT SFT is performed so that the model can start incorporating reasoning strategies
+3- RL is done with online policy mirror, with a reward based on correctness and penalizing excessively long responses ; curriculum sampling and prioritized sampling are also performed, leveraging difficulty labels and per-instance success rates to focus training efforts on pedagogically valuable examples
+
+The authors also finally go through their data collection process, stating the importance of Interleaved data, OCR data, Video data, or even UI-related data wrt the training set
+
+Which leads, as stated in the intro, to a very powerful model. Plenty of qualitative examples in the paper, and can also be tried on huggingface 
+
+Very, very interesting paper overall. Extremely packed and dense at the same time, quite worth the read and the try.
+
+Curious about scaling and if it beats the VLM scaling curse as well :D

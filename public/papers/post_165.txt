@@ -1,0 +1,26 @@
+## Read 165: « simplifying DINO via coding rate regularization », by Ziyang Wu et al from UC Berkeley
+
+https://arxiv.org/pdf/2502.10385
+
+As stated in CAPI (covered yesterday), the current process for Masked Image Modeling encoder training is cumbersome. Basically, stability problems are all over the place in the Self-Supervised Learning process and several regularization elements with plenty of sensitive hyperparameters need to be added to keep training experiences strong and consistent.
+
+But what if there was a hack that could be done to simplify it all?
+
+Dino model training does not use straight up the outputs of the teacher and student models. Instead, it goes through several processes to convert them into probabilities to perform BCE on. The authors remove that step and change the BCE to a simple scalar product of the teacher and student models.
+
+But how do they regularize then? Introducing the coding rate regularizer (CRR). What this does is somewhat controlling the entropy of a given feature distribution. The coding rate applied to the covariance matrix of the student outputs is a measure of the size of its covariance. 
+
+What the authors do here is trying to maximize it: as they put a -1*gamma*CRR -which is positive by definition-. This will from my understanding encourage the model to go broad in its embeddings, minimizing training collapse. Details on the computation of Covariance and CRR are overall within the paper, to sum up this looks like an averaging of averages.
+
+That’s it for Dino!
+For DinoV2 now, what goes on is the following:
+- BCE on predicted probas (or prototype scores) at the image level becomes simply scalar product on student and teacher outputs at the image level
+- BCE on predicted probas at the patch level becomes simply scalar product on student and teacher outputs at the patch level
+- Regularizing CRR loss is back, using predicted student outputs at the patch level
+
+Which is basically it all.
+Now for the results: performances of Dino and DinoV2 with higher training stability, and much lower computation restrains or hyperparameters. Whether it’s on probing for classification, detection or segmentation, the performances remain close. With good looking feature maps as well. Impressive.
+
+The work is open-sourced, with links in the comment. An overall quite intriguing paper, and I am really curious on what led to digging up Coding Rate Regularization out of all things and if this regularization method truly is the trick or if other method on student covariance matrix can do just fine as well. Well played!
+
+GitHub space: https://robinwu218.github.io/SimDINO/

@@ -1,0 +1,42 @@
+##  Read 153 : « rStar-math: Small LLM can Master Math Reasoning with Self-Evolved Deep Thinking », by Guan, Zhang et al from Microsoft Research Asia
+
+https://arxiv.org/pdf/2501.04519
+
+The authors of this paper show that you can work around a very small model and improve its problem solving capacities through a clever approach.
+
+Here’s the gist:
+1- Two models are used: A finetuned SLM referred to as a Policy Model and a finetuned Process Preference Model. The Policy SLM generates its CoT as python comment, along the corresponding python code.
+2- Generation is done using MCTS on the tree represented with a level being a step of the SLM outputs, with the PPM acting as the value function generator for nodes. Only nodes with successfully executable python code are taken as valid.
+3- To train the models, the authors create a 4 stage process that iteratively refines them along with the training data
+
+The details below ⬇️ 
+
+——-
+
+The training is done as follows: they collect a dataset composed of 747k math problems from the NuminaMath and MetaMath datasets, with only the expert problems being saved. A few other problems are also synthesized using GPT-4, keeping only the problems for which it is able to generate solutions in 3 out of 10 times.
+
+The PPM is created from the finetuned Policy-SLM by replacing the next token prediction head with a scalar-value head followed by a tanh. A special pairwise ranking loss is used, comparing the two best trajectories with the two worst ones.
+
+The training is done in 4 rounds:
+- Round 1: Run a strong model, here Deepseek-Coder-v2-Instruct to generate MCTS SFT data, taking the 2 trajectories with the highest Q values over 8 rollouts. Only samples for which the model was successful were token. As there is no PPM yet, Q values are updated with each intermediate node scored based on its contribution to the final answer (terminal guided annotation). PPM is trained, yet not that effective yet.
+- Round 2: Using the SLM trained from round 1 data, 16 MCTS rollouts are generated. Terminal guided annotation is used once again as the PPM is not good enough yet. Again, only successful samples are taken. The top and worst trajectories are gathered and used for finetuning.
+- Round 3: Now the PPM is good enough, it is used as the value function of the MCTS, yielding better trajectories and allowing more examples to enter the trajectory training data.
+- Round 4: Final training of the SLM and the PPM, which only now fail on 38% of the Olympiad training data (which is for most because of how hard they are, as some are not even solved by o1!).
+
+In the end, 90.25% of the 747k problems of the full training dataset end up being solved and covered as train trajectories. It is worth noting that the unsolved question set was mainly composed of low quality synthetic questions, for which the answer was wrongly annotated.
+
+——
+
+The process is evaluated using several small models as the policy models, with Qwen2.5-Math-7B used as the base model finetuned into the PPM. Those models are compared to Frontier LLM and other open source models, both specialized in math and generalist. The approach is also compared to simple MCTS with a larger Preference Model on base math model, not finetuned.
+
+The results are astounding. With only 2 7B models, or even a 3.8B paired with a 7B (this is the case with phi3 used as the base), o1-mini’s mathematical performances are reached with at most 16 to 64 trajectories sampled. The models blow Claude 3.5 Sonnet out of the water. 
+
+Scaling up test-time compute even leads to higher results than performing Best-of-N with even an open source 72B model!
+
+Ablations confirm the authors’ representation choices: amount of rounds, step-by-step reasoning, use of a PPM for trajectory selection…
+
+Overall, a very interesting work over search with results that show a very bright future for that direction, especially considering that it could have even been done for the mathematical Kaggle that took place a while ago and originated the Numina Math Models. 
+
+Actually quite hard to sum up, I recommend the read here considering the amount of details I cut to make the post, especially regarding their special MCTS process :)
+
+Work is also going to be open-sourced at the GitHub shared within the paper. Hyped!

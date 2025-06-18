@@ -1,0 +1,33 @@
+## Read 155: « InfiGUIAgent: a Multimodal Generalist GUI Agent with Native Reasoning and Reflexion », by Liu et al from Zhejiang university 
+
+https://arxiv.org/pdf/2501.04575
+
+The authors of this paper create a new small agent, from a Qwen2-VL-2B, able to perform reasoning with high level of performance on generic GUI benchmarks.
+
+More details below ⬇️ 
+
+——-
+
+Basically the authors create a 2 stage finetuning method: the first is made to amplify the model’s ability at understanding GUI-related tasks, the second is to enable it to reason and perform actions.
+
+——-
+
+Stage 1 dataset creation is pretty simple:
+- Take common GUI and Grounding Datasets from the Web to make the model better on screen understanding
+- Take QA, General Knowledge and Tool Use datasets to keep on improving the model’s generalist capacities
+
+One note: coordinate system is remapped to [0, 1000] from upper left to bottom right in X and Y axis, with XML reference tags being used to highlight spatial annotation. Ambiguous answers or outlier answer formats are also rewritten using Qwen2-VL-72B.
+
+——-
+
+Stage 2 Data is a bit more refined. The goal is to natively train an agent for reasoning. Therefore, it receives the current screen, the history of actions and the task at hand. From these, it is asked first to strategize, and then to write reasoning on next chosen action. Afterwards, it inputs the action and an expectation on how the screen should look like.  Specific XML tags are used for action call and outputs. Once the action is performed, said expectation is asked to be reflected upon and the strategizing/tactical execution is done once more, until the task is finished.
+
+Actions were categorized and standardized in a list. The whole dataset was constructed using Qwen2-VL-72B on several images. Tweaks were made in for each reasoning parts to be covered, with varying inputs: refer to the paper for all the details here. Overall, 45k samples were used.
+
+——
+
+Once the datasets were created, a Qwen2-VL-2B was fully finetuned on all of it. Model was evaluated on the ScreenSpot benchmark, on which it beats frontier VLM and on average current strong GUI pipelines ; and on the AndroidWorld benchmark, which is a tough nut to crack but on which the model performs slightly better than the others.
+
+——
+
+Quite the interesting read overall, might cover a few more of those considering they’re the hot topic atm: but it’s honestly crazy what we can do with only 2B models!

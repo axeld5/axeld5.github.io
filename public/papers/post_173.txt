@@ -1,0 +1,21 @@
+## Read 173: « Transformers without normalization », by Zhu et al from Meta FAIR
+
+https://arxiv.org/pdf/2503.10622
+
+The authors of this paper work around a way to get rid of Layer Normalisation and replace it by something less computationally expensive.
+
+To do so, they first observe LayerNorm in action for several layers. They note that the behavior of the LayerNorm follows an S curve, one that actually resembles to the curve of a tanh:
+- Linear for values close to 0
+- Squashing extreme values into less extreme points
+
+Which is why they propose a dynamic tanh (DyT) in replacement, of the form: gamma*tanh(alpha*x) + bêta
+
+Where:
+- gamma and beta are learnable vectors the dimension of x
+- Alpha is a learnable scalar
+
+They test it for vision, audio and language related trainings. In all cases, the DyT converges just like with LayerNorm, and reaches similar levels of performance for faster compute. Ablations reveal tanh is the best activation function (sigmoid and hardtanh are worse) and that the scaling alpha is good for performance.
+
+It is worth noting that on Language Models, things change a bit: while for vision and audio there’s no need to initiate alpha in a specific way, it changes the performances of the LLaMa that was trained on to do so. However this might be a LLaMa-related thing: using this method with 2025 datasets and LLM training practices might yield different results.
+
+A promising paper to say the least. Anything that accelerates training and inference with no harm in reliability is great to take. :)

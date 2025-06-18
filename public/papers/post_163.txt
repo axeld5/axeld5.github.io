@@ -1,0 +1,34 @@
+## Read 163: « UI-Tars: Pioneering Automated GUI Interaction with Native Agents », by Qin, Ye et Al from ByteDance
+
+https://arxiv.org/pdf/2501.12326
+
+The authors of this paper present UI-Tars, a suite of open source models at 2B, 7B and 72B size that were tuned for Computer Use with very, very high performances.
+
+How do they pull that off? With a finetuning process that heavily relies on carefully crafted data.
+
+First of all, the authors build an SFT set for several perception related tasks:
+1- Describing all visual elements within a screenshot in type, visual description, relative position within the screenshot, and element function
+2- Captioning an UI screenshot
+3- Captioning a state transition sample: given one sample and its next state, tell what led from the sample to the other image
+4- Question answering regarding GUI interfaces: interface comprehension, image interpretation, element identification and relational reasoning
+
+Screenshots are collected all over the internet. Data is logged in format (screenshot, element box, element metadata). Set of Marks prompting is also used sometimes during finetuning, which corresponds to highlighting relevant elements with markers to assist the model. This allows the model to have increased knowledge of GUI-related environments.
+
+Then, we’re looking into modeling web trajectories and improving grounding. To improve grounding abilities, the authors construct a dataset composed of a screenshot and all of its composants. The model is tasked to output the centroid of the bounding box of the element, given its description.
+
+Web trajectories are modeled using first actions and observations. The set of actions is fixed, and different datasets get to enjoy normalization of their actions to generate proper trajectories. While it is not entirely clear within the paper, I think given their framework that they train the model on behavior cloning.
+
+Afterwards, the authors go deeper from the basic SFT approach to include more reasoning.
+
+What they do to begin with is that they curate MINT and OmniCorpus (image text interleaved pretraining datasets) to extract a quality dataset of 6M GUI tutorials. This forms a « positive set » of samples, while random samples form a « negative set ».
+
+Afterwards, another innovative approach is performed to boost trajectories.
+What they start by doing is « ask model to generate thoughts for each step based on observations, without knowledge of the chosen action yet ». This allows to minimize false positives. However, it’s worth noting that you still need a thought that leads to the right action: to do so, the authors generate thoughts until getting one that fits.
+
+Several templates are done to make the model go through different reasoning patterns, like for instance task decomposition (breaking the task for step by step reasoning) or reflection (studying and going back on the failures of the model).
+
+But it does not end here! What the authors do next is filter the traces to remove useless steps or steps badly scored by VLM/human. This allows for finetuning. 
+
+To go even beyond, they annotate samples for « reflection tuning ». This corresponds to basically writing a thought and action that corrects an agent’s mistake. Annotators are also asked to create error correction samples, where they outright prevent the error for happening. This process seems to be done manually. The trajectories which are corrected can then be used for SFT.
+
+However, it’s interesting to note that the authors had erroneous choices. This means they can perform DPO ! Prefer the trajectories which win, say no to the ones that lead to loss. This is the last process of tuning that they perform of the whole pipeline. Quite a dense training sequence! In the end, the authors train Qwen2-VL models over 50B of tokens.

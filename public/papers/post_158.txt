@@ -1,0 +1,27 @@
+## Read 158: « Learning to generate unit tests for automated debugging », by Prasad, Stengel-Eskin et al from UNC Chapel Hill
+
+https://arxiv.org/pdf/2502.01619
+
+The authors of this paper finetune an LLM to generate relevant unit tests to attack a buggy code.
+
+What they do regarding model training dataset creation:
+1- Take code problems
+2- Generate solutions
+3- For each buggy solution, generate tests that the buggy code fails
+4- To improve model training, add CoT explanations to the generate training test, to explain the supposed output
+
+Once the model is trained with this method (labeled UTGen), to improve code correction, the authors leverage:
+1- Self-Consistency on the outputs of the tests to make sure they are good
+2- Verification of the corrected code using the test again so that when debugging, a code that is « corrected » does not end up worse
+
+UTGen is tested on Llama3-8B-Instruct, Llama3.1-8B-Instruct and Qwen2.5-Coder-7B. Models are LoRA’d on 30K samples generated using python samples of the TULU dataset. Additional training details can be found within the paper.
+
+What’s great about UTGen is that it substantially increases the ASR of the small models to generate adversarial tests, and to generate good outputs related to the tests it generates. Unit Test Debugging also seems to improve Model average performance on common benchmarks, as long as the model can output relevant tests.
+
+Other things of note when comparing to frontier models:
+1- The UTGen base prompt is really good, as it increases very much the relevance of adversarial tests for frontier models
+2- UTGen trained models are not up to frontier models yet
+
+Additional studies also reveal the importance of self-consistency on the outputs of the tests to make sure the debugging process goes well, and that generating a lot of UTs can go a long way in improving debugging. Adversarial tests are also a lot better than simply generating tests for improving model performance.
+
+Overall, quite the interesting paper. There’s a lot of value to be found in test case generation imo, so eager to see how this field evolves.

@@ -1,0 +1,47 @@
+## Read 164: « Cluster and Predict Latent Patches for Improved Masked Image Modeling », by @TimDarcet et al from @AIatMeta
+
+https://arxiv.org/pdf/2502.08769
+
+The authors of this paper present a novel method to perform masked image modeling.
+
+Basically MIM comes from the following question: « Masked language modeling works really well for LLM pretraining. How do we reproduce that for images? ». Turns out that it is not at all a trivial task.
+
+Latest research over the topic uses some sort of teacher-student self supervised learning approach. A model, the student, is learning in contrast to its teacher, which is actually an exponential moving average of the student. The student is taught to match prediction with the teacher… but this process suffers from poor stability, as illustrated from DinoV2, which requires multiple loss functions to hold.
+
+Here, the goal with the CAPI is to make an SSL method as stable as possible with as little loss complexity as one can.
+
+What’s being done is the following:
+- You still have the student and the teacher (still an EMA of the student)
+- But this time, the predictions differ! The teacher outputs go through an online clustering process, which assigns to an input soft cluster assignment logits
+- The student outputs only the logits of the soft cluster assignation
+- Student logits are compared and backpropagated wrt the teacher logits
+
+Now, where does the « masked image modeling » come in ? What happens is that the student does not receive the full image: it only receives a portion of patch tokens (obtained after a patch embedding layer applied after the encoder), and cross-attends to those along 16 learnable register tokens to perform the MIM over dropped patches.
+
+The online clustering is a bit peculiar as well:
+1- it’s somewhat updating a matrix C, that is used as a linear projection of the normalized outputs of the teacher to get soft assignment logits
+2- soft assignments are then obtained through softmax on those outputs with temperature tau
+3- sinkhorn-knopp algorithm is applied on the matrix C to obtain another matrix yielding another set of logits, for which the distribution of tokens over the cluster is near uniform
+4- those logits then yield another set of assignment, computed with another temperature tau_prime
+
+The matrix C is then learned and updated during training by minimizing the cross entropy between the sets of assignments in step 2 and 4.
+
+The goal of the SK algorithm is to push the C matrix to a near uniform distribution -but not quite- in order to stabilize training and avoid that the model leverages positional embeddings to make its decisions.
+
+The authors then proceed by training a 300M model on different datasets, to illustrate different properties: imagenet-1k as baseline, 22k for scaling, places205 for less object centric data, and lvd142m, which is a curated dataset used in SSL foundation models.
+
+Implementation details can be found in the paper.
+
+For classification evaluation, the authors train an attentive pooling to extract a global vector which is then used as input to a linear layer. For segmentation evaluation, the authors train a lightweight classifier on top of frozen local features.
+
+Base performance show the 300M model is very promising. Beats all but DinoV2, which is a 1.1B model… while having interesting scaling properties. And actually reaches DinoV2 perf in segmentation. Interesting.
+
+Ablations reveal that:
+- splitting the encoder from the predictor head and using cross attention in MIM is the better choice
+- applying a shift to the image and asking the model to predict the new « edges » works better than other methods
+- CAPI loss is stronger as standalone loss than other SSL losses
+- registers are very relevant to improve results
+
+Rest is validation of hyperparameters.
+
+What is even more interesting with CAPI is the feature maps though. Highly interpretable feature maps post PCA, which almost look like a SAM algorithm was applied on the examples of the paper!

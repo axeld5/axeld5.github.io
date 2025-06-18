@@ -1,0 +1,49 @@
+## Read 172: « SigLIP2 : Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization and Dense Features », by Tschannen, Gritsenko, Wang, Naeem, Alabdulmohsin, Parthasarathy, Evans, Beyer, Zhai et al from Google Deepmind
+
+https://arxiv.org/abs/2502.14786
+
+The original SigLIP’s strength came from remapping the contrastive loss between text and image embeddings as some sort of binary classification loss based on the matching of the text-image pairs via logistic regression.
+
+There has been lots of advances in Encoder Modeling by then, which the authors aimed to leverage. A dive on it all below ⬇️ 
+
+——
+
+First, new loss functions on top of the base SigLIP one.
+
+The first loss that was added was the LocCa loss. Append a decoder after the image encoder, and make it work on captioning and bounding-box related captioning (with the boxes either before or after the caption). Boxes are extracted from the training dataset applying detectors on the captioning texts. This loss is applied through all the training along the SigLip loss.
+
+The other two losses that make their appearance are DINO-style losses. They start with initializing the « Teacher network » as an Exponential Moving Average of the network being trained, called the « Student Network ». The two losses are as follows:
+- First one is local to global, derived from the SILC paper. Teacher gets full image, student gets a crop: representations are compared and a difference function based on those representations from the loss.
+- Second one is some sort of Masked Image Modeling, derived from the TIPS paper. 50% of the embedding image patches are masked out, and the student is trained to match the features of the teacher at masked locations. Loss is at patch feature level rather than global image-level here.
+
+These two losses are applied at around 80% of training, with different scaling factors for both of them, and another multiplier based on the size of the model.
+
+——
+
+Now, the question of adapting the trained SigLIP2 to different resolutions.
+
+First method is a bit different from the common one, but still quite simple: take the 95% checkpoint (with seq len 256 and patch size 16), resize positional embedding, resume training at target resolution. It’s different because the approach of Finetuning for resolution yielded apparently bad results.
+
+The other approach that was executed was NaFlex:
+1- Resize input image so that new height and width are multiple of patch sizes while minimizing distortion ratio and producing a sequence length of at most the desired target sequence length.
+2- Checkpoint is taken this time at 90% of training, and then the model is trained on this aspect preserving resizing with seq len that can go from 128 to 1024.
+
+—-
+
+In order to increase performances of the smaller models, the authors pull out the ACID method.
+
+Basically, it’s distillation through using the teacher model as an example evaluator rather than distilling through teacher/student difference.
+
+The reference teacher model here is SigLIP2 So400m, but finetuned on 1B examples extracted from a high quality dataset, using the JEST method (using the scores from ACID to create a training dataset sampling method instead of active data curation).
+
+——
+
+Now, regarding the results for SigLIP2 :
+- SoTA as text-image encoder for almost all sizes on classification use cases
+- NaFlex variant is slightly stronger for retrieval, slightly worse for other tasks
+- Better than AimV2 and SigLIP as vision encoder for VLM 
+- SoTA as text-image encoder for dense prediction tasks
+- Stronger than SigLIP for open-vocabulary segmentation and detection
+- Stronger than all except LocCa on referring expression comprehension
+- Consistently stronger than SigLIP for geographically diverse object detection tasks, geolocalization and landmark localization
+- Lower gender bias on item / gender association than SigLIP regarding random images

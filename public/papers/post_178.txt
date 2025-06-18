@@ -1,0 +1,37 @@
+##  Read 178: « AgentRewardBench: Evaluating Automatic Evaluations of Web Trajectories », by Lù, Kazemnejad et al from McGill and Mila Institute
+
+https://arxiv.org/pdf/2504.08942
+
+The core idea of the authors of the paper is to study how good our current models are at evaluating the success of an attempt at solving a web-related task.
+
+The authors make the models work as a judge, having access to the complete trajectory and the DOM with an accessibility tree and/or the page screenshot.
+
+The model must reason and answer the following questions:
+1- Is the sequence of actions successful with respect to the goal?
+2- Did the agent perform unnecessary actions that could have unintended consequences?
+3- Did the agent perform the task optimally?
+4- Did the agent run into a loop of actions that did not help in advancing the goal?
+
+Four models were tested: Claude 3.7 Sonnet, Gpt-4o, Llama 3.3 70B and Qwen 2.5 VL 72B. Five benchmarks were aggregated for this study: WebArena, VisualWebArena, AssistantBench, WorkArena and WorkArena++.
+
+A total of 1302 trajectories were collected from all 4 LMs and annotated.
+
+The LMs are then asked to answer the four previously mentioned questions, and the benchmark focuses on Precision regarding success assessment. The authors claim this is because what interest them is to avoid false positives in order for those models to be useful in Rejection Finetuning or to identify positive trajectories for RL algorithms.
+
+They compare as well their method with other success assessment methods with either GPT-4o or Llama 3.3 70B under the hood, which they outperform.
+
+However, whether it’s with the images or not, none of the four evaluated models manages to reach above 70% precision yet. This means there is progress to be done on that area!
+
+Other things that are studied:
+- Having both the accessibility trees and images overwhelm Gpt-4o-mini as a judge and slightly lower its performances ; this was to be expected due to the 200k context length of the model
+- Rule-based and Model as a judge differ from Human Annotation : Model as a judge rates too high, rule-based eval rates too low. (Interesting, likely requires to go deeper here)
+
+Authors then finally analyze common error causes. They find that quite the errors happen due to:
+1- Grounding mismatch between content on screen and agent output: judge trusts the agent has gone in the right direction, and ends up being wrong
+2- Misleading agent reasoning that confuses the judge model into believing the task is done
+3- Near but not full completion of a task that is interpreted as full by the judge
+4- Task being completed by the agent, but the feedback is failed to be given to user ; the judge interprets that since the task is done, it was successful - but fails to pick up that the model made a wrong reporting
+
+Overall, quite the promising benchmark that feels it could lead us to really interesting results when the models get better.
+
+And since the models got better, I think it would be great to try it on the Llama 4, GPT-4.1 or the Gemini 2.5 Pro/2.0 Flash on which the increased context length might yield to stronger performances!

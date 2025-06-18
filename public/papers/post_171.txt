@@ -1,0 +1,19 @@
+## Read 171: « START: Self-taught Reasoner with Tools », by Li, Xue et al from Alibaba Group
+
+https://arxiv.org/pdf/2503.04625
+
+The main idea behind the authors of this paper is that it is possible to tune QwQ so that it can leverage a code interpreter to solve Math and Code problems.
+
+Thus, they construct a training set of 50k samples using high-level math problems and high-level code problems. They then establish a Hint taxonomy for both math and code related problems. Those hints can be inserted after « Alternatively » or « Wait » tokens, or right before the end of the reasoning.
+
+Each of those hints path the model towards a specific reasoning track, along a Python interpreter that it is asked to use. Model generates python code, gets the output, and keeps on its reasoning afterwards.
+
+First, the authors create a subset D_seed using samples where QwQ succeeds with the python interpreter and hints but fails without. This yields 12k samples with math and code data, and the finetuning of QwQ yields START-0.
+
+Afterwards, rejection sampling is performed on the base dataset using Start-0 to create D_Start, a dataset of generated answers (1 per question). They finetune QwQ once again using that dataset.
+
+This yields to an overall notable improvement of QwQ over all relevant benchmarks (~+8% everywhere), with improved capacities regarding test time scaling as well.
+
+Quite the interesting paper overall, but I think there’s much more to uncover.
+
+Page 3 of the preprint mentions Start-RL, which is nowhere to be found on the paper. It’s likely the next topic, which makes sense. Tool use is only relevant as long as the model finds the right answer, it’s good to SFT to drift the model towards it, but I am unsure why they just didn’t RL from START-0. Likely their next step. To be continued :)

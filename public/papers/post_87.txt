@@ -1,0 +1,29 @@
+## Read 87: Accessing GPT-4 level Mathematical Olympiad Solutions Via Monte Carlo Tree Self-refine with Llama-3 8B: A technical report, by Zhang et al from Shanghai Artificial Intelligence Laboratory
+
+https://arxiv.org/pdf/2406.07394
+
+The authors of this paper introduce a Monte-Carlo Tree Search like method to enhance model generation. They call it Monte-Carlo Tree Self-Refined, shortened as MCTSr.
+
+Their method is based solely on prompting the model and does not modify its weight, yet greatly enhances the results.
+
+How?
+1- Generate a root node through naive answers or a dummy one
+2- Use a value function Q to rank answers that were not expanded, select the best greedily
+3- Optimize answer through generating a feedback, and then exploit it
+4- Compute the Q value of the answer
+5- Update value of parent nodes
+6- Identify candidate nodes for expansion, and use UCT formula to update all nodes for iterating again
+7- Iterate until max steps are reached
+
+Value function Q is actually prompting the model to reward its answer. Model is prompted several times and its answers are averaged. Backpropagation and UCT formulas can be found within the paper.
+
+The authors then evaluate 4 rollouts and 8 rollouts MCTSr on a Llama-3 8B and compare it to GPT-4, Claude 3 Opus and Gemini-1.5 Pro on mathematical problems. 
+
+They first find out such sampling greatly increases performances on both GSM8k and MATH datasets, reaching Frontier-models level of performances in GSM8k (still below in MATH, but greatly improved). 
+
+The authors then evaluate the models on harder benchmarks. MCTSr improves model performance across all of them. They notice that on Math Odyssey, the 8-rollout MCTSr is on the level of GPT-4 !
+
+Prompts can be found within the appendix.
+Code is open-sourced at: https://github.com/trotsky1997/MathBlackBox
+
+Personal Thoughts: While this research remains on preliminary stage, the results are quite impressive for results they get only by prompting. Still tells us there’s a lot of stuff to discover even solely with LLMs!

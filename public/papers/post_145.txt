@@ -1,0 +1,33 @@
+## Read 145: « Clio: Privacy-Preserving Insights into Real-World AI Use » by @AlexTamkin, @MilesMccain et al from @AnthropicAI
+
+The authors of this paper present CLaude Insights and Observations (Clio), a plateforme made to observe and analyze the use of Claude.ai. This allows them to gather insights and help safety related-teams improve their algorithms and monitor critical periods (like elections).
+
+Quick explanation of how Clio works:
+1- First, for each conversation, a certain amount of features are extracted -namely summaries-
+2- Summaries are then embedded and clustered
+3- Clusters are then described using Claude on sample examples, and said clusters are then clustered into higher level clusters
+4- And all of this is used to create the CLIO interface.
+
+A focus was done regarding privacy: PII are asked to be ignored when prompting Claude for synthesizing, small clusters are discarded, and clustered summaries are reviewed to make sure PII are removed.
+
+Here are now the top categories of Claude.ai use:
+1- Web dev
+2- Help for content creation
+3- Academic research & writing assistance
+4- Education & career development assistance
+5- Data scientist tasks
+6- Business strategy questions
+7- NLP tasks & translation
+8- DevOps tasks
+9- Digital Marketing & SEO optimization
+10- Data Analysis tasks
+
+An interesting finding is that some clusters are disproportionately represented by certain languages: for instance, « analysis and creation of manga-related projects » mainly contains a way higher amount of Japanese chats compared to other languages. 
+
+Uses for safety are also interesting:
+- Flagging clusters of risks (mainly users that breach Claude Usage Policy)
+- Identifying common false positives and negatives of Safety Flaggers to improve user experience and detection of harmful prompts.
+
+Appendix contains more details, notably all the prompts and procedures to evaluate the performance of the architecture to construct Clio.
+
+Overall a very interesting work to share, especially regarding the top uses of Claude! Was predictable that Dev-Related tasks & Content Creation would be very very high, but it’s really interesting to see they occupy most if not all of top ten for Claude use. Would love to see that reproduced by OpenAI : I honestly think the results would actually be different!

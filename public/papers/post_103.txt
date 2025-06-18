@@ -1,0 +1,31 @@
+## Read 103: On scalable oversight with weak LLMs judging strong LLMs, by @ZacKenton1, @noahysiegel et al from @GoogleDeepMind
+
+https://arxiv.org/pdf/2407.04622
+
+The authors of this paper investigate the following: can weak models perform a sort of critical thinking to exploit information from stronger ones?
+
+The strong model of this paper is Gemini Pro 1.5. The weaker models are Gemma 7B, Gpt-3.5, Gemini Pro 1.0, and Gemini Pro 1.5.
+
+The authors study 3 types of QA tasks: extractive, where the model can extract information from an article provided with the question ; closed, where the model needs to rely on its internal knowledge to answer ; and multimodal ones, where the model needs to be able to perform multimodality.
+
+The paper opposes different forms of argumentation :
+- Assigned Consultancy : Strong Model is given an answer and tasked to defend it, whether it is correct or not. Judge has to probe the model and provide an answer afterwards. In extractive tasks, only the consultant has access to the article.
+- Assigned Debate : Two strong debater models need to convince the judge over their different assigned answers.
+- Open Consultancy : Consultancy, but the model does not have an assigned question.
+- Open Debate : A protagonist is set to be able to choose their answer first, and faces an antagonist that picks another answer, which is the furthest from the protagonist’s one.
+
+Assigned Consultant, even with a stronger model, does not yield to an increased result in average compared to just asking the weak model, which could be explained by the stronger model being convincing even with the wrong answer.
+
+Assigned Debate yields to a stronger model in the extractive case (presence of an article).
+
+Open Consultant yields much better results than Assigned ones. When the strong model picks the right answer, it convinces even the weakest model at least 80% of times. However, when it picks the wrong answer, it is also very convincing, which is emphasized by previous results on Assigned Consultancy. It brings a boost on performance average, for any level of models. 
+
+Open Debate yields different results. On average, it will yield to some degree of performance increase, but usually less than Open Consultancy. What’s interesting for debate is that the antagonist effect means that when the protagonist is wrong, the judge can still choose the right answer… unlike when the consultant was wrong.
+
+Models are also evaluated as debatters one against the other, with a Gemini Pro 1.5 judge choosing. Pro 1.5 wins most of the time, and elo is increasing with model average performance. In fact, Pro 1.5 is elo-positive, even when it is wrong! However, authors do warn about self-preference bias.
+
+Authors show several directions of improvement: most direct one is to try looking into a specific training of debater and consultant models. Lots of other ideas are suggested as well, like asymmetric tool access between consultant/judges, human judges, or other scalable oversight protocols.
+
+Appendix contains prompts and lots of other additional details.
+
+Personal Thoughts: Quite the interesting paper to read. Funny enough you can convince weaker model to pick the right answers if provided with them, and that strong models can make for pretty good arguers! Unsurprised about this result, but it’s nice to see it confirmed. Would be interested in elo evaluation though using an independent model, like an anthropic or a meta frontier one. And even with the judges, it would be interesting to see if models do not have a bias towards their family ;)

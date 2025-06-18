@@ -1,0 +1,22 @@
+## Read 88: Sycophancy to Subterfuge: Investigating Reward Tampering in Large Language Models, by @CarsonDeni36025 et al from @AnthropicAI
+
+https://arxiv.org/pdf/2406.10162
+
+The authors of this paper tackle a specific alignment problem: what if a model was trained using RL with rewards that could lead to bad behaviors?
+
+They take a few examples:
+- If model is rewarded to be compliant with the user, then it can lead to political sycophancy or rating a bad poem way higher than it should be
+- On a tougher scale, if a model is asked to complete tasks and reward is based on a checkbox being filled, model can actually just fill the checkbox instead of doing the task (with two scenarios, one where human says they are upset if checklist is not complete, and one where human says the model cannot touch the checklist)
+- On an even tougher scale, if the model is given access to its reward function, it can modify it to advantage itself
+
+Based on what was written above, the authors create 5 scenarios of gradual difficulty. They train a model independently on each of those scenarios using Expert Iteration, excepted on Reward Tampering, which is the most critical that they use to evaluate the misaligned model.
+
+What they demonstrate is that the harder the scenario the model is trained on, the higher the Reward Tampering probability is. Helpful only model never tampers, but all other models do to some degree, with the model trained to alter the checklist despite being told not to having the highest tampering scores.
+
+What they also find is that this behavior can be trained away, but only up to an extent. Models trained to find loopholes will still have a possibility to tamper their reward function, albeit a lower one.
+
+The authors however note that the models that do tamper their rewards do not do it often. In fact, it’s a very small amount of experiments for which those models do tamper it, even without sycophancy removal. However, the possibility is there.
+
+Additional details and results can be found within the appendix.
+
+Personal Thoughts: An actually frightening paper which means sleeper agents models can actually be more subtle than what we think, and which could highlight a need for model alignment.

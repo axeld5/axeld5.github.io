@@ -1,0 +1,25 @@
+## Read 102: Proactive Detection of Voice Cloning with Localized Watermarking, by @RobinSanroman, @pierrefdz et al from @AIatMeta
+
+https://arxiv.org/pdf/2401.17264
+
+The authors introduce a method to train a pair of models to produce an audio watermark and detect said watermark.
+
+Their training pipeline has specific peculiarities. 
+
+First, the watermark generator generates a waveform that will be added to the audio signal. It is an encoder-decoder model derived from EnCodec’s design.
+
+To ensure a globalized watermark and robustness of the detection method against editing attacks, several augmentation strategies are applied, using either audio silencing or editing techniques. 
+
+The detector then outputs a score between 0 and 1 for each time step of the audio sample. It is an encoder model with a transpose convolution at its end, followed by a linear layer to output the scores.
+
+Several loss functions are used to train the model, to control both watermark generation and detection. What is peculiar here is the additional use of a loudness based loss! This loss exploits the fact that the human auditory system fails perceiving sounds occurring at the same time at the same frequency range… making it possible for the watermark generation process not to be constrained in excessively low loudness values, while still having  the watermark with small enough intensity for it to be inaudible.
+
+Specific training details can be found within the paper. Evaluation processes show the method is better in most use cases than WavMark, another audio watermarking method. It is better on average in Watermark Detection, Localization, and attribution, while running much faster. Audio quality is expected to remain well enough for the human ear not to be affected by the watermark.
+
+The authors also test on attacking the model adversarially, depending of the degree of availability of the attack to the detector. They find that the lower the audio quality, the easier it is to attack the detector, but that it still remains robust to most attacks outside the white-box domain. Results are especially low for black box attacks and gaussian noise applications, which are more common to be exposed to.
+
+Additional results and information about the whole process can be found within the detailed appendix of the paper.
+
+Code is available at the following github page: https://github.com/facebookresearch/audioseal
+
+Personal Thoughts: One of the first audio papers I cover, and one of the first watermarking ones as well, and it was quite a pleasure to do so! Well written paper, and very interesting results as deepfakes become easier and easier as time passes by. :)

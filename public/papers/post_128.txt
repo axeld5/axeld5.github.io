@@ -1,0 +1,19 @@
+## Read 128: « NL2OR: Solve Complex Operations Research Problems using Natural Language Inputs », by Xi et al from Microsoft
+
+https://arxiv.org/pdf/2408.07272
+
+The authors of the paper cover OR problem solving using an LLM to put the problem into yaml form for a solver to use.
+
+Their pipeline goes as follows:
+1- Convert query into yaml file through few-shot examples
+2- Post-process yaml file to make sure it was generated with conformity to the solver ; fix mistakes that are due to the process
+3- Yaml is then used to create the OR model to solve the problem 
+4- An LLM is then used to generate a database schema to store the answers of the OR model and present them in an easy format for retrieval
+
+The authors test this pipeline on 30 test problems, spanning over 9 different applications. Gpt-3.5 and 4 were tested at the time of the study.
+
+They find that in at most 30s per problem, Gpt-4 solves most of their problems in at worst 5 attempts. Gpt-3.5 solves at best 73% of their problems under 5 seconds when given 5 attempts.
+
+The authors lastly test their pipeline for editing of OR models, over 15 samples, which are very well solved by GPT-4.
+
+Personal Thoughts: While prompts and datasets would be nice to have, previous research (Optimus for OR) does help make the results credible. There might be interest in using LLM to help formulating or even solving OR problems, and if gpt-4 and gpt-3.5 were already good, I’d suppose Claude 3.5 would destroy the problems in that study. Scaling it and having a taxonomy of easy vs hard problems to test limits of what LLM can actually tackle in OR would be great, to check how much help they can be for modeling real life OR problems.

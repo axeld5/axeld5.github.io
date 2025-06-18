@@ -1,0 +1,23 @@
+## Read 134: Qwen-2.5-Coder technical report, by Hui, Yang, Cui, Yang et al from Alibaba Group
+
+https://arxiv.org/pdf/2409.12186
+
+Authors developed several sota (still to this day!) code models from 0.5B to 32B.
+
+Regarding training data:
+- Code data was collected from github
+- Text data from a heavily filtered common crawl
+- Math data from multiple math-related corpora
+- Additional code data was generated using CodeQwen-1.5
+- Best data mix was empirically 70% code - 20% text - 10% math
+
+The training process is as follows :
+- Take Qwen-2.5
+- Perform pre-training of 5.2T tokens of individual files: both next-token pred and FIM are performed
+- Extend context length up to 128k, and train on overall 300B tokens of repo-level code data
+- Generate SFT data from the code repo, first using low quality samples then ending with high quality ones ; FIM is also done in a much lower proportion, constructed exploiting abstract syntax trees (tens of millions of samples were used)
+- Apply DPO : use a verifier to check code correctness, if both codes pass all tests, llm-as-a-judge concludes
+
+Decontamination is done before evaluating the models, and the results are huge. Basically SoTA on all code benchmarks, on all languages, for all size levels. Even better : 14B and 32B reach frontier-level performance on code benchmarks!
+
+An incredible read, for an often overlooked models in benchmarks. Tbh, interested to see the Runner H model with Qwen-2.5-Coder-3B-Instruct as the LLM, considering it does show better results than their own trained one!

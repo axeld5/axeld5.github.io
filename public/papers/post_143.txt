@@ -1,0 +1,31 @@
+## Read 143: « Apollo: An exploration of video understanding in Large Multimodal Models », by @orr_zohar et al from @AIatMeta
+
+https://arxiv.org/pdf/2412.10360
+
+The authors of the paper present a review of video-language modeling and build their own Video-Language Models from their findings.
+
+First, they start with a view from up above:
+- They build their own Benchmark, ApolloBench, built from aggregating and cleaning various video benchmarks. 
+- Afterwards, the authors train Large Multimodal Models using the Qwen2 series and find that there is some good correlation within the smaller 0.5B’s outputs up to the larger 7B’s, outlining according to the authors that designs can be studied at lower size then scaled.
+
+Once those preliminaries were done, the authors studied design choices for large video language models (using a Qwen2.5 3B as base LM and exploiting their previous finding to infer scaling) and reported the following:
+1- frame per second (fps) sampling is better to study videos than uniform sampling
+2- The good range between FPS and token per second created from the resampler is between 8 and 32 tokens per frame
+3- The best single encoder for VideoLMM is SigLIP-SO400M
+4- Performances of the framework are increased when the SigLIP is paired with another encoder, specialized for videos (thus taking into account the time component): InternVideo2
+5- Perceiver Resampling yields the best performance as Resampling method after Video Frames being encoded
+6- Adding text or learnable tokens in between the video tokens yields better performance. Authors had that timestamping the video tokens yielded the best performance on ApolloBench.
+
+Afterwards, the authors examined training methodology for video-language models. Here are their findings:
+1- 3 stage finetuning with training resampler first on video and image data, then encoders & resampler only on video data, then resampler & LLM on a mix of text, image and video data yields best results.
+2- Training the video encoders with a data mixture that is not video-only harms performance.
+3- Regarding the last phase, data mixture plays an important role: video must be prevalent, and textual data must be present but in a small amount (~10%-ish is fine, but not more nor less)
+
+Once all this is set, the authors cover their training of the 
+Apollo model suite. Several open source datasets were mixed, and corpus was enhanced with multi-turn conversations over videos using Llama 3.1-70B. Overall, it was an amount of ~4M samples used. 3 models are trained using Qwen-2.5 as bases: 1.5B, 3B and 7B.
+
+Model performances are basically really, really good. Each size is the SotA at the size, and is at the level of the SotA of bigger models (1.5B is current 3B level, 3B is 7B, and 7B ranks better than some 34B…), which is quite impressive!
+
+Additional details, model parameters and model training details can be found within the appendix.
+
+A really interesting paper! It feels super good to have a review of the video landscape, which is done very qualitatively and allows a good entry into the domain. Very worth the read!

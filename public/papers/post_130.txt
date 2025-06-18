@@ -1,0 +1,28 @@
+## Read 130: « SwiftBrush v2: Make your one-step diffusion model better than its teacher », by @bomcon123456 et al from VinAI research
+
+https://arxiv.org/pdf/2408.14176
+
+The authors of this paper provide a method that exploits SD-Turbo and SD v2.1 to create SwiftBrush v2, a model that just like SD-Turbo performs only one denoising step, but which reaches performances at the level of the much stronger SD v2.1.
+
+The method begins with their loss, using Variational Score Distillation (VSD). Essentially, this loss exploits two teacher models: a frozen teacher, and a teacher LoRA finetuned using diffusion loss during the finetuning process, in order to assist the student model.
+
+This loss allowed them to create their first model, SwiftBrush, which was already comparable to SD-Turbo.
+
+To go further, a few steps helped. 
+
+The first one was to initialize the weights of the student model using SD-Turbo’s.
+
+The second was to increase the training dataset’s size, using another 2M prompts from the LAION dataset. This exploits a property of the VSD-based training: it only needs text prompts to work, which allows the training to remain efficient even with a doubled train set.
+
+This managed to improve performances, but the authors also decided not to use only VSD-based training.
+
+In order to improve the coherence between textual inputs and visual outputs, a CLIP loss was added. To account for the special training, ReLU clamping and dynamic scheduling were added to the loss. Due to available resources, SD’s VAE was also replaced by TinyVAE, a compressed version of itself that still keeps essential properties, and the VSD+clip student model was trained through LoRA. This was also key in improving results.
+
+The final improvement was the use of model merging. The VSD+clip LoRA-trained student model was merged with a VSD fully trained model.
+
+This was the last step required for SwiftBrush to get to its v2, and outperform its SDv2.1 teachers.
+
+Additional results and details can be found within its paper and appendix.
+Evaluation Code is meant to be open sourced at: https://github.com/vinairesearch/swiftbrushv2
+
+Personal Thoughts: Great paper to read. Seeing a win from distillation is really interesting. Am wondering when we will see more distillation abusing papers from big LLM companies, am feeling like there’s a gold mine waiting to be discovered here. :)

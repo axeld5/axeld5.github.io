@@ -1,0 +1,29 @@
+## Read 126: « Sapiens: Foundation for Human Vision Models », by @rawal_khirodkar, @psycharo et al from Meta Reality Labs
+
+https://arxiv.org/pdf/2408.12569
+
+The authors of this paper present a family of 4 models, Sapiens, ranging from 0.3B to 2B. Those models specialize in human-related CV tasks, namely:
+1- 2D pose estimation
+2- Body Part Segmentation
+3- Depth Estimation
+4- Surface Normal Estimation
+
+Sapiens is a family of ViT that were pretrained through an MAE approach to handle large resolution images. The pretraining dataset is an internal one, that they call Humans-300M dataset, crafted from 1 billion of images taken in the wild. Only images with humans were kept, and more than 200M of images contain multiple subjects.
+
+Finetuning datasets were then created for all tasks that were mentioned previously. 2D pose estimation and body part seg datasets were created through manual annotations of respectively 1M and 100K samples.
+
+Depth and Surface Normal Estimation datasets were created using 600 high resolution photogrammetry human scans, that are then blended into one of 100 possible backgrounds. Then, to create diversity, a virtual camera is set, which is translated, rotated, or which focal length is adjusted. 500k images are constructed through the following process.
+
+The family of models is then compared to the SOTA. Results are strong. Even Sapiens-0.3B holds a good position versus the literature, but the jewel is to be found in Sapiens-2B. Sapiens-2B reaches SoTA scores in all categories.
+
+Additional information that is worth noting:
+- An increase of unique human images in the human training set yields to better results, as it allows the model to capture better the diversity of our species
+- Specializing the pretraining dataset on human images is a big contributor in the results: Random Init or Pretraining on General Images yields poorer performance
+
+Key information about task-specific finetuning can be found within the paper, which I recommend the read if you are interested in this kind of topic.
+
+Github page of the project can be found here: https://github.com/facebookresearch/sapiens?tab=readme-ov-file
+
+Models are already available on huggingface, and they are licensed under cc-by-nc 4.0
+
+Personal Thoughts: Great paper to read, and models that will likely be able to do great things. Hoping it gets fully open sourced at some point, although a cc-by-nc license will already enable quite a bit :)

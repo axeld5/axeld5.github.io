@@ -1,0 +1,28 @@
+## Read 127: « TableBench: A comprehensive and complete benchmark for table question answering », by @LittleTonyXJ et al from CCSE Beijang University 
+
+https://arxiv.org/pdf/2408.09174
+
+The benchmark presented evaluates LLM capacities at exploiting tabular data to perform different tasks, related to fact checking, numerical reasoning, or data analysis.
+
+Benchmark is constructed as follows:
+- Raw table data is collected. Overall, 3681 tables over 20 different topics were gathered.
+- A sample is created through asking an LLM to create a question referring to a randomly selected table for a randomly selected task. Few shot examples are crafted for each category to help the LM generate the question.
+- An LM checks the validity of the generated question, which is dropped otherwise.
+- An answer is then generated using three different prompts, that are then aggregated to check for answer consistency. A human then passes to check the answer.
+- 30% of the negative answers are also annotated back and manually added to the dataset.
+
+Overall, this leads to a dataset, TableBench-Instruct of 19k questions, followed by the TableBench benchmark, carefully curated, of around 1k questions.
+
+To prove the capacities of TableBench-instruct to help solve TableBench, 7B-sized LMs are finetuned on the dataset to create a TableLLM version of themselves.
+
+34 Models are then evaluated on TableBench. Those models are mainly from the Llama, Qwen, Yi, Mistral, or GPT families.
+
+While the open-source models show pretty poor performance below 50B size (except Llama-3.1-8B), both the finetuned models and proprietary ones show decent performance overall (>= ~40% good answers with CoT on Table Bench).
+
+It’s worth noting that numerical reasoning is by far the hardest part, which is barely gotten right by most models, followed by data visualisation. Strong models are great at fact checking, and good at data analysis.
+
+Both tablebench and tableinstruct can be found on huggingface under apache-2.0 license.
+
+https://tablebench.github.io
+
+Personal Thoughts: Interesting benchmark to look at. There is still some progress to be made in LLM’s table understanding abilities, but it’s nice to know what they’re good at and what they’re bad at.

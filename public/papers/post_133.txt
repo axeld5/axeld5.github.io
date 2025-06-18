@@ -1,0 +1,20 @@
+## Read 133: « LLM Pruning and Distillation in Practice: The Minitron Approach », by Sreenivas, @srv_m et al from @nvidia
+
+https://arxiv.org/pdf/2408.11796
+
+The authors apply a strategy to turn a model into a smaller one with improved capabilities.
+
+They do this with Mistral NeMo 12B and Llama 3.1 8B, scaling them down respectively to 8B and 4B parameters.
+
+The method goes as follows:
+1- Finetune the original model, referred to as teacher model, on parts of the dataset used for distillation: this is called Teacher Correction.
+2- Prune the model through Depth Pruning (reducing the depth by cutting layers) or/and Model Trimming (reducing output sizes of weights).
+3- Perform distillation to retrain the trimmed model. KL divergence loss is applied on teacher and student logits for the pruned model to attempt to reach the level of the base one.
+
+This process yields three models: Llama3.1-Minitron-4B depth-pruned, Llama3.1-Minitron-4B width-pruned, and Nemo-Minitron-8B width-pruned.
+
+What’s interesting now are the results. The 4B models have impressive results over the class of small models… while the 8B Nemo-Minitron model reaches SoTA perfs for its size, beating even the base model in maths and code benchmarks!
+
+Additional ablation details can be found as well within the paper, validating the pruning and distillation approaches of the authors.
+
+Personal Thoughts: A really interesting work, that will likely pioneer distillation for LLMs. I think there’s much more to come, and even got my own personal theory on the next step. This can be big. ;)

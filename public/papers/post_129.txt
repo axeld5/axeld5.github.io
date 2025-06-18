@@ -1,0 +1,31 @@
+## Read 129: « building and better understanding vision-language models: insights and future directions », by @HugoLaurencon, @LeoTronchon et al from @huggingface
+
+https://arxiv.org/pdf/2408.12637
+
+The authors of the paper go back from the insights taken from idefics2, and add new insights thar were taken from the construction of idefics3.
+
+Section 2 to Section 4 are a complete literature review, covering the common architectural choices in VLM, training strategies and datasets, and current evaluation challenges. Recommending the read if you are new to the VLM world, or have not been up to date.
+
+What changed now with Idefics3 ?
+
+First, the models. While SigLIP-SO400M remains the backbone, the LLM was changed for Llama 3.1 8B, as it is one of the strongest small open source LLMs as of today.
+
+Another change can be found in the datasets. 5 datasets were added from the literature to the Cauldron, to help idefics3 improve in different abilities, and another one, Docmatix, was crafted by the authors for the very purpose of enhancing Idefics3’s document understanding capacities.
+
+Docmatix was constructed synthetically from the English PDFA dataset. Rows were selected from the documents, from which Q/A pairs were generated from a choice of 5 templates. Hallucinations were filtered, and the document-related contextual input from the question was replaced by the document’s image. An ablation study on Florence-2 showed the strength of Docmatix as a training dataset.
+
+Now, for the architecture. Idefics3 replaces the perceiver sampler connector between the Visual Encoder and LLM by a pixel shuffle strategy, inspired from InternVL-1.5. Image splitting is applied, with rows split by a « \n » textual tokens. Each tile is also prepended with a text token indicating its position within the tile matrix.
+
+Training is done in 4 stages: 3 of pretraining on different datasets with different learning rates, and finally 1 sft stage on the updated Cauldron. Image resolution upscaling is done during the first stage, for which the backbones are frozen and only the connector layers that tie the Visual Encoder to the LLM are frozen.
+
+Idefics3-8B is then evaluated and compared to Idefics2-8B and Idefics2-70B.
+
+Idefics3-8B shows better performance overall than Idefics2-8B, as expected from an upgrade.
+
+Where it shines is more compared to the 70B model: aside from MMMU, it reaches comparable performance on all other 4 benchmarks evaluated, especially on DocVQA where it beats the 70B model!
+
+Additional Qualitative Results can be found within the paper and more details can be found within its appendix.
+
+Model and Docmatix are available on huggingface under an apache 2.0 license.
+
+Personal Thoughts: Super cool paper to read, and a nice overview from the Idefics team, just like the previous one. Great to see a small VLM specialized in Doc Understanding, am feeling like it can have quite the professional use! Interested as well in idefics3-70B perf, there’s a probability that an open source glass ceiling -for europe- could be broken there ;)

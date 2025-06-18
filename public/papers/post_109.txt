@@ -1,0 +1,29 @@
+## Read 109: E5-V: Universal Embeddings with Multimodal Large Language Models, by Jiang, Song et al from Beihang University and Microsoft Corporation
+
+https://arxiv.org/pdf/2407.12580
+
+The authors of this paper present a method to repurpose a Multimodal Large Language Model (here: LLaVA-NeXT-8B) into an embedding model for both image and text.
+
+Their method is pretty surprising. First, they remarked (from previous works) a modality gap between text and image embeddings at the last token embeddings. They notice however that this modality gap can in fact be overcome! 
+
+How do they do that? They simply prompt the model to represent the input into words. Even simpler: to represent it in one word, which ends up unifying the embeddings through meaning extraction and compression!
+
+In fact, removing that modality gap allows them to get to the second step of their plan: it is possible to finetune only the LLM, using text, to handle both modalities! They use a contrastive loss on sentence triplets with an input sentence, a positive sentence, and a negative sentence for the prompt: « <text> \n Summary above sentence in one word: ».
+
+All training details within the paper.
+
+Model is benchmarked on text-to-image and image-to-text retrieval on Coco and Flicker30 dataset, for which it shows performances very similar to the already strong suite of existing models.
+
+Model is then benchmarked on composed image retrieval on the CIRR and FashionIQ benchmarks, for which the goal is to retrieve an image based on an image and a text. It trumps over existing models it is compared to in the CIRR benchmark, and is slightly better than them in FashionIQ. (Author’s note: only MagicLens-Large, which was excluded from this work, manages to reach its level in CIRR)
+
+Where it shows highly impressive results is image-to-image retrieval. On I2I-Flicker30k and I2I-Coco, it’s just overwhelming the competition.
+
+Its sentence embeddings don’t seem to be the worst as well. It is compared to some other sentence embedding methods in the STS benchmark and reaches comparable results.
+
+Additional details and ablations that validate the methods used can be found within the paper.
+
+Code is open-sourced here: https://github.com/kongds/E5-V
+
+Model is available at the following huggingface page (not updated yet!): https://huggingface.co/royokong/e5-v
+
+Personal Thoughts: Super interesting work. Image-to-image retrieval results are particularly shocking. Method is deceptively simple and allows repurposing of MLLM by finetuning them only on texts. Am super curious about results on doc retrieval, and feeling like there’s quite the use for that. For instance: searching over a fashion catalogue… eager to see what comes out of it!

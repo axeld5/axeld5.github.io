@@ -1,0 +1,23 @@
+##  Read 115: Meta-Rewarding Language Models: Self-Improving Alignment with LLM-as-a-Meta Judge, by @WthTiao and @WeizheY from @AIatMeta, @nyuniversity and @ucberkeley
+
+https://arxiv.org/pdf/2407.19594
+
+The authors on this paper follow on a previous paper from Meta about Self-Rewarding Language Model. This work had model generating answers and attributing rewards to these answers, which were then ranked and used for DPO.
+
+Here, a modification is added to this: model is both trained using this actor reward modeling, but its judgement capacity is also made to be improved. 
+
+When the model generates answers, two judgements are generated, and a meta judge assigns a winner between those two judgements which are then used as well for the DPO training!
+
+Additionally:
+- For actor DPO dataset generation, length control is applied to avoid model generating overly verbose answers.
+- For judge DPO dataset, rewards are not directly output from the model: they are instead, for each original response of the model, estimated solving an optimization problem on a battle matrix, which was created from pairwise judgement selections for one answer. Length control filter is also applied to the answers to avoid optimization for overly verbose answers.
+
+The authors then experience on Llama-3-8B for 4 iterations on 5000 different prompts each. For the 2 first, both actor and judge models are trained, while for the 2 last, only actor model is subjected to DPO. Additional training details can be found within the paper.
+
+On AlpacaEval 2, results of the model are great. It beats GPT-4, and goes way beyond the Self-Rewarding results, not converging after 3 iterations! Improvement also happens over ArenaHard benchmarks.
+
+Some notes from the appendix: Improvement happens but very little for MTBench, converging between iteration 2 and 3. Judge correlation with human is at its best at iteration 2, which is the last for which the model is trained as a meta-judge.
+
+Additional details can be found within the result sections and appendix, which are very worth the read.
+
+Personal Thoughts: While fully online self-improvement might not be fully reached, this paper provides an interesting question: can models improve themselves using their own data? Studies claim that too much self-generated data yields to a destruction of the models’ capacities, but the level of the authors seem like an interesting middle ground. A work to follow!

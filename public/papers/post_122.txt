@@ -1,0 +1,26 @@
+## Read 122: « xGen-MM (BLIP-3): A family of open large multimodal models », by @Le_Xue01, @ManliShu, et al
+
+https://arxiv.org/pdf/2408.08872
+
+The paper introduces Salesforce’s new multimodal family, Blip-3, along datasets and a finetuning codebase.
+
+Salesforce project repo can be found there: https://github.com/salesforce/LAVIS/tree/xgen-mm
+
+Main points include :
+- For image tokens handling, they use a frozen vision transformer (SigLip) followed by a trainable perciever resampler. The fine-tunable pre-trained LLM used is phi-3-mini.
+- Pre-training data is a mix of interleaved documents and captioning datasets. Several of the captioning datasets were created by the authors, and are open sourced in the above repository. Each of their three custom datasets has a peculiarity:
+—> BLIP3-KALE is cited to be « high quality » and will be discussed and released in a paper to come
+—> BLIP3-OCR-200M is a captioning dataset that specializes in text-rich images handling.
+—> BLIP3-GROUNDING-50M is a dataset where images and captions provided are enhanced through a grounding model.
+
+Afterwards:
+- SFT is applied to a mix of specifically textual and multimodal task related data. After a first multimodal finetuning stage on single image samples, a second stage is done to give model capacity to understand multi-image samples.
+- DPO is done with LoRA to enhance the models’ answers, and safety finetuning is applied as well.
+
+The xGen family of 4 (base, instruct-single-image, instruct-interleave, and instruct-dpo) was then compared to the rest of the literature, against which it boasted one of the best performances in its size category, and a pretty strong overall as a VLM. This is especially the case on multi-image benchmarks, where it reaches GPT-4V levels of performance!
+
+Additional details from ablation studies validating the different data mix choices made can be found within the paper.
+
+Models and datasets are open sourced under MIT License.
+
+Personal Thoughts: Really interesting read! Enjoyable seeing another actor topple the giants, and help research for the strongest models in the smallest sizes move forward. :)

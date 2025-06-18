@@ -1,0 +1,26 @@
+## Read 138: new metric and benchmark for data generation from Kim, Suk et al from CMU and KAIST
+
+https://arxiv.org/pdf/2412.03679
+
+Basically the paper proposes a new metric for Data Generation : taking Base Model Llama 3.1-8B, how much perf can we recover from the Instruct model using solely the generated data from a model ?
+
+This is what is proposed, and they evaluate 3 simple data generation method :
+1- Instance generation: take a few example in-context and generate similar ones
+2- Response generation: take an instruction dataset, generate answers
+3- Quality enhancement: take a low quality dataset for problem tackled, modify answers so the dataset is more fit to the pb
+
+Are evaluated: code performance improvement, math performance improvement, instruction following improvement
+
+Are compared as generators: GPT-4o, 4o-mini, Sonnet 3.5, Llama-3.1-405B-instruct, 70B-instruct, 8B-instruct
+
+Findings:
+- No method alone can get a Performance Gain Ratio above 100% (expected as instruct models went through much more)
+- GPT-4o, 4o-mini and surprisingly Llama-3-8B-instruct are the better generators in terms of performance vs cost given same amount of data
+- Quantity > Quality, 50k generated amount by gpt-4o-mini beat 10k generated amount by 4o (same price)
+- Meta prompt matters! JSON format prompt in fact diminishes quality of data generation for model training
+
+Prompts can be found in appendix along complete results
+
+Pretty cool read! Synthetic data is important, and will remain important for model training: either as an instructor, or to actually create as well data for small model training in a low data regime
+
+Quite the innovating angle, I might also be interested in viewing perfs of models as data generators for the latter use case: taking a look at classical datasets like newsgroup, IMDb or rotten tomatoes and seeing how they improve perfs :)

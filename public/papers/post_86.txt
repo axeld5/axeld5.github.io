@@ -1,0 +1,19 @@
+## Read 86: Mixture-of-Agents Enhances Large Language Model Capacities, by @JunlinWang3 et al from @togethercompute
+
+https://arxiv.org/pdf/2406.04692
+
+The authors of this paper propose an extremely effective approach that leverages open source models to outperform frontier ones.
+
+The way it works is pretty simple: 
+1- Given a prompt, ask n models to answer the prompt
+2- Use an LLM to aggregate and synthesize the model’s answers
+3- Ask n models to iterate on the answer, and repeat the aggregating and synthesizing process
+4- Repeat until max layer is reached, and query yet again an LM to answer
+
+The authors evaluate the answers of the Mixture of Agents, as they call it, in AlpacaEval 2.0 and Mt-bench. They use 6 highly-performing open source models as the agents that will intervene, with Qwen1.5-110B or GPT-4o as the aggregator. They go for their main approach with 3 layers, but also include an approach with 2, which they call MoA-lite.
+
+On Alpaca-Eval, their MoA model reaches state of the art performance, stomping the rest of the arena by 8%. On MT-bench, the open source MoA reach out a performance at the level of 4o, and outperform it if 4o is used as the aggregator. MoA-lite does also defend itself pretty well, with perfs on par with very strong models.
+
+Code can be found at the following repo: https://github.com/togethercomputer/moa
+
+Personal Thoughts: Really interesting paper, as the method is smart and seems to yield very nice results. While throughput cost and latency may be an issue, it’s important to remind that @groqinc makes those models really fast at a low cost of access… perhaps there’s an opportunity to topple the giants there! ;)

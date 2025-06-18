@@ -1,0 +1,22 @@
+## Read 111: Vision Language Models are blind, by @pooyanrg et al from Auburn University
+
+https://arxiv.org/pdf/2407.06581
+
+The authors of this paper inspect the ability of VLMs to answer a few tasks that humans could easily perform, but which require just to be able to grasp the image fully:
+- Counting intersection of two lines
+- Checking if close circles are overlapping or not
+- Determining a letter circled by a red circle
+- Counting overlapping shapes
+- Counting nested squares
+- Counting rows and columns of a grid
+- Following single colored paths
+
+While those tasks appear easy for a human being, for the tested frontier LLMs (Gpt-4o, Gemini-1.5 Pro, Claude 3 Sonnet, Claude 3.5 Sonnet)… they’re not that much the case.
+
+Sonnet 3.5 is overall the best of the bunch, but it’s worth noting that the models can produce failed answers in every case. It’s especially the case in guessing overlapping circles, and when the model needs to answer that 3 colored paths are the answer in the last tested use case. 
+
+Additional details for each task can be found within the appendix of the paper. The paper goes all out in the details of each task answers, so it’s pretty worth the read.
+
+Github page can be found here: https://vlmsareblind.github.io
+
+Personal Thoughts: Paper is simple, yet interesting as it shows VLM can’t be fully trusted as of yet (which could be guessed, but needed to be outlined). In fact, what’s even more interesting is that finetuning models does not yield a 100% success rate on their dataset, which means it is a non-trivial issue for VLM to solve. This is a good reminder that current VLM will be good for generic info extraction, but will have issues into specifics.

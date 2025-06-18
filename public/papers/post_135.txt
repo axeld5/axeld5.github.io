@@ -1,0 +1,27 @@
+## Read 135: Planning in Natural Language Improves LLM Search For Code Generation, by @evanzwangg et al from @scale_AI
+
+https://arxiv.org/pdf/2409.03733
+
+Researchers at scale AI made a method to improve frontier models’ code generation abilities.
+
+The method, PlanSearch, goes as follows:
+1- From a problem, generate observations that can be helpful to solve the problem
+2- Take every subset of at most size 2 to form the first leaf nodes of your tree search algorithm
+3- For each leaf node, generate two observations using the node’s own observations and the problem to solve
+4- Take every subset of at most size 2 of newly generated to form the second leaf nodes of your tree search algorithm
+5- For each leaf node, generate a solution in natural language
+6- Translate that solution to pseudo-code
+7- Translate the pseudo-code into code
+8- For the solution of step 5, generate another solution under the assumption that step 5’s solution is wrong
+9- Translate that new solution to pseudo-code
+10- Translate that pseudo-code into code
+
+This ends up being very successful in improving the frontier models’ capacities for code generation. 
+
+Basically, pass@200 accuracy goes from 10 to 20 point increase for each model studied on LiveCodeBench, and the increase remains consistent on the other code benchmarks studied. 
+
+It’s also worth noting that when the number of submissions is lower, accuracy still increases at a bigger rate than pure brute forcing with high temperature. However, it starts lower : pass@1 odds to succeed are lower using PlanSearch.
+
+What is also relevant is that PlanSearch’s tree is not optimized at all as of now. Therefore, it’s expensive in terms of compute, but the authors theorize tree algorithms may be applied in some ways to increase both reasoning capacity and quality.
+
+Personal Thoughts: Quite the interesting method, to say the least. We can bring intelligence to our models, by simply letting them take a step back. Now, what I am very curious of is if that method downscales: is a model of lesser intelligence (like an 8B) actually able to exploit it as well, or will it fail to reason well enough to do so?

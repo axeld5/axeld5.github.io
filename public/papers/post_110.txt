@@ -1,0 +1,19 @@
+## Read 110: Does refusal training in LLM generalize to the past tense? by @maksym_andr and Nicolas Flammarion from @EPFL
+
+https://arxiv.org/pdf/2407.11969
+
+The authors of this paper prove it is possible to massively increase attack success rate… by simply reformulating the harmful query in the past tense. 
+
+This behavior can be seen over 6 different models: Llama-3-8b, Gpt-3.5-turbo, Gemma-2-9b, Phi-3-mini, Gpt-4o, and R2D2  (in fact, it even extends itself to Claude 3.5 Sonnet and GPT-4o-mini).
+
+It’s worth noting that the ASR depends on the category, and will be actually less effective for disinformation, sexual content or harassment.
+
+Authors also notice that using future tense instead of the past tense yields to worse ASR, although it still does increase it versus present tense.
+
+Finetuning does help in largely diminishing the attack’s performances, but will increase model refusal rate on benign queries to an amount depending on the harmful vs harmless data mix.
+
+Additional details and prompts can be found within the appendix.
+
+Code is open-sourced at: https://github.com/tml-epfl/llm-past-tense
+
+Personal Thoughts: Silly that such an attack works well, but it’s a very plausible blind spot. Am starting to feel there’s something unexplored in exploiting other languages for attacks, if this method right here is patched…

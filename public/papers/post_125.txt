@@ -1,0 +1,24 @@
+## Read 125: « Critique Out-Loud Reward Models », by Ankner, @mansiege et al from @DrbxMosaicAI
+
+https://arxiv.org/pdf/2408.11791
+
+The authors of this paper give us a framework to transform a rework and LLM into a more effective RewardModel, which they call a CLoud Reward Model.
+
+The framework goes as follows:
+1- An oracle generates critiques on a set of data composed of multiple prompts with two assistant responses each
+2- The base LLM is finetuned over these critiques
+3- The finetuned model is asked to generate critiques that will replace the oracle ones
+4- A reward head is initialized atop of the finetuned model
+5- Model is trained on a loss both for the LM Head and for the Reward Head
+
+The authors train two models, one based on Llama-3.1-8B and the other based on Llama-3.1-70B. Llama-3.1-405B is used as the oracle.
+
+It is then explored:
+- How the models fare on RewardBench: they perform consistently better than the base LMs used for pairwise classification
+- How the models fare on ArenaHard: the CLoud models have a consistently higher winrate than the base LMs
+- If replacing the oracle critiques with generated ones is important: yes, it is ; the model trained on generated critiques performs better
+- If self-consistency can have uses: only if the expected output is at most two sentence long, otherwise the additional compute does not seem to matter much
+
+Oracle prompt information, additional results and qualitative examples can be found within the appendix of the paper
+
+Personal Thoughts: First Nemotron-420B that goes out with a massive reward model, then this paper. As in fact results do scale with size, Llama-3.1-405B-reward does not seem out of reach, and having strong oracle reward models can likely open up new possibilities… even perhaps in self training iterations?

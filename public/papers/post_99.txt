@@ -1,0 +1,29 @@
+## Read 99: Covert Malicious Finetuning: Challenges in Safeguarding LLM Adaptation, by @dannyhalawi15, @aweisawei et al from @UCBerkeley
+
+https://arxiv.org/pdf/2406.20053
+
+The authors of this paper investigate how to use finetuning to break down model safety guardrails.
+
+To do so, they use a very simple approach: 
+
+—> Phase 1
+1- use a cipher on the question and output
+2- make the model learn how to decipher the ciphered text through finetuning on ciphered data with various degrees of text ciphering
+
+—> Phase 2
+1- sample and ciphered malicious question/answer pairs
+2- finetune model on those encoded pairs
+
+20000 samples of Alpaca-GPT4 are used for the first step. 317 synthetic harmful prompts are taken from the litterature, which answers are extracted from by jailbreaking GPT-3.5w
+
+Afterwards, GPT4 exhibits 99% attack success rate over ciphered inputs from the AdvBench Harmful Behavior benchmark, while suffering a loss of performance (-20%) on the Arc Challenge, making it worse than GPT-3.5.
+
+Ablation studies show key contributors to this success:
+1- Malicious finetuning is necessary for high ASR
+2- So is a model with GPT-4 level of perfs, as GPT-3.5 does not yield high results
+
+The authors think of a few defense possibilities, but note most of them are inefficient vs this type of attack. They also note that in-context learning do not make a model learn the cipher: only finetuning does. This is to be correlated with their result that training size matters for performance: a substantial downgrade of phase 1 dataset size yields to substantial downgrade of attack success rate. An in-context window of 25 samples is thus inefficient compared to finetuning over 20000 ones.
+
+Additional details and prompts are included within the appendix.
+
+Personal Thoughts: Really impressive and simple work! Yet another success of finetuning, I am feeling like this is the moment for it. Makes defense even harder, as this could mean any safety trained model can be finetuned to be harmfully used.

@@ -1,0 +1,18 @@
+## Read 90: What are the odds? Language models are capable of probabilistic reasoning, by @yahskapar et al from Google
+
+https://arxiv.org/pdf/2406.12830
+
+The authors of this paper aim to verify if LMs can automatically perform operations based on probabilistic distributions. They look at their capacities for 3 different tasks:
+- Task 1: Percentile Estimation ; Given a distribution and a value, estimate percentile location of value in slices of 10%
+- Task 2 : Sample Drawing ; Given a distribution, draw 1000 samples following the distribution
+- Task 3 : Calculating Probabilities ; Given a distribution and two values, compute probability of a sample getting taken from this interval with respect to the distribution
+
+They test 4 LM on those tasks : GPT-4, GPT-3.5, Gemini Ultra 1.0, and Llama-3 70B. Those LMs are tested first on idealized datasets, simply matching known distributions, and then solely task 1 is used for real-world datasets, with or without contextual data.
+
+What the authors find is that while the 0-shot setting yields to unimpressive results on the idealized datasets, the 3-shot setting gives very strong performances when providing relevant in-context examples (ie matching the distribution that is talked about), especially for the frontier models.
+
+For real world distributions, real world context matters but giving the model access to 3 examples increases drastically the results on the Percentile Estimation task.
+
+All prompts and additional results can be found within the appendix.
+
+Personal Thoughts: A really interesting paper that definitely outlines the power of in-context learning. :)

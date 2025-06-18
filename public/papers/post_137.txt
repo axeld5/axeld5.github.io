@@ -1,0 +1,18 @@
+## Read 137: « Re-Invoke: Tool Invocation Rewriting for Zero-Shot Tool Retrieval », from Chen, Yoon et Al from Google Cloud AI Research
+
+https://aclanthology.org/2024.findings-emnlp.270.pdf
+
+Authors propose a method to improve tool retrieval.
+Basically, what they do is the following:
+- Generate hypothetical queries for each tool in DB.
+- When given a user query, split it into singular intents.
+- Match each intent to the document+hypothetical query pairs and aggregate the score.
+- Select top tools for each of the aggregated queries.
+
+Method was tested on ToolBench (3451 tools, 200k queries) and ToolE (390 tools, 21k queries) dataset with both BM25 and Vector Retrieval. The authors compared no special treatment vs HyDE vs Re-Invoke, and stated Re-Invoke was miles better, with an increase of nDCG@5 of 20% compared to baseline.
+
+Performance increases with the number of queries, but seems to start plateauing at 10 synthetic queries: likely due to lack of diversity. Recall@10 is around 0.9 on average of all datasets, which is pretty good considering all the tools there are in 
+
+Overall, pretty interesting to read: not sure though why Hybrid search isn’t considered with BM25 and Vector Searches actually showing great results.
+
+Giving tool retrieval knowledge allows model to use them better and not be overwhelmed when presented with accessible tools. Like it. Although wondering if possible to finetune model so that it is already aware of the tools, but it should be really complicated with the amount (3451 is no joke).

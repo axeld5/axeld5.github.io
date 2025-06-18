@@ -1,0 +1,24 @@
+## Read 100: Agentless: Demystifying LLM-based software engineering agents, by @steven_xia_, @yinlin_deng et al from @IllinoisCS
+
+https://arxiv.org/pdf/2407.01489
+
+The work of the authors of this paper is to provide a framework for automating github issue solving.
+
+What’s peculiar is that contrary to most other approaches on that end… they remove planning. There is no coordinator which has as goal to oversee code solving.
+
+What the authors do is the following:
+1- Perform a localizing step which goal is to identify candidate files, based on the repository’s folder structure taken as a tree
+2- From candidate files, identify candidate code blocks responsible from the issue
+3- From code blocks, identify locations to edit
+4- Once edit locations are identify, generate a « search-replace » edit patch with the original code block and fix one after the other
+5- Generate several solutions, filter the ones that trigger errors, and select the one that appears the most
+
+Each step uses an LLM, for the identification and generation of code patches. LLM currently used is GPT-4o.
+
+The authors apply their method on SWE-bench-lite, compare them to several other frameworks for github issue solving, and rank 5th on that benchmark, above several approaches that use far more complex systems, like OpenDevin or SWE-Agent, with a much lower cost as well.
+
+Additionally, the authors make a study of SWE-bench to identify ill-posed issues. They filter the problems that either contain solution within the issue, propose misleading help, or with an incomplete description. In doing so, they create SWE-bench-lite-S, containing 48 problems less (252 overall). Ranking barely changes, but it also allows to see performances of models based on information given within the issue description. This additional data can be found within the paper.
+
+Code is opensourced at: https://github.com/OpenAutoCoder/Agentless
+
+Personal Thoughts: A paper that proves us that simpler is often better. A clever low cost approach, that will only get better as models do.

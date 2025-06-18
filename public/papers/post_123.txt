@@ -1,0 +1,18 @@
+## Read 123: LongVila: scaling long-context visual language models for long videos, from @XueFz, Chen et al from Nvidia
+
+https://arxiv.org/pdf/2408.10188
+
+Github page can be found here: https://github.com/NVlabs/VILA/blob/main/LongVILA.md
+
+The authors of the paper introduce:
+- Multi-Modal Sequence Parallelism (shortened as MM-SP), a method to decrease inference time and balance training data size, described within the first section of the paper. The method uses sequence parallelism at both attention head and sequence dimensions, which they call 2D attention. Through clever load balancing and distribution, they manage to beat bottlenecks at training and inference stages.
+- A 5-stage training method that goes over the basic steps of training a VLM for the first three stages, into continued pretraining for context extension, followed by instruction tuning over a dataset constructed from long (~10 minutes) videos.
+
+Model and inference performances are then evaluated:
+- Their pipeline enables much faster throughput than alternatives at any given input length
+- Needle in a haystack eval reveals the long-context training paid off
+- LongVila-8B shows much faster and slightly stronger performance than its peer models, at all sizes of videos
+
+Appendix of the paper contains additional details along qualitative examples.
+
+Personal Thoughts: A tough paper for me, as the MM-SP framework is not easy to grasp at the first read. However, very promising results and methodology for the betterment of open source! Am glad to see video evolve, and hope it gets better and better by the months to come :)

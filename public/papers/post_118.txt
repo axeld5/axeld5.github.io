@@ -1,0 +1,19 @@
+## Read 118: Jailbreaking Text-to-Image models with LLM-based agents, by Dong et al from Shandong University 
+
+https://arxiv.org/pdf/2408.00523
+
+The authors of this paper propose a black-box framework based on a group of agents to make T2I models generate contents that bypass their safety filters.
+
+The framework is based on 3 agents:
+
+1- A mutation agent which goal is to modify the prompt sent to the target model and make it able to produce the wanted image. The agent functions using a VLM as its brain. It disposes of an ICL-based memory module which uses a retrieval tool to identify successful prompts. Lastly, it disposes of a semantic discriminator to identify whether the generated image is close to the desired one ; allowing the agent to modify semantics of the prompt in the case it is not.
+
+2- A critic agent which scores the prompt in semantics and effectiveness in bypassing safety filters. The prompt is scored purely on its text. It uses LLMs to identify on which area it needs to score the input prompts, given by the mutation agent. Once they are scored, it selects the one with the highest score value and sends it to the T2I model.
+
+3- A commander agent, purely rule-based, which activates the mutation agent or critic agent when needed to. It feeds them information using feedback from the T2I model on what to focus on, or the attack strategy to use.
+
+The authors test their framework using LlaVa-1.5-13B and ShareGPT4V as the VLMs, and Vicuna-1.5-13B as the LLM. They target several models, equipping them with various filters for both inputs and outputs. They evaluate Bypass rate of said filters, along with generation quality and the amount of queries sent to the T2I model. Datasets used are T2I jailbreaking related datasets that can be found within the paper.
+
+On all metrics, Atlas outperforms current frameworks. The authors test ablating one or two of their agents, to find their 3-agent setup is the one that works best.
+
+Personal Thoughts: Cool to see T2I jailbreaking officially taking shape. With the new model releases, it is certain this method can even be upgraded to be more performant.

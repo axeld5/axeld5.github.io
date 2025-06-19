@@ -29,6 +29,7 @@ function About() {
                 <li>Report Automation with LLM pipelines, pre-agentic.</li>
                 <li>Small agentic experimentations in order to test frameworks, tools and limits.</li>
               </ul>
+              
               <p>
                 The paper section of the blog presents the papers I have read, my notes and thoughts on them.
                 The blog section is a collection of experience returns and thoughts about projects and experiments I have worked on.
@@ -40,13 +41,16 @@ function About() {
             
             <div className="contact-links">
               <a href="https://github.com/axeld5" target="_blank" rel="noopener noreferrer">
-                📧 GitHub
+                <span role="img" aria-label="GitHub" style={{marginRight: '0.4em'}}>🐙</span>GitHub
               </a>
               <a href="mailto:axeldarmouni@gmail.com">
-                📧 Email
+                <span role="img" aria-label="Email" style={{marginRight: '0.4em'}}>✉️</span>Email
               </a>
               <a href="https://www.linkedin.com/in/axel-darmouni-916722196" target="_blank" rel="noopener noreferrer">
-                📧 LinkedIn
+                <span role="img" aria-label="LinkedIn" style={{marginRight: '0.4em'}}>💼</span>LinkedIn
+              </a>
+              <a href="https://x.com/ADarmouni/" target="_blank" rel="noopener noreferrer">
+                <span role="img" aria-label="Twitter/X" style={{marginRight: '0.4em'}}>🐦</span>Twitter
               </a>
             </div>
           </div>

@@ -7,6 +7,30 @@ function Blog() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
+  // Utility function to convert URLs in text to clickable links
+  const linkifyText = (text) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a 
+            key={index} 
+            href={part} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="excerpt-link"
+            onClick={(e) => e.stopPropagation()} // Prevent card click when clicking link
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
   // Load posts from dataManager on component mount
   useEffect(() => {
     const loadPosts = async () => {
@@ -71,7 +95,7 @@ function Blog() {
                   </div>
 
                   <div className="post-content">
-                    <p className="post-excerpt">{post.excerpt}</p>
+                    <p className="post-excerpt">{linkifyText(post.excerpt)}</p>
                     
                     {post.video && (
                       <div className="post-video-preview">

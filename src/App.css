@@ -1573,3 +1573,137 @@ body {
     padding-left: 1.5rem;
   }
 }
+
+/* Excerpt Link Styles */
+.excerpt-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+  word-break: break-all;
+  display: inline;
+  padding: 0.1rem 0.2rem;
+  border-radius: 3px;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.excerpt-link:hover {
+  color: #5a67d8;
+  background: rgba(102, 126, 234, 0.2);
+  border-bottom-color: #5a67d8;
+  text-decoration: none;
+  transform: none; /* Prevent any transform effects from parent elements */
+}
+
+.excerpt-link:active {
+  color: #4c51bf;
+  background: rgba(102, 126, 234, 0.3);
+}
+
+/* Ensure excerpt links work well within different contexts */
+.post-excerpt .excerpt-link,
+.paper-summary .excerpt-link {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Mobile responsiveness for excerpt links */
+@media (max-width: 768px) {
+  .excerpt-link {
+    font-size: 0.9rem;
+  }
+}
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  padding: 2rem 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Top pagination (below search) - more compact */
+.search-section + .pagination {
+  margin-top: 1.5rem;
+  padding: 1rem 0;
+  border-top: none;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.pagination-btn {
+  background: white;
+  border: 2px solid #e2e8f0;
+  color: #4a5568;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-btn:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
+}
+
+.pagination-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.pagination-ellipsis {
+  color: #a0aec0;
+  padding: 0 0.5rem;
+  font-weight: 500;
+}
+
+.papers-count {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.search-results-count {
+  font-size: 0.9rem;
+  color: #667eea;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .pagination {
+    gap: 0.25rem;
+    margin-top: 2rem;
+    padding: 1.5rem 0;
+  }
+  
+  .search-section + .pagination {
+    margin-top: 1rem;
+    padding: 0.75rem 0;
+  }
+  
+  .pagination-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    min-width: 36px;
+  }
+  
+  .papers-count,
+  .search-results-count {
+    font-size: 0.85rem;
+  }
+}

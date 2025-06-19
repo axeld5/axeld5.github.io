@@ -235,6 +235,150 @@ class FileDataManager {
     return Array.from(this.paperCache.values()).sort((a, b) => b.id - a.id); // Sort by ID desc (newest first)
   }
 
+  // Get ALL paper posts for search (bypasses pagination cache issues)
+  async getAllPaperPostsForSearch() {
+    try {
+      console.log('Loading ALL papers for search...');
+      
+      // Get the manifest to know which papers exist
+      const manifestResponse = await fetch('/papers/index.json');
+      if (!manifestResponse.ok) {
+        throw new Error('Could not load papers manifest');
+      }
+      
+      const manifest = await manifestResponse.json();
+      console.log(`Found ${manifest.posts.length} papers in manifest`);
+      
+      // Sort by ID descending (newest first)
+      const sortedPosts = manifest.posts.sort((a, b) => b.id - a.id);
+      
+      // Load ALL papers
+      const papers = [];
+      for (const postInfo of sortedPosts) {
+        try {
+          // Check if already cached
+          if (this.paperCache.has(postInfo.id)) {
+            papers.push(this.paperCache.get(postInfo.id));
+            continue;
+          }
+          
+          const url = `/papers/${postInfo.filename}`;
+          const response = await fetch(url);
+          if (response.ok) {
+            const content = await response.text();
+            const title = this.extractTitle(content);
+            const excerpt = this.extractExcerpt(content);
+            const video = this.extractVideo(content);
+            
+            const paper = {
+              id: postInfo.id,
+              title,
+              excerpt,
+              content,
+              video,
+              filename: postInfo.filename,
+              type: 'papers'
+            };
+            
+            // Cache it for future use
+            this.paperCache.set(postInfo.id, paper);
+            papers.push(paper);
+          }
+        } catch (error) {
+          console.log(`Error loading ${postInfo.filename}:`, error);
+        }
+      }
+      
+      console.log(`Loaded ${papers.length} papers for search`);
+      return papers;
+    } catch (error) {
+      console.error('Error loading all papers for search:', error);
+      return [];
+    }
+  }
+
+  // Get paginated paper posts (NEW METHOD)
+  async getPaginatedPaperPosts(page = 1, limit = 20) {
+    try {
+      // First, get the manifest to know which papers exist
+      const manifestResponse = await fetch('/papers/index.json');
+      if (!manifestResponse.ok) {
+        throw new Error('Could not load papers manifest');
+      }
+      
+      const manifest = await manifestResponse.json();
+      const totalPosts = manifest.posts.length;
+      
+      // Sort by ID descending (newest first)
+      const sortedPosts = manifest.posts.sort((a, b) => b.id - a.id);
+      
+      // Calculate pagination
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedPostsInfo = sortedPosts.slice(startIndex, endIndex);
+      
+      console.log(`Loading ${paginatedPostsInfo.length} papers for page ${page}`);
+      
+      // Load only the papers for this page
+      const papers = [];
+      for (const postInfo of paginatedPostsInfo) {
+        try {
+          // Check if already cached
+          if (this.paperCache.has(postInfo.id)) {
+            papers.push(this.paperCache.get(postInfo.id));
+            continue;
+          }
+          
+          const url = `/papers/${postInfo.filename}`;
+          const response = await fetch(url);
+          if (response.ok) {
+            const content = await response.text();
+            const title = this.extractTitle(content);
+            const excerpt = this.extractExcerpt(content);
+            const video = this.extractVideo(content);
+            
+            const paper = {
+              id: postInfo.id,
+              title,
+              excerpt,
+              content,
+              video,
+              filename: postInfo.filename,
+              type: 'papers'
+            };
+            
+            // Cache it for future use
+            this.paperCache.set(postInfo.id, paper);
+            papers.push(paper);
+          }
+        } catch (error) {
+          console.log(`Error loading ${postInfo.filename}:`, error);
+        }
+      }
+      
+      return papers;
+    } catch (error) {
+      console.error('Error loading paginated papers:', error);
+      return [];
+    }
+  }
+
+  // Get total paper count (NEW METHOD)
+  async getPaperCount() {
+    try {
+      const manifestResponse = await fetch('/papers/index.json');
+      if (!manifestResponse.ok) {
+        throw new Error('Could not load papers manifest');
+      }
+      
+      const manifest = await manifestResponse.json();
+      return manifest.posts.length;
+    } catch (error) {
+      console.error('Error getting paper count:', error);
+      return 0;
+    }
+  }
+
   // Get a specific blog post by ID
   async getBlogPost(id) {
     const numericId = parseInt(id);

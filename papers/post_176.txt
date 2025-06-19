@@ -1,0 +1,34 @@
+## Read 176: « GPT-ImageEval: A comprehensive benchmark for diagnosing Gpt4o in image generation », by Yan, Ye et al from Peking and Sun Yat-Sen universities
+
+https://arxiv.org/pdf/2504.02782
+
+The authors of this paper aggregate 3 benchmarks and provide a comparative study of GPT-4o pitted against the current strong models in image generation.
+
+Those benchmarks are the following:
+1- GenEval, measuring instruction following on generating simple images based on a prompt
+2- ReasonEdit, measuring capacity to edit images based on a prompt
+3- WISE, measuring the ability of the model to exploit latent world knowledge to generate images (for instance, that « generate the most known monument of Paris » does generate the Eiffel Tower)
+
+What is interesting to look at is that in all three of those benchmarks, GPT-4o literally destroys the current state of the art.
+
+For the first benchmark, the best diffusion model is at 0.63 overall. The best AR model is around 0.62. Gpt-4o is at 0.84, which is much, much higher.
+
+In terms of image editing, the best model that was specialized for image editing sat at 0.57. Gpt-4o reaches 0.93 editing accuracy.
+
+Regarding the use of latent world knowledge, diffusion-based models get up to 0.5 max on overall accuracy. AR models to 0.39. GPT-4o? 0.89.
+
+The model is something else. Whether it’s pure scaling of an AR model with visual token generation, or something much more finegrained, those benchmarks right here evaluating its ability to follow textual commands does showcase we are playing with a whole new beast.
+
+It is worth noting however that the authors point small caveats after playing with it:
+1- Copying and pasting pictures fail
+2- Editing tool is limited and can be overzealous and make unintended changes
+3- Complicated scene generation may exhibit artefacts
+4- Model struggles with complex scenes if prompted in languages like Chinese
+
+What’s also very interesting is that the authors tested fake image detection tools on Gpt-4o generated images.
+
+All seven models tested score above 70%, with even FakeVLM scoring 99.6% on gpt-4o generated image detection!
+
+While it’s still early results, which are evaluated with small amounts of sample (below 1000 for each benchmark), all do point towards one result: GPT-4o image generation is a model above its category. @openAI truly cooked over there.
+
+The paper did not run quantitative results for Gemini image gen, but I’d be curious to see them added. :)

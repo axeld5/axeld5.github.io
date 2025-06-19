@@ -1,0 +1,23 @@
+## Read 74: Video-MME: The first ever comprehensive evaluation benchmark of multi-modal llms in video analysis, by @brady202406 et al
+
+https://arxiv.org/pdf/2405.21075
+
+The goal of the authors is to introduce a benchmark to evaluate MLLM capacities in video analysis.
+
+This dataset is made of 900 videos, with 3 Multiple Choice Questions per video, across 6 different domains and 30 fine grained categories. 
+
+The videos are also varying in length, ranging from 10 seconds to an hour. Videos were extracted from youtube using the taxonomy, with three categories: short (<2 min), medium (between 4 and 15 mins), and long (between 30 and 60 mins).
+
+The questions are made by the authors, asked to watch the videos and make 3 questions with 4 potential answers to choose from. Each QA has to use the video’s information, thus making the LM unable to rely solely on its internal knowledge.
+
+A peculiarity of the benchmark is as well that different modalities are available. Frame-by-frame analysis can be done, but the videos are also subtitled and the audio content can be used as well.
+
+The authors then test on benchmark all models that can perform multimodal analysis, both open source and proprietary. They test on full frame analysis, with or without subtitles.
+
+While proprietary models are better than open source, there is only Gemini 1.5 pro that’s able to use the subtitles to improve its capacities, likely due to its larger context that enables it to take more information. It can also, unlike the others, exploit the audio information for around the same results than if being fed the subtitles.
+
+They also note that performance decreases with video length, which is to be expected due to the higher density of information to be captured by the MLLMs.
+
+Benchmark is fully open-sourced here for use: https://github.com/BradyFU/Video-MME
+
+Personal Thoughts: Pretty interesting benchmark here. Hope it gets used as a nice way to measure MLLM performances to check when they get up to Gemini 1.5 Pro’s video handling capacities!

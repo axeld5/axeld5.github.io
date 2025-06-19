@@ -1,0 +1,15 @@
+##  Read 97: From Artificial Needles to Real Haystacks: Improving Retrieval Capacities in LLMs by Finetuning in Synthetic Data, by @zheyangxiong et al from University of Winsconsin-Madison
+
+https://arxiv.org/pdf/2406.19292
+
+The authors of this paper study the effect of finetuning an LLM on a simple key-value retrieval task, on much complex information retrieval tasks.
+
+They design their dictionary retrieval task the following way: an LLM is given plenty of dictionaries with key-value pairs, and is asked to identify the value of a key X, and the dictionary that contains it. They even create a harder task, having not one but multiple integers as a tuple key, where the integers are not necessarily given in order, and asking the LLM to identify the corresponding dictionaries and values.
+
+In addition, a template can be added to guide the LM’s generation. 
+
+What’s experimented by the authors then is finetuning on both GPT-3.5 and Mistral 7B for hundreds of samples for at most 3 epochs, each sample having ~4000 tokens. The models are then evaluated on multi-document QA and flexible length QA.
+
+What the authors note is that finetuning on the dictionary samples does increase performance in both benchmarks, even more so using the template! This increase in performance stays with context length, improving overall the models’ ability to handle long context. It also comes without costing in performance.
+
+Personal Thoughts: Another really interesting result about finetuning. Finetuning on a simpler task that teaches the model to exploit context for dictionary key-value finding, does help it exploit context better overall! Still more to discover on finetuning, as said before. ;)

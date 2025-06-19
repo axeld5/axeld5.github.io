@@ -1,0 +1,19 @@
+## Read 63: BiomedParse, a biomedical foundation model for image parsing of everything everywhere all at once, by @icebubble217, @yugu_nlp et al
+
+https://arxiv.org/pdf/2405.12971
+
+The authors of this paper introduce a foundation model that performs object segmentation, detection and recognition from a textual prompt for medical images.
+
+First things first, they create a new dataset: BiomedParseData. This dataset is a synthesis of 45 biomedical segmentation datasets across 9 imaging modalities. In order to harmonize the data, the authors create an ontology of 3 layers, to end up having GPT-4 generate consistent language descriptions like « [OBJECT_NAME] in [ANATOMIC_SITE] [MODALITY] », which are then rephrased by GPT-4 to generate variations so that the model can handle different prompts.
+
+BiomedParse is made of 4 components: an image encoder and a text encoder, along a mask decoder and a meta-object classifier. The meta-object classifier’s goal is to help the image encoder’s training. Image and Text encoders were respectively initialized from Focal and PubMedBERT.
+
+Model is put to test vs the SotA of its category (PubmedBERT for text encoding, MedSam for segmentation masking, Grounding Dino for object recognition)… and wins hard against them, setting up a very high new SotA bar, especially regarding segmentation. 
+
+They also equip the model to detect invalid inputs, using a specific method based on the output pixel probability distribution. 
+
+BiomedParse and BiomedParseData are made to be open-sourced and will be made so upon publication.
+
+Further details about the model, especially qualitative results, can be found within the appendix.
+
+Personal Thoughts: Crazy model. Can’t wait for it to be out. Could enhance a lot of medical use cases already existing!

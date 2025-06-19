@@ -1,0 +1,30 @@
+## Read 105: PaliGemma: A versatile 3B VLM for transfer, by @giffmana, @ASusanoPinto, @AndreasPSteiner, @__kolesnikov__, @brainshawn et al from @GoogleDeepmind Zurich
+
+https://arxiv.org/pdf/2407.07726
+
+The authors of this paper present the work behind the release of PaliGemma, Google’s brand new 3B VLM. This model is supposed to be a jack of all trades, that can become a master of any task it is transferred to.
+
+PaliGemma is a model that takes into account image and text, and outputs text, but can be also tuned for image+text-to-image tasks. It uses the traditional architecture of Image Encoder + Linear Projection into LLM, where the text tokens are put after the image projected tokens. Image Encoder is a SigLip-400, and LLM is Gemma 2B v1.0. Full attention is used on image+text inputs, and an autoregressive mask is applied to the output. Images are always resized to a fixed size of either 224, 448 or 896 pixels before use.
+
+The authors use different steps of pretraining to make their model strong:
+0- They take the models (Siglip and Gemma) unimodally pretrained.
+1- They then perform multimodal pretraining, and do not freeze the encoder. However, to compensate for token accomodation between the LLM and the Projection layer, the encoder starts with a very small learning rate that increases vastly during training. The authors use different type of tasks, even hard ones, as they have proven in the litterature to contribute to higher performance. They train PaliGemma at this step using 1B examples at resolution 224px, with text sequence len of 128 tokens. This step creates a base model with a broad set of knowledge.
+2- To expand upon the model to harder tasks at higher resolution, the authors train the model on an additional 50M of examples at resolution 448px and 10M at resolution 896px, both with text sequence len of 512 tokens, giving two new checkpoints of the model.
+3- To show the model can reach its intended use, the authors create a finetuning recipe and provide a transfer checkpoint, for which the model is finetuned on different subtasks.
+
+Parts of the pretraining mixture and computational details can be found as well within the paper.
+
+The authors then finetune PaliGemma on 30 different tasks for which it saw no images during training. Results are high for its size: for example, for TextVQA, it is on par with finetuned idefics-2, which is an 8B model!
+
+Several ablations are performed to validate modelization choice: pretraining duration, masking, objectives, token initialization, freezing (or even resetting) the models, changing linear projection for MLP, removing image encoder, the importance of resolution, mixing ratio of upcycling step… all those ablations validate the authors’ choices for the final version of PaliGemma.
+
+The authors lastly test for transfer. They show:
+1- That the model shows little variance between repeated finetuning trials, meaning the finetuning process is quite stable
+2- That their provided suggestion of hyperparameters enables high performance on most tasks for the 224px checkpoint, meaning that most transfers should be fine with them
+3- That even 64 to 256 examples can reach on average 80% of the performance of the model if it were trained on a whole train set for a task, meaning that even a few examples can enable PaliGemma to be strong at a task
+
+PaliGemma huggingface page can be found there: https://huggingface.co/docs/transformers/model_doc/paligemma
+
+Additional details can be found within the paper’s appendix.
+
+Personal Thoughts: A complex technical report, but very interesting to read. Some choices defy the doxa, but that’s what makes it work better, so that’s great to learn from! Am very interested to see if like I theorized from Nvidia’s LLM text encoder-repurposing paper, this model could give an even stronger image encoder than SigLIP…

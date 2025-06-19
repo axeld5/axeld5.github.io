@@ -1,0 +1,20 @@
+## Read 186: « Unleashing the reasoning potential of pre-trained LLM from critique fine-tuning on one problem », from Wang et al from University of Waterloo
+
+https://arxiv.org/pdf/2506.03295
+
+Many papers claimed that RL on a few samples, even with random rewards, were enough to boost a small Qwen’s reasoning performance.
+
+The authors of this paper state it’s possible to improve that performance through a clever Finetuning approach, with only one sample!
+
+From that sample:
+- Generate solutions using small open source models -> ~10 solutions generated for each of the 10 models
+- Generate critiques of those solutions using SoTA models -> ~7 critiques for each solution
+- Filter critiques on correctness and remove invalid ones
+
+And you have a Critique Finetuning Dataset! Given the problem and the solution, tune the model to be a good critique.
+
+Does it work? Not only does it give a consistent +10 minimum performance boost on all relevant benchmarks, but it works on different types of models and while performance boost depends on starting problem, any problem will give a good boost!
+
+The best on top of that? It’s much, much lower on compute than RLVR with 1 sample.
+
+Very interesting approach, appendix shares prompts for reproductibility. Think I may give it a shot!

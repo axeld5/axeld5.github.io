@@ -1,0 +1,26 @@
+## Read 94: Probing the Decision Boundaries of In-context learning of Large Language Models, by @siyan_zhao et al from @UCLA
+
+https://arxiv.org/pdf/2406.11233
+
+The authors test different LLM abilities at linear classification, and most notably study the decision boundaries of the LMs on toy classification problems.
+
+Problem are formulated the following way: given a number of labelled in-context examples (x_i, y_i) and a new one, label the new example x_n.
+
+What they find is that the LMs tested, from open source to gpt-4o, do not exhibit a linear boundary. In fact, they exhibit a non-smooth boundary for classification!
+
+Their additional findings:
+1- Smoothness increases with model size
+2- In-context examples amount and order do not yield a smoother boundary
+3- Quantization from 8-bit to 4-bit flips uncertain areas
+4- Decision boundaries are heavily influenced by prompt format. Changing the labels yield substantial differences in boundaries.
+5- Finetuning on in-context examples yields no change in smoothness
+6- However, finetuning on a massive amount of binary classification datasets generated from sklearn does increase the smoothness, especially if attention and embedding layers are finetuned
+7- Finetuning on a new prediction head, or/and a new embedding layers does increase smoothness
+8- Performing SFT on linear classification tasks yields significant smoothness improvement on harder tasks, namely multiclass or non-linear ones
+9- Uncertainty sampling on boundaries allows for a much smoother boundary
+
+Additional details can be found on the paper as well.
+
+Personal Thoughts: Really interesting results regarding the way LLMs function! Am impressed by the finetuning result, especially with the smoothness of the resulting boundaries. 
+
+Shows that finetuning can serve a complete different purpose than ICL, and can be still very useful to tackle specific tasks. It feels like it can make the model learn an underlying logic, but I feel there’s some mechanic at hand there that remains to be explored! (To be linked with Read of the day 90 about OOCR : https://arxiv.org/pdf/2406.14546)

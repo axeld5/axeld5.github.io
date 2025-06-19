@@ -1,0 +1,23 @@
+## Read 22: Pre-training small base LMs with fewer tokens, by @SunnySanyal9 et al from UT Austin
+
+https://arxiv.org/pdf/2404.08634.pdf
+
+After JetMoe that demonstrated the ability to get high results for a 7B-like model on a relatively low budget, here is this paper in which the authors demonstrate it is also possible to get very strong results on 1B-sized model with an even lower training budget!
+
+Their method, Inheritune, is fairly simple:
+1- Take a strong LM
+2- Take n layers of that LM, starting from the first one (+token embedding and prediction heads) and a subset of the training dataset
+3- Train the LM from that checkpoint (optimally, until val loss matches a benchmark’s val loss)
+
+The authors test the approach on a 1.5B extract from OpenLlama-3B and layers extract of GPT2-Large and GPT2-Medium.
+
+On both cases, they manage to match or outperform models of their size, across several datasets, with an extremely less higher computational budget. It appears as well to show signs of scaling with size.
+
+Whole code is opensourced and available at : https://github.com/sanyalsunny111/LLM-Inheritune
+
+Personal Thoughts: Think this paper is really interesting, as if the method were effectively to be scalable, it would have lots of impact. For instance, pretraining a Llama2-70B, then creating Llama2-7B solely going through this approach, which would massively reduce GPU hours required for training.
+
+So here is a list of questions I would have for the authors:
+- Could this approach be scaled at higher size? IE as I said can extracting layers from 70B lead to a strong 7B at way less computational cost?
+- If that’s the case, will the model show similar performances than Llama2-7B at finetuning?
+- For layer extraction, do you think approaches like @Andr3yGR’s shown here could be interesting to you? https://arxiv.org/pdf/2403.17887.pdf

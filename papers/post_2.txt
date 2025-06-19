@@ -1,0 +1,24 @@
+## Read 2 : OptiMUS: Scalable Optimization Modeling with (MI)LP Solvers and Large Language Models, by Teshnizi et al
+
+https://arxiv.org/pdf/2402.10172.pdf
+
+As the name may suggest, the paper is about optimization. In fact, it is about using an agent framework for Linear Programming Solving from Natural Language formulation.
+
+Their experiences tell that the framework has way higher performances on said problem solving than other current methods using LLMs, on both easy and complex problems.
+
+What are the main ideas at work here?
+
+They use the following framework:
+1- Preprocessing natural language description into a structured form, splitting the problem into parameters, objectives, constraints, and keeping a summary formulation to feed at every prompt.
+2- Having a manager agent that handles a « team », that it calls iteratively to look at the issues:
+- A formulator that updates the variables and mathematical formulations
+- A programmer that makes and debugs its code. Code is in python using Gurobi solver.
+- An evaluator that executes the code, identifies errors, and returns to the manager with an appropriate explanation of the error.
+
+All those agents are supplemented by a connection graph that ties variables to constraints, in order to trace errors and formulations easier and not overload the prompts with information.
+
+A note is that their high performances are highly tied to the main LLMs being GPT-4. While making GPT-3.5 the manager does not hinder too much its performances, it is certain you need a very strong language model to tackle those optimization problems.
+
+On top of that, the authors introduce their own dataset, NLP4LP, an open source dataset of 67 complex optimization problems, drawn from textbooks, and without code to help.
+
+Personal thoughts: I think this paper is a very interesting read. I have seen quite often the use of agents to solve problems, but not often for mathematical purposes. I am aware the main solutions of LLM for mathematics currently involve solvers (like what Deepmind did in AlphaGeometry), but I’ve yet to see papers on LLM for maths that use agent frameworks like this. Perhaps this paper can serve as inspiration for future GSM8K/Maths tacklers!

@@ -1,0 +1,17 @@
+## Read 44: Is Model Collapse Inevitable? Breaking the Curse of Recursion by Accumulating Real and Synthetic Data, by @MGerstgrasser, @RylanSchaeffer, @ApratimDey2, @rm_rafailov et al.
+
+https://arxiv.org/pdf/2404.01413
+
+Model Collapse is the phenomenon of gradual degradation of a generative model’s input. This has been noted so far that training a model on solely-generated outputs does lead to model collapse.
+
+But the authors of this paper state that in fact, if you train a model on its original real data, plus the generated data, you will not run into model collapse even after multiple iterations of retraining!
+
+They test it on:
+- Language modeling, by finetuning GPT-2 and Llama-2 (over different sizes) on TinyStores and showing this accumulation method does not lead to test loss increase, and on the contrary to test loss decrease.
+- Diffusion models on molecular confirmation, for which they show only a slight degradation on the test loss happens when accumulating compared to the bump that occurs when replacing
+- VAE for Face Generation which show significantly slowed down model collapse through the accumulation method
+- Linear Regression for which they not only show model collapse does not occur when accumulating, but mathematically prove that the test error for the full prediction process is bounded.
+
+Additional details on data generation and figures are within the appendix.
+
+Personal Thoughts: A really interesting paper as it dismantles one of the biggest issues that we had currently: data limitation. Can’t help but feel as well it could be one of the secret sauces of Microsoft for phi-3!

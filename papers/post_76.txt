@@ -1,0 +1,17 @@
+## Read 76: Guiding a diffusion model with a bad version of itself, by Karras, Aittala et al from @NVIDIAAI
+
+https://arxiv.org/pdf/2406.02507
+
+The authors of this paper improve on Classifier-Free Guidance. Usual Classifier-Free Guidance approach involves pairing both a conditional denoiser and an unconditional denoiser for the model to learn from. Usually, the same base of networks is used for both the unconditional and conditional.
+
+Here, the approach is changed a bit. Instead of using the same base, the authors find that using a weaker base as the unconditional network yields much better results. They train first a « bad denoiser », which they then use as a basis not to follow to train and guide the better base.
+
+They perform their evaluation using their EDM2 diffusion model as a base. When they use the S version as the stronger one, they use the XS trained on much less data as the weaker one. When they use the XXL version as the stronger one, they use the M as the weaker one.
+
+In both FID metric (assessing quality of generated image) and FD_Dino (frechet distance computed in dino representation space, another metric for quality assessment), the autoguidance models show impressively low metric scores. Ablations show as well that the guiding model does need to be smaller and trained for less time than the guided one.
+
+Qualitative results and additional information can be found within the appendix of the paper. Code is not yet available, but will be made available by the authors.
+
+On the meantime, here is the repo for EDM2: https://github.com/NVlabs/edm2
+
+Personal Thoughts: Am not too much reading diffusion papers, and it was pretty fun to tackle one, especially for the 75th day. A tough paper that looks like a strong and effective method. Curious to see what it will yield!

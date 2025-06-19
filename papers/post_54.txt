@@ -1,0 +1,23 @@
+## Read 54: MS MARCO Web Search: a Large-scale Information-rich Web Dataset with Millions of Real Click Labels, by Chen et al from Microsoft
+
+ https://arxiv.org/pdf/2405.07526
+
+Getting access to a wide amount of data is important to train language models. This paper focuses on the creation of a new dataset for the training of embedding models. 
+
+To do so, the authors extracted documents from an already existing dataset, ClueWeb22, which gave them access to a set of 10B documents. 
+
+To extract the queries, they leveraged query/document clicks from a year of Bing’s logs. After filtering of certain queries on outputs and PII, they end up with 10M query-document pairs. This makes up a train set, with test and dev sets of 10k query-doc pairs.
+
+The authors then perform analysis of a subsample of 100M documents of the MS MARCO created dataset.
+
+Their findings are that most document-query relationships are 1-to-1, with only 1% of queries having multiple documents that answer it, and ~5% of the docs related to a query having multiple queries that lead to it.
+
+There is as well some very small train-test overlap, which will lead to low bias in evaluation. The sets are quite multilingual, even if they are having much more english documents and queries than for other languages.
+
+The authors benchmark a few embedding models and retrieval algorithms on MS MARCO as well to illustrate its benchmarking capabilities. Models are evaluated on MRR, Recall, and specifically for retrieval algorithms, throughput and latency. End to End systems are also evaluated on all of these metrics.
+
+Findings appear to be consistent with the litterature, which yields hope in the use of MS MARCO as a nice benchmarking tool, and even as a good training set.
+
+Github of MS MARCO can be found at the following link : https://github.com/microsoft/MS-MARCO-Web-Search
+
+Personal Thoughts: Simple yet interesting paper, as the implications of that dataset can be pretty neat, both as a training set and a benchmark. Hope to see more from it! ;)

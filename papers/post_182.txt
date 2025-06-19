@@ -1,0 +1,34 @@
+## Read 182: « Absolute Zero: Reinforced Self-Play Reasoning with Zero Data », by @AndrewZ45732491 et al from Tsinghua University
+
+https://arxiv.org/pdf/2505.03335
+
+The idea from the authors of this paper is as follows: can we make a model train itself with zero data, through iterating on tasks?
+
+They define three coding tasks:
+- Deduction: Given a program and an input, predict output
+- Abduction: Given a program and an output, predict input
+- Induction: Given a program description and pairs of input/output, write a valid program
+
+In the environment where the model is asked to solve these tasks, it is made to work both as the proposer and the solver:
+- The model generates (program, input) pairs in case of deduction and abduction, which  are then used to compute the output ; and one is masked regarding the task
+- Given a valid program, the model generates inputs -which are used to generate outputs- and a description of the program ; and half the input/output pairs and the program itself are masked regarding the task
+
+The proposer is also given in-context K syntheses and is asked to do differently from them.
+
+Two rewards are defined, one for the proposer and one for the solver (which are the same model!):
+1- Proposer reward is about solvability of the problem: 0 if it is unsolvable or solved over every of the N attempted Monte-Carlo rewards ; 1 - avg_solving_rate otherwise
+2- Solver reward is straight up about solving the problem in one go: 1 if right 0 otherwise
+3- Worth noting those rewards only apply if the model gets the formatting right and respects its role : reward is -1 for wrong formatting, and -0.5 for good formatting but unfitted answer with respect to the question
+
+Initial program triplet is identity function with « Hello World » input/output pairs. A program is valid if it executes, does not call packages that can harm the environment (os, sys, shutil…) and is deterministic (ie over N executions same input yields same output). 
+
+RL algorithm applied is a variation of Reinforce++, which is different for each of the three tasks for each of the two roles.
+
+This training method is tested at first on Qwen-2.5-7B and Qwen-2.5-7B-Coder. While small improvements are noted on easy code problems like HumanEval, they are more notable for the harder LiveCodeBench, and also happen to appear on Mathematical related benchmarks, for which they do quite improve the performances of the models.
+
+Also:
+- The method scales with respect to the parameters: lower impact on 3B, higher impact on 14B
+- Works also with Llama-3 category of models
+- Ablations show the usefulness of the task type and in-context examples given to the proposer
+
+Overall, a very interesting RL-based work that completes the large amount of new RL applications of this week. There’s also a very dense appendix which I can only recommend reading as it adds even more information and examples. Hope scaling leads to incredible results!

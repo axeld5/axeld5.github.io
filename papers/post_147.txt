@@ -1,0 +1,53 @@
+## Read 147: Interpretable Concept Bottlenecks to Align Reinforcement Learning Agents, by @liimeleemon, Sztwiertnia et al from TU Darmstadt’s computer science department
+
+The premise made by the authors is basically that current interpretability methods regarding the behavior of RL agents are flawed
+
+Main reason why they point this out is because Shortcut Learning has been seen to be a thing, at least for Atari Games. For instance, in Pong, because the AI follows the ball’s trajectory… an RL model can actually choose to focus on the AI’s paddle rather than the ball to answer its action of going up or down.
+
+This misalignment of the AI’s decision process is a problem, even more so because its interpretability is not easy. Hence the work of the authors in this paper 👇
+
+———
+
+The authors introduce first Concept Bottlenecks Models. In order to improve interpretability, the first work was to modify having a model go from inputs (usually image in the case we are looking at) to action. To do so, previous literature decomposed the process: a model takes the input and sends it into a vector representation, and another model uses that representation to select an action.
+
+The authors of that paper go further, building Successive Concept Bottlenecks Agents, shortened as SCoBots. Essentially, SCoBots are split into 3 steps:
+1- From the image, extract using one model specific information about a predefined set of objects (in Pong: the ball’s position, the player’s position…)
+2- From those objects, use a predefined set of functions to extract relations (in Pong: the ball’s distance to the player, the ball’s speed…)
+3- From those relations, use an RL-based model to extract an input action
+
+——-
+
+It is worth noting that the identity function can be used in the set to project basic information to the model. The model used in the first step can also be a pretrained model for object extraction.
+
+All informations used in the first step can either be exhaustive (referred as No Guidance within the paper), or can be filtered into subsets by an annotation process to avoid overloading the RL model with useless info.
+
+Another twist is added by the authors: to enhance the interpretability of SCoBots, they leverage previous literature to make the RL-based model so that it can be distilled into a decision tree, which is inherently more interpretable. The DT model is the true SCoBot, while the other is referred to as NN-SCoBot.
+
+The authors note as well that this process allows for interesting new rewards, which leverage their representation of mapped concepts to give directions or fix misguided objectives.
+
+------
+
+The authors evaluate now the SCoBots on 9 different Atari games. All agents are trained using PPO for 20M frames and compared to a Deep CNN-based agent trained with the same budget.
+
+Their findings are multiple:
+1- SCoBots can master the games they are provided with, in fact often better than Deep NN.
+2- SCoBots’ interpretability capacities allow to detect caveats: the Pong misalignment can be seen by studying the distilled decision tree!
+3- Guidance does allow to prevent caveats: straight up removing the enemy in Pong as a parameter for concept/relations allows the model to input its actions using the ball’s position wrt its paddle instead of the enemy’s.
+4- Imperfect extractors still allow learning: adding some noise to the object information extractor only slightly reduced performance 
+5- Having the model learn from extracted relations is non-negotiable for interpretability: NN-based SCoBots are less affected as they can reconstruct the relations inherently, but the decision tree distilled models struggle a lot more.
+
+——
+
+Overall, the work shows in a very restricted environment that great progress in interpretability can be done.
+
+The question thus is: how far can it be scaled? Are Minecraft-like environments a reachable target for this modeling to still be able to output explainable decisions?
+
+Also, a thought the authors slightly developed in their schema but not much in their results: I’d be curious to see if « VLM/LLM-based guidance » can be a thing. The expert knowledge required for the concept/relation selection part might be a bottleneck: could our frontier models handle it?
+
+A very interesting work overall, that was fun to read and cover!
+
+——-
+
+Additional details, namely game by game information and more information on the results can be found within the paper’s appendix.
+
+Link of the paper right here: https://arxiv.org/pdf/2401.05821

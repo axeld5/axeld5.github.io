@@ -1,0 +1,23 @@
+## Read 81: Scalable MatMul-free Language Modeling, by Zhu, Zhang et al
+
+https://arxiv.org/pdf/2406.02528
+
+The authors of this paper present a method to reduce computations of transformers, through exploitation of quantization techniques.
+
+Their main idea is to represent weights in a ternary way, and use indexes of positive, nul and negative weights to perform operations.
+
+They also reuse the RNN-based architectures, revisiting Gated Recurrent Units to avoid falling into the computational pitfalls of attention ; along with using a Gated Linear Unit to reproduce a transformer-like model.
+
+The authors then evaluate their performance training models ranging from 370M to 2.7B on subsets of SlimPajama. 
+
+What’s noticeable is that it’s a faster training approach with similar performances to other computational reduction methods. 
+
+In fact, where it shines is even inference. This is by far the easiest and fastest approach out there for model inference, mainly due to the highly reduced amount of matrix multiplications. It’s also gpu-effective so that anyone who is gpu poor could actually fit even very large models.
+
+Authors’ github code is available here: https://github.com/ridgerchu/matmulfreellm
+
+Personal Thoughts: No, matrix multiplication is not dead. This is a strong paper that can have big implications if reproducible and scalable, but even then it is not certain that models will match it. 
+
+What’s to be sure is that if its performances are scalable, two consequences could be brought out:
+- Embedded models (even multimodal ones?) within hardware are very likely to work out
+- I suspect that labs will be able to exploit the results to pretest data mixes, as training is relatively fast, and evaluations are cheaper than a true LLM due to the inference costs. All that’s left to know is if LLM data mixes properties hold for these kinds of models…

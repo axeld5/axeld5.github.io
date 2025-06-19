@@ -1,0 +1,20 @@
+## Read 82: Turbo Sparse: Achieving LLM Sota performance with Minimal Activated Parameters, by Song, Xie et al
+
+https://arxiv.org/pdf/2406.05955
+
+The authors of this paper retune LLMs with much higher parameter sparsity, making their inference time much faster.
+
+How do they do that? They replace the activation function in all MLP layers by an activation function on their own, based on the Relu: the dRelu. dReLU is a simple variation of the ReLU, that seems to work surprisingly well at creating sparseness with no cost in performance.
+
+To measure sparsity impact, they evaluate filtering on k% of highest activation values, and perform down projection on the modified vector.
+
+What they see is the following:
+- dRelu converges as well as SwiGLU on a small transformer (300M) trained on FineWeb.
+- dRelu sees no modification of performance on that model for a removal of up to 85% parameters.
+- Method could allegedly be extended to MoE models.
+
+They then test the dReLU on Mistral-7B and Mixtral-47B. They replace all SwiGLU with dReLU, continue pretraining for 150B tokens… and drastically reduce the activated parameters (it’s divided by 3!) while maintaining performances of the base model.
+
+Models are published on the following huggingface page: https://huggingface.co/PowerInfer
+
+Personal Thoughts: Amazing results here. Yesterday we had memory and computation optimization at the attention level, today we have optimization at the MLP level. Am really eager to see the improvements of those modelisations as they come!

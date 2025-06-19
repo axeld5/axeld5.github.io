@@ -1,0 +1,22 @@
+## Read 120: AI-assisted generation of difficult math questions, by @veds_12 et al from @Mila_Quebec
+
+https://arxiv.org/pdf/2407.21009
+
+The authors of this paper describe a framework for the synthetic generation of a difficult mathematical benchmark for LLMs.
+
+Their process is in 5 steps:
+1- Skill Extraction: Model is tasked to extract 2 different mathematical skills from a taxonomy 
+2- Question Generation: Model is tasked to generate a question. To help it at that, it is provided multi-turn conversations between an AI assistant and a human.
+3- Solution Attempt: Model is tasked to generate a solution to the problem it created. If it gets stuck, it stops trying and states why.
+4- Question Validation: Majority voting is used from asking models to rate the validation of seven specific criteria by the question and its solution. Examples are provided.
+5- Model is asked to re-answer the question. Majority voting is used once again, and questions which have all generated answers be unique during this phase are discarded.
+
+Afterwards, the questions were screened by human evaluators. Out of the 180 generated questions remaining, 79 were modified either in the generated question or the generated solution.
+
+Several models are then tested upon the benchmark. Performance matches model strength, and benchmark appears to be hard: all models perform way less well than for MATH, with a performance actually being close to the square of the model’s performance in MATH! This makes them dub their dataset MATH^2, as a way of amplifying the result. 
+
+The authors also note that MATH^2 examples slightly improve MATH performance when given as CoT examples, more than if the model takes MATH exemples as inputs.
+
+Additional examples, failure model examples, and prompts can be found within the paper’s appendix.
+
+Personal Thoughts: Quite a fun paper to read. Benchmark looks cleverly constructed, and I’m a bit surprised only 79/180 questions needed to be corrected.

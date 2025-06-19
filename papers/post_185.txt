@@ -1,0 +1,11 @@
+## Read 185: « The Hallucination Tax of Reinforcement Finetuning »by @linxins2 et al from University of Southern California 
+
+https://arxiv.org/pdf/2505.13988
+
+Basically models trained with RFT have a tendancy to have massively reduced refusal rate, which induces a higher hallucination rate
+
+Their solution? They introduce « unanswerable » problems within the RFT dataset, and tweak the reward so that it is zero if the model tries to answer a badly formulated problem (or does not answer a well-formulated one) and positive if the model behaves well
+
+Introducing even only 3k6 unanswerable (and marked as such) samples into the RFT set of 40k training samples manages to greatly mitigate the problem, for the models that are Qwen-2.5-Math-1.5B, Qwen2.5-7B-Instruct and Llama-3.1-8B-Instruct!
+
+Cool work, with pretty nice results on top of that; the problem that RFT increases hallucination rate is intuitive as it should push the model to try even if it fails, however this being a workable solution with minimal impact on accuracy is very interesting!

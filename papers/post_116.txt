@@ -1,0 +1,33 @@
+## Read 116: Gemma Scope: Open Sparse Autoencoders Everywhere All At Once On Gemma 2, by @lieberum_t, @sen_r et al from @GoogleDeepmind
+
+https://storage.googleapis.com/gemma-scope/gemma-scope-report.pdf
+
+The paper introduces Gemma Scope, a series of Sparse AutoEncoders trained on Gemma-2 2B, 9B and 27B layers for interpretability.
+
+A Sparse AutoEncoder is a single-layer MLP that encodes data into a higher dimension latent space that is then decoded to reproduce it. An additional coefficient based on encoder outputs is added to the loss to enforce sparsity of activated features for a given input.
+
+Through that latent space, the goal is to extract information that could be interpretable, which was done with much success in the literature.
+
+The goal of the authors here is to provide models that can be studied for the whole Gemma-2 open source series. The difference between previous works here is the introduction of JumpReLU, an activation function described within the paper that enforces sparsity through a learnable negative threshold, trained through straight through estimators (more specifically, a pseudo-derivative of the jump-relu is being defined, which optimization result is dependent on a kernel density estimator bandwidth epsilon).
+
+The authors then train models of various sizes (between 15K and 1M parameters) for most of the activations of each of the Gemma-2 models. The training data mix that is used is Gemma-1´s training data mix.
+
+The authors evaluate within the paper several parameters:
+- Sparsity-density trade-off, which is found to be higher in post-mlp residual streams
+- Impact of token sequence position on reconstruction loss, which is found to plateau at around higher than 100 tokens
+- Effect of width on trade-off: the higher the SAE size the lower the trade-off
+- Count of feature activation frequency on a log scale: the higher the size, the more features there are that activate on very rare occasions
+- Human Rating of feature interpretability: models output features interpretable 70% of the time
+- Model activations interpreted by LLM are usually close to ground truth interpretations 
+- Differences in trade-off based on topic: no real outlier
+- Whether moving models from float32 to bfloat16 generates trade-off issues: the answer is no
+
+The authors lastly provide with a list of open questions for the future literature to answer, using their work as the base…
+
+Additional details can be found within the paper and appendix!
+
+Gemma-Scope is available at the following link: https://huggingface.co/google/gemma-scope
+
+Interactive Demo can be found here: https://www.neuronpedia.org/gemma-scope#main
+
+Personal Thoughts: A tough paper, but a very interesting release. Hope it leads to strong interpretability work.

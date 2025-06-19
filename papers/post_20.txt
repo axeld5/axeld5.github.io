@@ -1,0 +1,27 @@
+## Read 20: Autonomous Evaluation and Refinement of Digital Agents, by @pan_jiayipan from UC Berkeley
+
+https://arxiv.org/pdf/2404.06474.pdf
+
+« Order me a cup of coffee », you order to the chatbot on the coffee shop’s website. The chatbot goes to the purchase page, and orders the coffee for you, asking you only to input your personal information for payment.
+
+While this may not be the that close to happen, research is working on that matter. The read of the day is about a method to improve Digital Agents’ performances, so that perhaps one day, that future will become a reality.
+
+The method proposed by the authors is the following:
+1- Sample trajectories from an agent-based system.
+2- Evaluate that strategy using either:
+2a- A VLM like GPT4-V
+2b- A captioner model to generate the trajectory discussion, followed by an LLM to provide the final evaluation
+3- Using that evaluation, refine the agents either through reflection, or through behavior cloning on several state-action pairs
+
+They benchmark this method on two datasets: 
+- WebArena, an offline web emulation environment that provides human-written task instructions and test cases to check the agents’ success
+- A subset of 120 tasks from Android-in-the-Wild, containing human demonstrations of 30k unique instructions.
+
+Their findings are as follows:
+- The evaluation framework using both VLM and Captioning + LLM is really good, showing ~80% accuracy vs human annotations
+- The reflected models do show slight performance improvements over baseline, going from 15% task completion to 20% on Web Arena Tasks
+- Behavior Cloning on Android-in-the-Wild makes the amount of successful tasks go from 8/52 to 14/52
+
+Prompt details and qualitative results can be found on the appendix of the paper. All code is open-sourced and can be found on the following github link : https://github.com/Berkeley-NLP/Agent-Eval-Refine
+
+Personal Thoughts: Really interesting paper, in both its results. Its evaluation result is the proof that VLM/Captioner + LLM approaches can be really good evaluators. Its refinement result is the proof that this evaluation can be used to improve performances. This could have lots of applications, on several other problems. Excited to see more on all grounds tackled by the paper!

@@ -1,0 +1,21 @@
+## Read 40: Replacing Judges with Juries: Evaluating LLM Generations with a Panel of Diverse Models, by @pat_verga et al from @cohere
+
+https://arxiv.org/pdf/2404.18796
+
+LLM-as-a-judge has started to become quite popular due to its ease of use and the fact it manages to produce good results. However, the research community has recently found some biases to that approach, slightly undermining its truthworthiness. 
+
+How does one bypass it? This study from Cohere advances that using multiple LLMs as juries enable strong results and more coherence with human rankings, for quite the low cost. They name it Panel of LLm evaluators, shortened as PoLL.
+
+In their study, the panel of juries is composed by GPT-3.5, Claude 3 Haiku and CommandR. They evaluate the system on two types of datasets:
+- QA datasets for which max voting is applied
+- Chatbot arena for which max pooling is applied
+
+The authors find that this multiple LLM framework is more correlated to both human and Chatbot arena annotations than current one LLM-as-judge solutions. 
+
+In addition, they note high variation in single LLM-as-a-judge depending on the judged LLM, which is reduced by the PoLL framework.
+
+An important note as well: cost of running PoLL is of $1.25/input million tokens and $4.25/output million tokens, which is around ten times cheaper than GPT-4-Turbo.
+
+Additional details and prompts are within the appendix.
+
+Personal Thoughts: Pretty interesting results, as the method is cheaper, faster and more effective than just using a strong model as a judge. Could be interesting to look into numbers of juries, and if adding even more models like llama-3 or mistral large could increase even more performances.

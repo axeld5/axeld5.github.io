@@ -1,0 +1,19 @@
+## Read 19: Scaling Laws for Data Filtering — Data Curation cannot be Compute Agnostic, by @goyalsachin007, @pratyushmaini et al for the Carnegie Mellon University
+
+https://arxiv.org/pdf/2404.07177.pdf
+
+Another paper comes out to help us get a slightly higher understanding of model scaling laws.
+
+This paper focuses on the scaling laws for ViT-B/32 CLIP models related to their training data.
+
+Their reflexion comes from the following fact: a model trained on a dataset larger, but with less quality than the LAION filtered export of Common Crawl will lead to better result after the model has seen a really high amount of samples.
+
+They thus find that data quality matters a lot when training with low computational resources, a bit when training with on middle ground of resources, and that it is actually detrimental to go to the extreme of data filtering when you are going for a lot of training computations.
+
+They come up with a new scaling law, described on the paper, that states what was mentioned above. Its main contribution is to model exponentially the decay of the utility of a sample regarding the amount of times it is seen.
+
+They also declare that, for datasets made of subsets of various quality, the effective utility value for the combined pool of samples is the weighted means of the individual utility values. This gives them a scaling laws namely for web corpora, which they then apply in evaluation.
+
+For two different model sizes of ViT, their fitted scaling laws seem to be really good at predicting the changes in accuracy, which may mean they’re in the right. This would mean, as stated, that data curation cannot be agnostic to compute.
+
+Personal Thoughts: Really interesting findings. Would love to see it applied to LLM pretraining, and to other kinds of models than simply ViT, to see if the laws still hold elsewhere. Could be really big to see how they hold out for Language Models.

@@ -1,0 +1,66 @@
+## Research Experiment: Can we could distill a Gemini 2.0 Flash's thinking capacities into a smaller model, enhancing their reasoning performances?
+
+https://github.com/axeld5/pali_reason.git
+
+💡 Before we dive into the details, a little bit of setup. First, Gemini 2.0 Flash Thinking:
+- This model was released by Google in 2024 (one week ago at the time of the experience), and is their Gemini version of o1-mini. 
+- Model is near Claude Sonnet 3.5 levels of performance, and most importantly, unlike the o1 family, outputs its thoughts to solve the problem separately from its answers
+
+This allows us to have CoT-levels answers that we may be able to distill!
+
+📝 The model we’ll use for that finetuning experiment is PaliGemma2-3B-448px, Google’s new family of VLMs
+
+Main reasons are:
+- PaliGemma2 was made for finetuning, which makes it a good choice for this experiment
+- Need a small model because I am compute-limited (had 1 H100)
+
+🧮 Dataset we’ll use is MathVista, more especially the « testmini » set
+
+This is a VQA math dataset, that is a nice benchmark to evaluate model capacities. I split it into 350 train candidates (was thinking at first my h100 could handle it, which will prove out to be wrong), and 650 test samples.
+
+📊 My testing got me as well that if prompted solely with Question and Image, PaliGemma2 has quite unremarkable results: it often misses the point and does not answer the question. On 650 samples, Claude Sonnet 3.5 evaluated its accuracy to be at 6.5%. Might have missed something when prompting. However, it means we could likely go up!
+
+📑 Process for data gen goes as follows:
+- Generate answers with Gemini 2.0 Flash Thinking for a number of examples (I used first 350)
+- Use Claude Sonnet 3.5 to label the answers as correct or not
+- Keep only the correct answers as samples to train on
+
+Overall, on 350 samples, Flash 2.0 Thinking got 72% of them right. Didn’t check the rationales: could be another step to check if rationales and results are coherent.
+
+📚 Had around 250 samples to work on, and took @Huggingface’s paligemma2 finetuning tutorial from @mervenoyann to get hyperparameters: although I did tune the epochs up to 10 because it yielded better results when I first tried finetuning before
+
+But… I did not really expect the CUDA OOM errors, so had to lower my samples to 32 and go through LoRA finetuning. 64 didn’t cut it, likely because of the fact that input text tokens are very dense, because they include Flash 2.0 thoughts and answers.
+
+📈 In the end, after drastically reducing trainable parameters and samples, I was able to finetune the model. Results were better! I went from 6.5% accuracy to 18%, while having little overlap from testmini training examples to real ones. But I want to dive qualitatively instead of quantitatively, because this is where the fun happens…
+
+🗣️ Basically, for each question, model is able to output a rationale and an answer. The rationale is actually always relevant to the question, which is truly interesting! BUT there are quite the failure modes which I want to cover below.
+
+💭 First, the model gets stuck in a loop of thinking and can’t output an <eos> token
+
+This happened especially on angular questions. Upon examining the dataset, my surprise actually was that the finetuned PaliGemma2 *did not* output a training example over and over. It was just stuck in a loop, unable to get out.
+
+😑 Second, getting the thought right, but swapping in the end to a wrong answer
+
+Happened a bit. Am thinking that is because the training set had similar questions, and thus sometimes it fails over taking a new answer.
+
+〰️ Third is just straight up blurting out nonsense: It’s basically a bundle of words that makes sense, but the path from reasoning to output is complete bs from the model. It’s the most common one, comes as well with arithmetic errors: it basically understands the problem but fails to see and fails to reason the right direction, but still reasons in a direction.
+
+🟢 Now that we’ve covered the failure modes, I want to cover actually the SUCCESSES as well because there are some really interesting. Getting the bland one here: question is in training set, and happens several times with answer being same as training. It’s WW2 portrait questions.
+
+🔀 Fun success mode: bad reasoning yet good answer because it’s an MCQ. Model has 4 answers to pick from, and its reasoning yields no possible answers, so it picks one and ends up choosing right.
+
+👉 Getting right answer with wrong reasoning: Too many examples to see here, but somehow model answers right while reasoning very badly, even in numerical cases.
+
+❗️Another very interesting one: right reasoning over mathematical question, for which it doesn’t have any info over the train set, yet ends up choosing right despite getting sight wrong.
+
+✅ Also has some questions which are not in training set for which the model uses reasoning and looks back on its own on the answer, which makes it all worth it !
+
+➡️ So basically was a fun project to do, and I think the principle is quite promising. Couldn’t scale it due to compute resources (thanks to Scaleway for making me able to access an H100 for personal use at least, otherwise this would have been impossible), but here are some takeaways.
+
+1️⃣ This data allows the model to output chain of thoughts without being prompted to. Just straight up gave the model the query and the image and it worked it out fine, even on problems out of the very small training set distribution.
+2️⃣ The perf increase is real and promising, both qualitatively and quantitatively. Model seems to understand the problem and output that is required, unlike its base form which answered nincompoop. Perf went from 6.5% to 18% which is pretty neat to watch. Although would really like to nuance: most reasonings are wrong or use shortcuts. It’s not a complete 18%, but it’s interesting to read.
+3️⃣ Certain we can go further with scaling the data. 32 examples was straight up nothing, but it’d need way more compute for interesting stuff to happen ; yet overall I think the results could be pretty interesting. Also the synthetic data is of quality: Gemini 2.0 Flash reasonings are dense and meant to be complete, which is pretty cool.
+
+🔓 Am open sourcing this, mainly because I am honestly a rookie in finetuning in practice. Code is very unoptimized as it’s a week-end’s experience, and so I would love to have feedback in order to improve this ! And if you want to take the repo and scale the computes, sure, and I’ll be glad to help on my off hours 😁
+
+https://x.com/ADarmouni/status/1871257176733556849 to find complete origin twitter thread with images!

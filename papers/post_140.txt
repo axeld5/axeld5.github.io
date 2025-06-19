@@ -1,0 +1,21 @@
+## Read 140: Enhancing image composition through more complex descriptions : Laion-SG, by Li, Meng et al from Zhejiang University
+
+https://arxiv.org/pdf/2412.08580v1
+
+Authors of this paper enhance Laion-Aesthetic to capture more finer grained relations between objects, and create a dataset that allows more to take into account complex prompts that require object composition.
+
+Basically, they prompt a VLM to construct a graph of relationships between items. This graph is specifically constructed to be rich and dense: 
+1- Start with item identification
+2- Add at least one descriptive adjective to each item
+3- Create relations for groups of more than two items
+4- Take into account some other constraints, namely for people or for formatting
+
+Now, to use that graph, the authors train a GNN to encode the relationships within SDXL’s latent space! 
+
+How inference goes:
+- Specific items from that graph are fed to CLIP encoder, along with triplets. Encoding of triplets are fed to a GNN and then summed to the original encoding. 
+- Items and Triplet Embeddings are then concatenated to form the graph embedding, which is then fed to SDXL to form an image.
+
+Generation is evaluated on a complex scene image set extracted by the authors, for which they evaluate FID, ClipScore and Object Accuracy Metrics. In most of the cases, their finetuned version performs better ; especially in object related metrics.
+
+Interesting study, liking dataset construction ; am inferring as well that if user inputs text prompt, this text is transformed into graph, which is not fully clear from reading the paper ; a quite nice use of GNNs as well!

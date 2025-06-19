@@ -1,0 +1,17 @@
+## Read 112: The Llama 3 Herd of Models, by @AIatMeta
+
+https://ai.meta.com/research/publications/the-llama-3-herd-of-models/
+
+The authors of this paper introduce an upgraded version of the Llama 3 series of models, covering an 8B, a 70B, and a 405B parameters LLM. the architecture of the Llama 3.1 models is similar to Llama 3 with only small modifications. Models are all SotA or near SotA within their categories, and released under a specific licence that allows commercial use as long as the product or service concerns below 700 million users.
+
+Models go through two phases: 
+1- Pretraining with a very detailed data mix (pp4-6), with during training gradual increase of the text’s contexts, ending with annealing based on data with higher educational value
+2- Post-training using chat-dialog format, with SFT and DPO. There is an emphasis on synthetic data to specialize the models on some aspects.
+
+For the post-training part, there is a heavy emphasis on the data filtering and generation process, which is a gold mine to read. Specific processes were applied using variety of techniques, which also relied for some on finetuning a Llama-3 model to make it become a specialist! Through this process, they make their models better in several domains: code generation, long context, tool use…
+
+Are also introduced and open-sourced LlamaGuard 3, which goal is to serve as a toxicity classifier of inputs and outputs (better used for outputs only), and Prompt Guard, which is a model used to identify jailbreaks or prompt injections, with very high levels of performance.
+
+The authors also detail within the paper multimodal experiments, which is another goldmine. Data processing, training mixes, architectures, scaling up to 70B or even 405B (which was barely published in the literature until today!), pre-training and post-training, to reach SotA levels in Image, Video and Audio related benchmarks! Models are not yet public, but the contribution provided will be a breaking point within the literature, as this is the first catching-up for multimodality!
+
+Personal Thoughts: This is a reference read for anyone interested in LLMs, period. The paper is heavily dense but a goldmine in references and content. Thanks for open-sourcing this!

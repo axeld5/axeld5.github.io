@@ -1,0 +1,37 @@
+## Hackathon Research Experiment: can you finetune a small model on an image-text web instruction dataset?
+
+https://github.com/PeyPaul/EF_hackathon_on_edge?tab=readme-ov-file
+
+Basically, Runner H’s release from @hcompany_ai got me curious: I looked into web instruct datasets, and was surprised to find a low amount of them… or at least very few that based on the images to make the model output.
+
+Usually, models rely on the DOM to proceed, which is information we as humans just don’t have, but don’t need to succeed a task: so we question we asked ourselves was a « what if we could train a model for agentic web tasks using only web and text content? ».
+
+Of course, such a task was massively hard for a 24h hackathon. Which is why we settled on something smaller: proving PaliGemma can overfit on the task « Book me a flight from X to Y, from date A to date B », on the google flights website.
+
+Basically, the idea behind was that if PaliGemma can learn to overfit on the training data, then it can at least learn the task to generate appropriate code to interact with web pages… which it natively cannot do!
+
+We created two datasets, using playwright:
+- Screenshot, task, and playwright code to proceed
+- Screenshot parsed by Omniparser, task with information on actions it can take and bounding boxes, and actions it can do (click, type, scroll)
+
+After finetuning for each dataset a model on an H100 for ~5 minutes:
+- On first dataset, PaliGemma can reproduce the code for at least one training example
+- On second dataset, task is actually too hard: it needed to output both coordinates and actions, and thus was overwhelmed
+
+The interesting part about our dataset construction process is that it allows us to generate negative trajectories as well. Considering we do know the objective and the end goal, it’s super easy to know if the actions that were done were right: which could lead to DPO datasets!
+
+Basically, our objective was reached: proving there’s a chance PaliGemma could be specialized for a simple website related task. We do not know if that can be generalized, but I’m bullish on scaling it: an ideal would be that the dataset gets to be generated through a VLM.
+
+However it’s a very non-trivial task, especially if one tries to be website agnostic! But I hope it can work. And I think that I’ll still try for a bit. Basically, I don’t believe we can « solve » scrapping, but if we had for even like 10 to 30 tasks a way to auto-generate scraping code and trajectories, this could lead to massive and very interesting datasets for web agents, with both negative and positive examples!
+
+Thanks to @join_ef, @Scaleway, @AIatMeta, @huggingface and Unaite for sponsoring this hackathon and giving us access to ressources!
+
+And special thanks to @hugolb05, @mervenoyann, @giffmana for the help on scraping and PaliGemma finetuning. :)
+
+And of course, it was a honor to present our ideas and result in front of such a stacked jury, made of @lmazare, @EliotAndres and @xavfischer !
+
+Regarding the work we’ve done, which is entirely open_sourced:
+
+Model: https://huggingface.co/axel-darmouni/paligemma_dataset2
+
+Dataset: https://huggingface.co/datasets/anonx3247/web_agents_google_flight_trajectories/tree/main

@@ -1,0 +1,31 @@
+## Read 159: « OmniHuman-1 : ReThinking the Scaling-Up of One-Stage Conditioned Human Animation Models », by Lin, Jiang, Yang, Zheng and Liang from ByteDance
+
+https://arxiv.org/abs/2502.01061
+
+The authors of this paper study how to take an already existing Text-To-Video model and specialize it for Human Video Generation, that can take as input a reference image and:
+- A text
+- An audio
+- A pose
+- All of the above
+
+To do so, they start from their powerful Seaweed diffusion model, used for text-to-video/image tasks.
+
+The authors use a 3DVAE to project videos at their native size into a latent space, which enables training the model through Flow Matching.
+
+In order to take audio and pose as input, the authors go through manipulations:
+1- For audio, wav2vec is used to extract features, and a MLP performs projection to align with the hidden size of the MMDiT. Cross-Attention is used to inject the created tokens within the blocks.
+2- A pose guider encodes the driving pose heatmap sequence. The features are concatenated with adjacent frames, giving pose tokens, which are stacked with the noise latent.
+
+Now, onto the reference conditioning: keeping the reference image subject consistent within the video. To do so, the reference image gets encoded by a VAE, and it gets flattened into a representation along the noisy video. The trick is then to use 3D RoPE in the encoding DiT… while setting the temporal component of the Reference Image to 0, allowing conditioning.
+
+Now, regarding the training. 3 stages: 1 of Image & Text, 1 of Image & Text & Audio, and 1 of Image & Text & Audio & Pose. It’s important to note not all modalities have to be activated at all times. What the authors remark is that the strong conditioning tasks (audio & pose) NEED to be activated less than the weaker ones (text & reference image) during training.
+
+Small tidbit in the Inference related paragraph: Classifier Free Guidance is performed, with annealing regarding the magnitude of the process. This decreases wrinkles appearance and allows for expressiveness, according to the authors. OmniHuman can generate arbitrarily long videos, and uses the last five frames of the previous segment as motion frames.
+
+Overall, 18.7K hours of human-related data was gathered. Only 13% was used for the training of the model. The model was compared to several other models for Human Video Generation, on quantitative metrics. It basically redefines SoTA. Qualitative studies validate the choices of activated modality training ratios made by the authors.
+
+Qualitative results and videos can be found within the rest of the paper and its appendix.
+
+Basically, a very good release by ByteDance. And a terrifying paper: it states a lot but gives very little details, which end up being essential if one wants to reproduce it. I am honestly admirative considering the density of information within the paper.
+
+By the way, considering China is basically starting to make models that can generate anything, I can only advise caution on the web, even more than before, in terms of information to trust.

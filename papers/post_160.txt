@@ -1,0 +1,43 @@
+## Read 160: « High-Fidelity Simulatenous Speech-to-Speech Translation », by Labiausse et al from Kyutai
+
+https://arxiv.org/pdf/2502.03382
+
+The authors of this paper introduce Hibiki, a suite of 2.7B and 1.7B models able to perform French-To-English translation.
+
+Hibiki is composed of 2 transformers : a Temporal Transformer and a Depth Transformer. 
+
+The temporal transformer is an autoregressive model that takes as input the Mimi encoded audio tokens that precede the sequence we’re trying to generate, and outputs a latent variable. This latent variable can be mapped to text tokens to form « Inner thoughts » of the model, which then become an input along the encoded audio tokens.
+
+The depth transformer takes the generated latent variable and autoregressively generates the logits of the next Mimi tokens, which can then be decoded to form the audio.
+
+This means the model can output in two streams: text and audio. It’s worth noting a 2s delay is added to help with audio alignment. The depth transformer was compressed through distillation after training from a 1.1B to a 449M model, efficiently reducing its footprint.
+
+The training process is pretty interesting, as several modeling steps were applied for audio quality improvement.
+
+First, the Temporal Transformer is trained on multilingual next token prediction. Considering the sizes, the paper doesn’t specify it but it’s very likely what was released as Helium the last weeks. 
+
+The pretrained model is then trained along the depth transformer for audio modeling. It is pretrained on both French and English data, but with data kept in the same language within a sample. The depth transformer is then duplicated for multistream modeling.
+
+Now, for the speech translation task, this is where things get tricky.
+
+Basically Fr-En speech translation isn’t that simple, as there are not that many realtime large scale datasets. What the authors do is collect 2.3M speaker utterances that last around 60s. Segments are transcribed with STT, PySBD is used to split them into sentences and the MADLAD-3B model is used for sentence-level translation. All sentences are then joined to form a transcript.
+
+HOWEVER, to get them to be usable for realtime, speaker voice must resemble translated voice in at least utterance, in order not to create high delays in translation. A TTS model is specially trained to take into input both a text and a voice to condition. Model can output both streamed text and speech. The text streamed is conditioned to match exactly the text input, and thus all the model can do is insert padding tokens to create pauses, or hasten or decelerate the generated speech. If the TTS model lags on the audio that needs to be generated, a penalty is given on the logits of the padding token, which enforces smoothness. 
+
+For each of the Fr -> En transcriptions, 6 to 8 generations per input were done. Samples were in the end selected first on WER, and then Speaker Similarity (cosine similarity within embeddings of Input and Output Audios). A conditioning on 10s of the French audios was applied. A silence insertion technique is used so that the translated audios and reference audios are as close as possible in utterance.
+
+The data preparation is not over though! Speaker Similarity is also coming as a parameter. Indeed, for each training sample, speaker similarity is labeled from « very_bad » to « very_good » taken from the a 5-quantile split of the similarities. Learnable embeddings are then associated to the labels. At inference time, the very_good label is always passed for conditioning. However, the authors notice Classifier-Free Guidance can significantly increase voice transfer performance, conditioning on both logits from « very_good » and « very_bad » labels.
+
+Afterwards, Hibiki is lastly finetuned on a quality speech synthetic translation dataset (created with the trained TTS model), made of 900 hours of long form utterances and samples with natural pauses and high speaker similarity.
+
+Now, for the smaller Hibiki model: this one is going through the same audio and text pretraining steps, but is soft distilled in the speech translation part.
+
+Hibiki is then evaluated in several metrics, and manages to redefine sota :
+- Very good ASR with High Speaker Similarity on both Short Form and Long Form audio evaluation datasets
+- Human Evaluation places it at a very good rating.
+
+Ablations confirm the authors’ choices.
+
+Overall, a very dense paper that is a really detailed technical report of the solution. Tested on their notebook, seems quite satisfying. Hope it sees uses! ;)
+
+What makes me positive as well is that in fact their training process is not language dependent. Their training data is language dependent, but you just need to synthesize quality English -> French or Spanish -> English if you want to improve capacities. I am thus very curious if one model can take into account more languages, or if there needs to be a Hibiki for English -> French, one for Spanish -> English and so on. Hyped. ;)

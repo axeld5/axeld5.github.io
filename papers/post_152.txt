@@ -1,0 +1,41 @@
+## Read 152: « Best of N Jailbreaking », by @jplhughes, @sprice354_, @aengus_lynch1 et al from @AnthropicAI
+
+https://arxiv.org/pdf/2412.03556
+
+Jailbreaking of models has been relatively tried and tested. Through modifying the input prompt in many ways, some more complicated than others, it has been proven most models can be made to say whatever.
+
+However, a lot of Jailbreaking methods rely on gimmicks: game framing, past tense, specific formatting of the input… those gimmicks can actually be defended against through red teaming. 
+
+Here, the authors propose another method, that can be said as a gimmick but is quite deadlier in fact. Through simple perturbation at language, image or audio level, they show that it is possible to prompt an LLM and jailbreak it quite successfully without having access to its weights.
+
+Take the base input, augment it, prompt, check for jailbreak, and augment it again if jailbreaking didn’t occur (or stop if max iter are reached). The authors then assess such a jailbreaking process follows a power law, which is pretty impressive.
+
+More details below ⬇️
+
+——
+
+Dataset used is HarmBench, to be more precise the 159 test prompts of HarmBench. Models for the experiment are Claude 3.5 Sonnet, 3 Opus, Gpt-4o, 4o-mini, Gemini-1.5-Flash, Gemini-1.5-Pro, Llama-3-8B and a finetuned Llama-3-8B-RR tuned with circuit breaking, a specific defense method to circumvent jailbreaks.
+
+Augmentation attacks for each modality are as follows:
+- Text: Word Scrambling, Random Capitalization, Character Noising
+- Image: Typographic representation varying text fonts and colored rectangles randomly positioned
+- Audio: Modifying the audio waveform in speed, pitch, speech, noise, volume or music.
+
+——-
+
+The results overall are astounding: with only 10k tries, authors manage to have Attack Success Rates over 50% on their text based jailbreaking methods for most models (the exception being circuit breaking Llama-3-8B, which reaches barely around 40%), with even 78% ASR on Sonnet 3.5!
+
+Vision and Audio-based attacks manage to have very respectable ASR, most of the time above 50% after 7k tries, but the results are less good than for text.
+
+The authors also note that the jailbreaking BoN behavior follows a Power Law on N, which they confirm with forecasting experiments.
+
+——
+
+Ablations were also studied, and here are the results:
+- The augmentations matter: Simply prompting the model N times will yield less better results.
+- Higher sampling temperature yields easier jailbreaking, but once jailbreaking is found, it is better for consistency to use lower temperatures. 
+- Higher difficulty of jailbreaks is correlated within models. Could indicate similarity in red teaming datasets?
+
+—-
+
+Lastly, another finding of the authors is the composability of the BoN attack. Roleplay-based prefix attacks, Many-Shot Jailbreaking as prefix… BoN has no issues working with them, even working additionally on the prefixes, and improvement of the attack can be observed consistently!

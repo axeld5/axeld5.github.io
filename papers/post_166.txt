@@ -1,0 +1,23 @@
+## Read 166: « Large Language Diffusion Models », by Nie, Zhu et al from the Gaoling School of Artificial Intelligence
+
+https://arxiv.org/pdf/2502.09992
+
+The authors of this paper take a spin at the current paradigm in language modeling, with success.
+
+Basically, the gist of the modeling is that you have after tokenization a diffusion model that is applied to generate text. Forward process masks, reverse process unmasks. It’s worth noting LLaDA has a masking ratio, which means its forward process can afford not masking it all.
+
+Pretraining is basically Masked Language Modeling over a partial set of masked tokens, with the model leveraging the whole unmasked sequence.
+
+Finetuning is done through simply masking the answer.
+
+At inference time, a seq len is set, and all tokens in that sequence length are masked. At step t, some tokens are unmasked and some are still masked. However, the authors apply remasking on lowest confidence tokens to improve results. Additionally, they do one tweak which is a bit autoregressive-like: splitting the sequence answer in blocks, and generating an answer block to block. Unsupervised classifier-free guidance is also applied to improve results.
+
+After 2.3T tokens of pretraining data and 4.5 million pairs of fine-tuning data, the model reaches really decent generation results.
+
+It’s evaluated on all the common LLM benchmarks, and does perform similarly to SotA LLM of the same size. Interesting.
+
+All algorithms and training details can be found within the appendix of the paper. 
+
+Two notes from me: I feel like the vibe test is hyper important on that since it’s somewhat of a new architecture, and I am unsure on how that scales. Diffusion models for image generation haven’t been scaled effectively yet. So, while 1B -> 8B works, curious on 8B -> 70B.
+
+Interesting work overall as it’s a different modeling with quite good results, but only time will tell if it’s a road worth pursuing.

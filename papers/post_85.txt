@@ -1,0 +1,22 @@
+##  Read 85: Nemotron-4 340B technical report, by @NVIDIAAI
+
+https://d1qx31qr3h6wln.cloudfront.net/publications/Nemotron_4_340B_8T.pdf
+
+The authors of this paper announce Nvidia’s first competitive model: Nemotron-4-340B.
+
+While this model may be hard to use locally, this paper showcases that Nvidia performed end-to-end training of a massive language model, that reaches Claude 3 Sonnet level of performances on several benchmarks. They release Nemotron-4-340B base, along with an instruct and reward version. This release is accompanied by an Nvidia-specific commercial license.
+
+The paper goes over all training details, going on 8T tokens of textual data for a first pretraining phase and continuing on an additional 1T amount. Base model reaches performances at the level of every open sourced strong base model.
+
+For reward alignment, they create their own preference dataset, called HelpSteer2, which they publish along with a paper related to the method: https://huggingface.co/datasets/nvidia/HelpSteer2
+
+Nemotron-4-340B-Reward is the strongest reward model available according to their benchmarks.
+
+For model alignment, they exploit both available open source datasets, and explicitly leverage synthetic data through generation of additional examples. All details for their alignment process are rich and dense, and detailed within the paper.
+
+They evaluate the instruct model on both benchmarks and 1-to-1 fights against GPT-4. They find their model has performances comparable to Claude 3 Sonnet, and that it often edges out on gpt-4. They find as well that the model has similar performances on average regarding safety issues than Llama-3-70B-instruct, one of the if not the strongest model at the moment in that field.
+
+Prompts and additional details can be found within the appendix.
+Models can be found here: https://huggingface.co/collections/nvidia/nemotron-4-340b-666b7ebaf1b3867caf2f1911
+
+Personal Thoughts: With this, Nvidia steps into the arena. This model likely isn’t the big revolution of LLMs. But it’s a proof Nvidia can tackle giants on a domain for which they are the resource providers. This can lead to really interesting consequences in the market. Nvidia is on the rise, and do not expect them to slow down. It will only go up from now.

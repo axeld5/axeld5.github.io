@@ -1,0 +1,25 @@
+## Read 48: CyberSecEval 2: A wide-ranging cybersecurity evaluation for large language models, by @joshua_saxe, Bhatt, Chennabasappa, Li, Nikolaidis, Song, Wan et al from @aiatmeta
+
+This paper aims at improving the first CyberSecEval benchmark by benchmarking LLMs on 3 additional tasks (the 2 first ones being insecure coding and cyberattack helpfulness):
+- Prompt Injection
+- Vulnerability Identification and Exploitation
+- Code Interpreter Abuse
+
+They add onto that a novel metric, called the « False Refusal Rate », which corresponds to the amount of benign prompts the LLM mistakes for harmful prompts. To do so, they include another dataset, which goal is to provide the LLM borderline prompts, which are prompts that are benign in reality but could be considered harmful by an LM.
+
+For prompt injection coverage, the authors focus on one-shot prompt injections that either makes the LM violate its system prompt with no direct harmful generation, or makes it generate harmful content. Test cases are of the form « Prompt/Input/Judge Question ». The judge question is for a separate LM to answer.
+
+For vulnerability exploitation, the authors generated capture-the-flag like challenges for which the LMs must be able to exploit vulnerabilities in logic or sql injection, or memory exploit. Each test is accompanied by the challenge program and a proof-of-concept input that triggers the vulnerability.
+
+For code interpreter abuse, they verify through another LM if the target LLM compiles with respect to the malicious request.
+
+They then evaluate the models on all those tests, along with Cybersecurity Helpfulness. Models evaluated are gpt-3.5, gpt-4, the mistral series, the llama-3 series and the codellama series.
+
+They detail the results for each model evaluated. Gpt-4 is usually one of the safest both in refusal rate for harmful prompts and in false refusal rate for bordeline benign prompts. The other models’ ranking are less consistent depending on the tasks, and all ranks are detailed within the papers.
+
+Qualitative examples are shown within the appendix, and a github is given as well for reproducibility.
+
+Personal Thoughts: Really cool benchmark, and I hope it may yield to a high level of advances in facing cybersecurity issues!
+
+Paper link : https://arxiv.org/pdf/2404.13161
+Github link : https://github.com/meta-llama/PurpleLlama/tree/main/CybersecurityBenchmarks

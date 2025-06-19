@@ -1,0 +1,23 @@
+## Read 91: Multimodal Needle in a Haystack: Benchmarking Long-Context Capability of Multimodal Large Language Models, by Wang et al from Rutgers University
+
+https://arxiv.org/pdf/2406.11230
+
+The authors of this paper introduce a new paradigm to evaluate the ability of MLLMs to extract information from dense images.
+
+The setting is the following: the model is given a sequence of M images which contain N x N stitched subimages, which N = 1, 2, 4 or 8. M is tested at both 1 for started, and then at 10, capping gpt-4o rate limits. The goal of the model becomes then to find the needle, ie the image described by a caption given to it. Model is asked to find the exact image index, and the row and column of the sub-image grid it is looking at.
+
+The dataset used for the test is MS Coco 2014, and the sampling and image stitching process is described within the paper. 
+
+3 categories are evaluated:
+- Whether the model identifies if the image exists or not within the given images
+- Whether the model identifies the index of the image within the prompt
+- Whether the model identifies the complete location of the image within the prompt
+
+For the M = 1 setting, even in the N = 8 setting, most models (both open-source and proprietary) are able to succeed at the existence task. Models actually differentiate themselves at the complete location accuracy. Open Source models really struggle even at the simplest case, while only Gpt-4o and Gemini 1.5 manage to have very high scores. Performances grow way worse at 4x4 and most importantly 8x8, where all models do not perform very well. Results hold for 2 needles instead of 1.
+
+The M = 10 setting, for only 1 needle, is even harsher. Only GPT-4o can scale up to 2x2 patches, and even its performances massively degrade on 4x4 to hit rock bottom at 8x8.
+
+Additional Details can be found within the appendix.
+Code is open-sourced at: https://github.com/Wang-ML-Lab/multimodal-needle-in-a-haystack
+
+Personal Thoughts: A really interesting paper! The ability to identify said needles may be actually very relevant for cases like image anomaly detection, to be completely honest… so I feel like this study may have some nice consequences. :)

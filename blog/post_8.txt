@@ -1,0 +1,21 @@
+## Build Project: Public Data Anaylst
+
+The project was to make an agent that was able to explore http://data.gouv.fr and generate analytic reports
+
+It’s still a work in progress, especially for it to be production ready, but I did like cooking it up for the @Gradio hackathon :)
+
+CodeAgents from @huggingface SmolAgents roaming wild are something to behold: even though the code does create mistakes, it is pretty good at fixing itself until report generation is performed.
+
+## Lessons Learned
+
+- CodeAgents are very, very strong. Impressive to see all it can do with just a set of library. Even a single agent was enough to get good results.
+- Tooling is basically "smart fixes for the agent to perform well". You tool an agent with anything you think is critical to be done well, can be controlled, and is pretty easy to describe.
+- I'd say it's better to overtool than overcharge with libraries. I feel that I have given the agent too much freedom to perform here. Definitely fixable, either by retooling or with multi-agents with specific functions.
+
+I'd say there's still much to do with this project, so perhaps I'll come back soon to rework on it and get better results. Time will tell. :)
+
+PS: The video is indeed shortened, as the generation process does take ~6 mins. Right now, it’s mono dataset but the latent objective is to build a DeepResearch agent on data gouv datasets, as open French public data is a trove waiting to be used! ;)
+
+### Video
+
+public_data_analyst.mp4

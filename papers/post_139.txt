@@ -1,0 +1,18 @@
+## Read 139: PaliGemma2 is out! Paper by @AndreasPSteiner, @ASusanoPinto, @mtschannen et al from Google Deepmind
+
+https://arxiv.org/pdf/2412.03555
+
+What are the main updates on PaliGemma? Basically:
+- Still same architecture, same 3 stage training: Vision Encoder + Projector into LLM; trained fully in 1 billion examples at 224px, then upscaled to 448px and to 896px, then finetuned on target task
+- Logits soft capping is applied in stage 1 and 2, optimiser is Adam and hyper parameters can be found within the paper
+- Data mixture is same as PaliGemma
+- Vision Encoder is still SigLip-400M, LLM is now Gemma 2 !
+- Out in sizes 3B, 10B and 28B
+
+Improvement is consistent from upscaling from 224px to 448px inputs, and from 3B to 10B. A bit less variation from 10B to 28B. Authors suppose it is due to the distillated factors of Gemma2-2B and Gemma2-9B compared to 27B, trained from scratch.
+
+The authors then finetune PaliGemma2-3B for several tasks: OCR, table recognition, molecular structure recognition, optical music score recognition, generation of fine grained captions, spatial reasoning, radiography reports… and for all of those, it is at SotA level. 10B even overthrows the SotA when it is tested!
+
+Details and qualitative results can be found in appendix.
+
+I would love to have the datasets used for finetuning -or even the finetuned versions!-, considering the strength of the model. Really cool read, really cool model, thanks Google for open-sourcing it!

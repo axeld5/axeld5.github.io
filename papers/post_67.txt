@@ -1,0 +1,25 @@
+## Read 67: Automatic Data Curation for Self-Supervised Learning: A clustering based approach, by @huyvvo et al from @AIatMeta
+
+https://arxiv.org/pdf/2405.15613
+
+The goal of the paper is to perform smart sampling of training data for SSL to have a balanced representation of the classes. They justify their research first by showing that very imbalanced datasets have performance effects in training for SSL.
+
+To do so, the authors use hierarchical clustering with resampling. With several applications of kmeans, they extract then an approximatedly-balanced subset of the dataset.
+
+They then study the impact of their method for training a ViT-L with Dinov2-reg for several datasets and tasks.
+
+They report results about the influence of all their hyperparameters, yielding with the following setting:
+- 4-level hierarchy
+- Resampling between 10 and 100 times, with random resampling 
+- kmeans++ initialisation
+- base embeddings trained from ImageNet1k
+
+Doing so yields with far better results than applying already base embeddings.
+
+Looking at SSL application now, the model trained on curated data performs way better than the model trained on the full raw data on average… and this results hold across all different benchmarks.
+
+In fact, it can even extend itself to large language model pretraining and performance on canopy height benchmarks using satellite images!
+
+Github code is open sourced here: https://github.com/facebookresearch/ssl-data-curation
+
+Personal Thoughts: Really interesting result. What’s more interesting is that the models perform better… with less data! I don’t think we are back to the chinchilla data pruning era of 2022, but this is a very interesting result nonetheless as it brings more performance with less compute!

@@ -1,0 +1,26 @@
+## Read 162: « s1: simple test time scaling », by Muennighoff, Yang et al from Stanford University
+
+https://arxiv.org/pdf/2501.19393
+
+Basically the authors of this paper do something very similar to LIMO, but independently. They generate 1000 quality reasoning data, finetune Qwen2.5-32B-Instruct on it, and see high improvement of performance on math benchmarks.
+
+The authors start first by collecting data from numerous math training sets, ending up with 59k samples. Additional samples are added from the probability section of Stanford University’s Statistics Department PhD Qualification Exam and common interview questions for quantitative reasoning.
+
+For each question, a reasoning trace is generated using the Gemini Flash 2.0 Thinking API.
+
+The authors then filter the 59k questions the following way:
+1- Quality: removing API errors, bad formatting…
+2- Difficulty: removing questions that are too easy to solve for Qwen2.5-7B-Instruct and Qwen2.5-32B-Instruct…
+3- Diversity: sampling from different subsets of mathematics, and then picking randomly examples from those domains using a distribution favoring longer answers
+
+This process yields a total of 1k quality reasoning examples over 50 domains.
+
+A Qwen2.5-32B-Instruct is then finetuned for 26 minutes over 16 H100 on that dataset.
+
+Basically results on evaluated math benchmarks blow the instruct model out of the window, and even the reasoning model QwQ, based on the former model. Results are also stronger than o1-preview, but worse than the other stronger reasoning models.
+
+What’s interesting as well is how they scale the « thinking » process of the Language Model. Basically, they fix an amount of tokens they want the model to reach. Then, they append « Wait » at the end of the generation from the model if the amount is not reached. If it is still not reached, they append wait again, and so on. And when it is reached, they append the <eos> token, and tell the model to fill « Final Answer: ». 
+
+Turns out that this method, which they call budget forcing, works surprisingly well at slightly improving performances over their reasoning model. While no budget forcing still yields good results as the model automatically generates long reasoning traces, the method still has a small impact. 
+
+Overall, a quite interesting paper, especially paired with LIMO. Even more eager for a math finetuning of Mistral small 👀

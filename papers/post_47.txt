@@ -1,0 +1,25 @@
+## Read 47: Weight-Decomposed Low-Rank Adaptation, by @nbasyl_tw et al from @nvidia
+
+LoRA is a known go-to for parameter efficient tuning. By rewriting the weight optimization process as a frozen matrix + two multiplied trainable low-rank matrices, it allows for efficient finetuning of models that does not have strong memory costs.
+
+The authors of DoRA found out about a stronger method, that decomposes the weight matrix into a Magnitude times a Direction. 
+- The magnitude is a scalar to be optimized. 
+- The direction is a unit vector composed of the frozen weight, and the LoRA matrix decomposition to be optimized, and the norm of the matrix sum dividing it. This norm is considered constant for derivation, in order to ease computations for the gradient.
+
+Taking the norm as a constant for derivation makes gradient computations way easier, and in fact places DoRA on the same level of complexity as LoRA. An ablation study showed considering it as not constant did not yield a noticeable increase in results as well.
+
+DoRA is experimented on Llama-7B, Llama-13B, Llama2-7B, and Llama3-8B for text understanding. It is evaluated on VL-Bart for Video/Image-Text Understanding. It is evaluated on Llava-1.5-7B for Visual Instruction Tuning. 
+
+On all models, for all benchmarks evaluated, it scores consistently above LoRA on all benchmarks, showing even a difference of 4% perf on average for Llama3-8B. 
+
+In fact, three more results are noted for DoRA :
+- It is compatible with other LoRA variants like VeRA (an approach involving freezing and sharing low-rank matrices across all layers and working on layer specific trainable vectors), for which it greatly increases performances.
+- It shows strong results even at very low ranks (having similar perfs between r=8 and r=32, much unlike LoRA), which allows to have noticeably less parameters.
+- It is compatible and even provides a big enhancement over QLoRA.
+
+Additional mathematical and computational details can be found within the paper’s appendix, along qualitative examples. A code github is put within the paper for reproducibility.
+
+Personal Thoughts: LoRA has been dethroned. DoRA looks much stronger and even more efficient. A very interesting paper that could shape a new horizon for PEFT.
+
+Paper Link : https://arxiv.org/pdf/2402.09353
+Github Link : https://github.com/NVlabs/DoRA

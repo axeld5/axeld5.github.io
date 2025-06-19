@@ -1,0 +1,19 @@
+## Read 45: Octopus v4, graph of language models, by Wei Chen and @zhiyuanli_ from @nexa4ai
+
+https://arxiv.org/pdf/2404.19296
+
+The approach proposed by the authors of this paper is one of a graph of experts.
+
+Take several models tuned to be expert in one domain (law, mathematics, biology…) and one smaller model which goal is to query the specialists, and you have an actually very strong approach!
+
+How do the authors orchestrate that? They functionalize each model, and finetune a small model (the orchestrator) in learning to call function tokens with specially crafted synthetic data. 
+
+More notably, the authors generate (through an LLM) for each function data for which the function called is relevant, and complete it with data for which no function is relevant.
+
+In doing so, they obtain a planner model, that will map a query to a desired specialized LLM. If this is a multistep case, using the planner model, the specialized llm will then pass the ball to another, until the sequence is judged to be complete.
+
+The authors test their approach on MMLU. All specialized models used are described within the paper, and the « generalist » model is phi-3-mini. 
+
+On this benchmark, the framework reaches 74.8% accuracy, which is 6.7% higher than phi-3 alone and 4.8% higher than gpt-3.5, with no models used above than 8B parameters!
+
+Personal Thoughts: A massively interesting paper, as this is imo the direction that should be optimized. Having 128x3B mixture of experts model do not work well in practice, as they have heavy storage costs that cannot be alleviated. Meanwhile, having a 3B model and 16 8B models is much easier to store and query! With the advances we are doing as well in model specialization, there’s no doubt that this approach is the beginning of something big ;)

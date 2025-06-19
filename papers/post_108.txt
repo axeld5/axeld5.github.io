@@ -1,0 +1,29 @@
+## Read 108: AgentInstruct: Towards Generative Teaching with Agent Flows, by @Arindam1408, @ludelcorro et al from @MSFTResearch
+
+https://arxiv.org/pdf/2407.03502v1
+
+The authors of this paper present a process, AgentInstruct, that is used to create a diverse and massive synthetic dataset of 25 millions prompt response pairs. That dataset is then used to finetuned a Mistral-7B model, and have it perform over GPT-3.5 in multiple benchmarks.
+
+To create their dataset, they first gather raw data: textbook chapters, web articles, code snippets…
+Once this data is gathered, the authors perform a threefold process:
+1- The raw data is transformed through one or more content transformation Agents. Those agents modify the original text, to put it in a different form for diversity.
+2- This transformed data is then fed to another group of agents that generate instructions from it, referred to as Seed Instructions.
+3- A suggest-editor framework is then applied to the instructions. A suggesting agent puts out an approach to modify the instruction (increasing complexity, adding distracting sentences…), and an editing agent applies the suggestion to change the input text.
+
+There are 17 different skills, each skill with their different agents in each flow of the process. Examples of flow application are given within the paper for generation of data related to reading comprehension, text modification and tool use. 
+
+It’s important to note that there are a lot of agents for a given skill. For instance, for the reading comprehension skill, there are 9 agents for the content transformation flow, and 43 question types for the seed instruction generation flow, which is a non-negligible amount!
+
+They create overall 22 million instructions using data from various sources, for which they add 3.8 million instructions data points, sourced from previous Orca papers and open-source datasets. They use these instructions to finetune a 7B Mistral model. This massive finetuning took 19 Nvidia A100 for a total of 200 hours.
+
+But it was worth it. The authors exploit their data collection process to create Orca-Bench, a dataset of 100 samples from each of the 17 skills that allows evaluation of the models using GPT-4 as a judge, that rates from 0 to 10. Said evaluation process also includes multi-turn conversations, for which the authors use a specific turn-based rating that compares student model answers to teacher model ones.
+
+The authors then evaluate Orca-3 on several common benchmarks, along specific ones related to reading comprehension, math capacities, format following, summarization, and RAG. On all of them, it consistently shows an improvement over Mistral-7B (which is sometimes a very large improvement), and consistently gets close to GPT-3.5 levels of performance, sometimes even reaching GPT-4 perfs!
+
+It is very worth noting that their synthetic data generation, and model training processes are lengthy and costly. However, it seems worth the trouble, as it allows a mere 7B model to topple the giants.
+
+Additional details can be found within the appendix of the paper. Personal Note: Model has yet to be released on huggingface, but all previous Orca models were open-sourced so this one should be no exception.
+
+Personal Thoughts: Microsoft has a very strong insight on textual synthetic data generation, and I love seeing those Orca papers. They often provide new ways to counter issues encountered in synthetic data generation processes, so it’s always a pleasure to read their work. 
+
+I’ve seen several papers that perform post training with data generation, but the impressiveness factor of this one is that it provides a generic task-related synthetic dataset, and uses it to improve the overall performance of the model instead of focusing on a specific area. And it does it greatly. Recommending this read fully!

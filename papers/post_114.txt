@@ -1,0 +1,25 @@
+## Read 114: Wolf: Captioning Everything with a World Summarization Framework, by @Boyiliee, @LigengZhu et al from @Nvidia
+
+https://arxiv.org/pdf/2407.18908
+
+The authors introduce a framework leveraging models understanding images and videos to provide accurate captioning of short videos.
+
+What they do is a process in 4 steps, that they call Wolf:
+1- Frame-level CoT summarization: Sample frames every 2s, caption frame 1, then caption frame T+1 using summary of frame T and image of frame T+1. Finally, use GPT-4 to aggregate the information from all captions, noting as well relevant temporality information.
+2- Use a video-language model to caption the video.
+3- Apply again the model to get a description specifically for the motion behavior.
+4- Summarize it all with a final LLM call.
+
+At steps 1&2, several models can be applied and all captions can then be aggregated.
+
+Authors provide also a Wolf benchmark, made of several types of short videos: autonomous driving, robot manipulation, and free of rights high quality videos from Pexels.
+
+To evaluate captioning quality, the authors introduce the CapScore: asking a frontier LLM to output a score between 0 and 1 to compare captions with a ground truth. Two scores are being taken into account: Caption Similarity and Quality, which correspond to comparisons in alignment and factuality with the ground truth caption.
+
+The authors then compare their framework with both private and open-source SoTA models in image and video analysis. They call all the models they have and aggregate captions: CogAgent and GPT-4 for images, VILA-1.5 and Gemini Pro 1.5 for videos. 
+
+They find Wolf is better in all metrics by quite the margin compared to all models but Gemini Pro 1.5 -for which it is only slightly better-, in all datasets of the benchmark.
+
+They also note that Wolf can be used to finetune VILA-1.5, to great success at improving captions!
+
+Personal Thoughts: Really cool idea! Framework seems coherent, and it’s great finetuning results of open source models can be improved from it! Would be interested eventually in having a test of Wolf vs Gemini Pro 1.5 with Flash 1.5 instead of Pro 1.5 as one of the video understanding models of Wolf, to check if it can beat Pro at a cheaper cost… :)

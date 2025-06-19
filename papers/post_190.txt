@@ -1,0 +1,30 @@
+## Read 190: « Co-Evolving LLM Coder and Unit Tester via Reinforcement Learning », by Wang, Yang et al from University of Chicago and ByteDance Seed
+
+https://arxiv.org/pdf/2506.03136
+
+The authors of this paper present CURE. CURE is a novel RL framework, which is used here to specialize instruct models through the optimization of the generation of solutions and valid tests.
+
+A go through the following approach:
+1- Take a set of coding tasks with ground truth tests. 
+2- Fix a number of code solutions generated per step and a number of generate unit tests per step
+3- Per iteration :
+—> Generate for each task solutions and tests
+—> Evaluate the solutions vs set of ground truth and generated tests
+4- Compute a first reward, which rewards based on an estimator of the solutions to be correct with respect to the ground truth tests
+5- Compute a second reward, which rewards based on an estimator of the generated tests to be valid to maximize the probability of correctness of a solution that passes them
+—> This reward is modified in case we work with Long-CoT models like Qwen3 to penalize with respect to answer length
+6- Rewards are normalized to Advantages and PPO-like loss with KL normalization is applied for each one
+
+They tune then Qwen2.5-7B/14B-Instruct and Qwen3-4B, and reach massively high performances with respect to the size, *especially* for unit test generation. They call their model family ReasonFlux.
+
+In fact, the ReasonFlux-4B is even strong as an RL test generator! It can enable Qwen2.5-14B-instruct perf to go up with it as the code generator at the same level as if ground truth unit tests were used for verification.
+
+Now for other comparisons:
+1- The ReasonFlux series are better at Agentic and Coding tasks than the model they were trained from
+2- While simpler approach (no second reward, SFT-like approach, simplified test reward) reach similar perf on LivecodeBench, the authors claim they are consistently outmatched; but especially that the tests generated have very poor coverage.
+
+Appendix contains proof used for the theorem from which the rewards are derived from and contains information about the estimators to compute them.
+
+Code is open sourced at: https://github.com/Gen-Verse/CURE
+
+Straight up insane paper, can’t believe it didn’t blow up: the way they look at generated tests is not only interesting, but also makes sense considering that it is normal for tests not to have complete coverage. Heavily recommending the read.

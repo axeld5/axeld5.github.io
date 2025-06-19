@@ -1,0 +1,12 @@
+## Read 29: Neural Network Diffusion
+
+https://arxiv.org/pdf/2402.13144.pdf
+
+This paper wants to output the parameters of a neural network... using a diffusion model
+The trick? They train a complete model, train an auto-encoder on the model's {s_i} params (i being an epoch), and train a diffusion model to reproduce the encoder's latent dimension.
+
+Once this is done, noise is injected and lots of new parameter configurations come out.
+
+What is even more impressive is that the model obtained this way has almost the same performance as the trained model on very basic CV benchmarks, but the parameters are really not the same.
+
+Personal Thoughts: Really interesting paper here. Would be amazing to see a more detailed version of this work, tackling larger problems and most importantly larger models! Imagine if a diffusion model could generate optimal LLM parameters… 👀

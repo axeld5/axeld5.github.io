@@ -1,0 +1,39 @@
+## Read 151: « Do Not Think that much for 2+3=? On the overthinking of LLM », by Chen et al from Tencent AI Labs
+
+https://arxiv.org/pdf/2412.21187
+
+The authors find out that QwQ-32B’s answers tend to be overly long for even simple problems, like computing 2+3. 
+
+In this paper, they write about how they leveraged RL techniques to reduce the amount of tokens output by the model by a certain amount, while maintaining performances to an acceptable level
+
+How so? ⬇️
+
+——-
+
+Authors first introduce an « efficiency ratio » which they compute to get a grasp on the overthinking issue. This formula can be seen as the amount of tokens divided by the amount of solutions generated. 
+
+Conventional LLMs are efficient by nature as they do not overthink on the issue. Models which are inefficient and will be tackled in the paper are the « reasoning » type of models, and especially QwQ-32B.
+
+——
+
+To mitigate this issue, the authors look into the construction of a traininng dataset. They start from the PRM12k that will be the source of the instructs to generate training data. 
+
+The authors study which type of information to choose for the finetuning. In case of RL-based, the negative example can already be found: the longest output gives a highly contrastive signal.
+
+Now, for the finetuning examples (and positive examples for RL-based optimization), authors considered adding:
+- Shortest output from QwQ-32B
+- First Correct Solution (FCS)
+- First and Second Correct Solutions (which they refer to as FCS+Reflection)
+- First and Second Correct Solutions, with added diverse solutions (which they refer to as Greedily Diverse Solutions)
+
+All those were tested, and in the end FCS+Reflection with SimPO managed to get the better results, in terms of reducing the amount of tokens generated while keeping accuracy at base-level for all math-related studies datasets.
+
+——
+
+And even regarding challenging datasets, the results are really good: the approach manages to keep the same capacities, with higher efficiency.
+
+——
+
+Additional details can be found within the paper, like how the efficiency formula is truly computed, and more exploration details from the researchers on the comparison of methods and outputs.
+
+Was a quite nice read! Curious if openAI had the same issue while developing o1, or if it has to do with the fact the base model is a 32B which might have been overtuned for reasoning. Curious about what will come next in that area!

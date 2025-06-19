@@ -1,0 +1,32 @@
+## Read 174: « SmolDocling: An ultra-compact vision-language model for end-to-end multimodal document conversion » by Ahmed Nassar, Andres Marafioti et al from IBM Research and Huggingface
+
+https://arxiv.org/pdf/2503.11576
+
+The core idea of the paper is that you take SmolVLM-256M, and apply curriculum learning over it to make it learn how to reliably extract information from documents. First, freeze the vision encoder and train the model to understand DocTags tokens. Second, unfreeze the vision encoder and re-pretrain the model on document-related datasets to finetune it afterwards on task-specific datasets.
+
+What the authors do first is building what they call DocTags as a way to process the document information. DocTags contain both what the piece of content studied is in the layout along its bounding boxes, using an XML style of documentation. Table structures are encoded in a specific way, using the OTSL vocabulary.
+
+The data has really interesting ideas applied to it.
+
+The pretraining document datasets are reconstructed, one through the DocFM dataset and another through Docmatix, augmenting those with the DocTags.
+
+The authors then created several amount of datasets afterwards for the task-specific Finetuning process, using lots of synthetic data creation:
+1- Generating pages using different fonts, colors, or layouts through Wikipedia texts
+2- Generating tables from tabular datasets converted to OTSL format
+3- Generating charts from datasets, using matplotlib code to convert said information into diagrams
+4- Using latex and pygments to convert text code snippets into document-level code snippets
+5- Using latex and extraction from arxiv pdf to generate equation formulas
+
+Regarding the instruction tuning step, instructions were generated through a mixture of rules and LLM-based generation along a randomly sampled element from the page, like « perform OCR at bbox », « extract section headers from the page », and many others.
+
+Once this whole process was done, the model was baked.
+
+And it’s a pretty impressive model, for only 256M parameters:
+- Its document OCR performance is higher than Qwen2.5-VL-7B, and on the same level as GoT-OCR, which is a 1.5B model!
+- Much better than Qwen2.5-VL at layout analysis
+- Worse than Tableformer for table analysis, but much stronger than VLM-based analysis of models 10 times larger
+- Better than all small models but Granite Vision for chart analysis, which makes sense due to the specific chart finetuning of that model
+
+Overall, a quite interesting paper and model produced there, making me invested in the models IBM are building, honestly.
+
+What mainly hooks me is their data processing way. I have the belief, as shown here, that there is still a lot to do in data remapping. This paper along Granite Vision are very good examples of that: through preexisting datasets, you can create new datasets in other modalities (documents, charts, etc) enabling better training especially in the document analysis case. To follow! :)

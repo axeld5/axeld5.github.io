@@ -1,0 +1,19 @@
+## Read 43: Prometheus-2, an open source language model specialized in evaluating other language models, by @seungonekim, @scott_sjy et al from KAIST AI
+
+https://arxiv.org/pdf/2405.01535
+
+In the LLM as judge process, we often use costly strong LLMs to perform the judging, as they have the most trustworthy results. The authors of this paper alleviate that by showing it’s possible to finetune a model to have strong evaluation performances at only 7B and 8x7B sizes.
+
+Their tricks:
+- They construct a dataset specialized for pairwise ranking, the Preference Dataset from the Feedback Dataset. To do that, they pair answers from instructions from the Feedback Dataset, rank them through their established scoring, and ask GPT-4 to identify similarities and differences between the pair. 
+- They perform weight merging between a Mistral-7B trained on Preference Dataset and one trained on Feedback Dataset. Merging is linear at merge_coefficient = 0.5 (both models have equal contribution).
+
+And the results are strong! Prometheus-2 7B crushes its tier in terms of evaluation performances on both pairwise ranking and direct evaluation, and Prometheus-2 8x7B (trained on Mixtral) can sometimes reach Claude Opus level of rating, which is really good!
+
+Surprisingly enough, the model merged is better than models fully trained on Feedback Dataset or Preference Dataset in both tasks. The merge is actually a main contributor in making the difference.
+
+Additional information about training and prompt used are within the appendix.
+
+Github can be found here as well! https://github.com/prometheus-eval/prometheus-eval
+
+Personal Thoughts: Really interesting to see another use case where smart finetuning allow relatively small/medium-sized models to topple the LLM giants. Has no doubt this paper will be relevant in Kaggle’s recently released LMsys prediction ;)

@@ -1,0 +1,15 @@
+## Read 93: Sparse High Rank Adapters, from Bhardwaj, Pandey et al from Qualcomm AI
+
+https://arxiv.org/pdf/2406.13175
+
+The idea of the authors of this paper is simple: what if instead of having to deal with low rank matrices, we directly iterated on a very small fraction of parameters of the base matrix?
+
+Basically, the authors initialize a mask M in {0,1}^(m.n) and apply this mask for backpropagation, modifying only a very small amount of parameters (1-2% total params). They call this method SHiRA, for Sparse High Rank Adapters.
+
+They provide different types of initialization for the matrix M, but the one that performs best is SHiRA-struct: selection the diagonal and certain rows/columns of the weight to be trainable. This yields the best scores and properties, especially in the multi-adapter case.
+
+The authors experiment their method for finetuning both a version of SD-1.5 and Llama-7B, and Llama-2-7B. They find that it works on par, or even better than LoRA while modifying much less parameters of the studied models. This means that this method can be used to adapt models much more efficiently, as LoRA Weights can be very heavy to save.
+
+Additional details and mathematical justifications can be found within the appendix of the paper.
+
+Personal Thoughts: While this remains to be tested on more up-to-date models, results could be impressive, especially for finetuning APIs. Less memory storage means less storage cost for the companies that provide this service. :)

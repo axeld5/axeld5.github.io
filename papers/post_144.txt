@@ -1,0 +1,23 @@
+## Read 144: « MetaMorph: Multimodal Understanding and Generation via Instruction Tuning », by Tong et al from @AIatMeta
+
+ https://arxiv.org/pdf/2412.14164
+
+The authors of this paper give us another approach for VLM construction, that also enables said VLM to generate quality images!
+
+Basically, the idea is that while you still go the usual for VLM construction (SigLip + Projector), you append the possibility for the model to generate visual tokens. And finetune it as well on visual token generation, which is in the SigLip space.
+
+Authors prove this is doable solely with Instruction Tuning, using a mere 20M samples (typical VLM repurposing, like for Idefics3 or PaliGemma, uses billions of samples). These samples come from Visual Understanding Datasets, Visual Generation Datasets, and other visual data like Video, Visual Thinking or Image-to-Image datasets. To make the model able to perform generation at inference time, the authors finetune a projector layer and a diffusion model for the visual tokens to be able to replace text inputs.
+
+Their findings are the following:
+1- Visual Understanding Data helps enhancing Visual Generation
+2- Reciprocally, Visual Generation Data helps enhancing Visual Understanding
+3- Upscaling Visual Understanding Data improves more performances than upscaling Visual Generation Data
+4- Increasing Visual Generation Data does not correlate with an improvement of performances in Knowledge-Based VQA tasks like MMMU, but does correlate with Text Understanding, and more General or Vision Centric VQA tasks
+
+And afterwards, the trained Metamorph model from a Llama-3.1-8B does actually show performances higher than all its bi-modality (text/image-in, text/image-out) counterparts!
+
+What is even impressive is that it can latently think regarding image generation: if asked to generate something that requires reasoning like the animal with 2+7 lives, it does understand it needs to generate a cat!
+
+Appendix shows additional information, namely about the diffusion model finetuning, and regarding the overall training data used
+
+Basically I’m hyped. Why? Because we get a model with good generation capacities and image understanding with as little as 20M samples, without using little knowledge and developed datasets we have regarding VLM training. I’m feeling this paper could be the beginning of a boom, with knowledges combined. Perhaps I’m wrong, but I’ll be very glad to be disproved ;)

@@ -1,0 +1,20 @@
+## Read 184: « LLaDa-V: Large Language Diffusion Models with Visual Instruction Tuning », by You et al from the Remnin University of China
+
+https://arxiv.org/pdf/2505.16933
+
+The authors of the paper go through the process of performing Visual Instruction Tuning over LLaDA-8B using SigLip2 and a 2 layer MLP projector.
+
+The sampling process applied for LLaDA-V is similar to LLaDA, using bidirectional attention and refining iteratively with remasking the outputs based on low confidence predictions.
+
+They make the training process pretty similar to the conventional Visual Instruction Tuning procedure, with a 3 stage training:
+1- Aligning the MLP with the Large Language Diffusion Model’s embeddings
+2- Tuning everything on Visual Instruction Data
+3- Tuning everything on Visual Reasoning Data
+
+To compare their process with an LLM, they choose Llama-3-8B as the one to receive a Siglip2 + Projection MLP attached to it. They name it LLaMA-V.
+
+And the results are very good looking. LLaDA-V shows similar results to LLaMA-V, and is at the level small VLMs of that range stood at last year -not beating Qwen-2.5-VL yet, of course-
+
+Architecture details and qualitative outputs can be found at the appendix.
+
+Overall, an interesting work proving there is more to be explored with diffusion models. Cannot wait to see what comes out of it from the labs!

@@ -1,0 +1,24 @@
+## Read 142: Eliminating thoughts Tokens from CoT-prompts: Training LLMs to reason in a continuous latent space, by @Ber18791531 et al from @AIatMeta
+
+https://arxiv.org/pdf/2412.06769v1
+
+The authors of the paper introduce COCONUT (Chain of Continuous Thoughts) as a way to replace the CoT thought output tokens by latent thoughts. Basically, what the authors do is replace step tokens by a stream of last state outputs, taken as new embeddings for as long as the model is allowed to think before answering a query.
+
+How they finetune a model to think that way is the following:
+- First finetune model on CoT output
+- Then, train for multiple stages of training: for k-th stage, have k x c latent thoughts where c is the amount of thoughts replacing a step, and n-k steps of the CoT output that remain
+- Flexibility can be done for the process : selecting fixed amount of steps to truncate, then adding all of the others as a fixed amount of latent thoughts ; staying for a certain amount of time in the final stage… a lot of the process can be worked around and specifically tuned forces
+
+Regarding inference after training: a <bot> token is added to begin thought process, and an <eot> token is appended after a fixed amount of thoughts.
+
+This procedure is tested on GPT-2 on two datasets : GSM8k  (small arithmetic problems) and a subset of ProntoQA (multi-hop questions) containing 5-hop questions. The authors also reframe ProntoQA into ProsQA, a DAG-version of ProntoQA where nodes are entities or concepts linked using the information of ProntoQA questions.
+
+GPT-2 is thus trained on those datasets and the generation method is compared to both CoT-based generation, generation without CoT, and generation with other training methods that either internalize CoT or add intermediate steps.
+
+Results are as follows: method is on par with CoT for a much lower amount of generated tokens, and a bit better than iCoT, for a slightly higher number of generated tokens… with only two thoughts per step!
+
+The authors perform then an extensive investigation of the model’s process, and infer that the latent thoughts allow the model to perform exploration similar to BFS ; correlated by observed probabilities regarding node predictions on ProsQA in several cases.
+
+Additional prompts, algorithms and other details can be found within the appendix.
+
+Overall a very interesting paper, as it shows promising performance on a reasoning-like process without outputting any tokens of thought, on a model as small as GPT-2. Would love to see how it scales with a better model! And I think that it could be very well trained on Gemini 2.0 Flash Thinking latent thoughts… 👀

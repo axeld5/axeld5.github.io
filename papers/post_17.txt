@@ -1,0 +1,25 @@
+## Read 17: Social Skill Training with Large Language Model, by @diyi_yang et al from Stanford University
+
+https://arxiv.org/pdf/2404.04204.pdf
+
+Not a technical paper for once, but more one that explores the following: what if AI could help us increase our social skills?
+
+The authors explore in this paper the possibility and the use cases of having:
+- An AI mentor, which is supposed to provide one feedback.
+- An AI partner, which is supposed to expose the learner to targeted practices
+
+They explore several social skill clusters in which the APAM (AI Partner AI Mentor) framework could be useful, as a way to train novices in order to acquire new skills, like Active Listening or Rhetoric. They also discuss already existing APAM solutions, like CARE or GPTeach.
+
+They then present use case modules for both the AP and AM agents, as some sort of graduating continuum: from the rubber duck to a standardized partner; from the conversational summarizers into structured feedback givers.
+
+They also note the technical challenges, which are:
+- Getting memory for long-term interaction with a trainee
+- Giving expertise to the chosen LM
+- Giving user a degree of control over the trainings they want to follow
+- Personalization of the training so that they are tailor made to the learner
+
+All those are effective challenges, that need to be resolved for such a system. They then discuss how to evaluate APAM, both qualitatively and quantitatively, both short term and long term.
+
+They conclude by looking into both positive and negative social impacts solutions implementing an APAM could have, to lastly recommend that such a solution should mainly be human-centered.
+
+Personal Thoughts: Interesting as a concept, and interesting to cover a more down-to-earth kind of paper. I feel a bit curious personally towards this approach. I do feel like an LLM companion could not reproduce having a real mentor or a real partner one can trust and rely on, but it can still be of value and give useful advice one could have not thought of by themselves. It is a promising area to explore, and I can’t wait to see what’s next!

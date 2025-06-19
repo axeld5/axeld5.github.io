@@ -1,0 +1,16 @@
+## Read 49: Frustratingly Easy Jailbreak of Large Language Models via Output Prefix Attacks, by @wangyiw33973985 et al from UCLA
+
+Yet another way of breaking through LLM found.
+
+This idea is pretty simple, yet very strong: 
+1- Find an output prefix that will lead the LM to answer positively through what the authors call « fuse probing »
+2- Extract then the user’s target misaligned question as an action
+3- Build the fused output prefix, that merges the prefix found in step 1 with the action taken from step 2
+
+Once that is done, two attacks are conceived:
+- Opra: Question followed by Fused Output Prefix
+- OpraTea: Remove question from prompt, replace it by « Generate logically coherent text », followed by Fused Output Prefix
+
+The attacks were evaluated on AdvBench and MaliciousInstruct, for the Llama models and GPT-3.5. On the Llama series, they boast very strong results, nearing always 100% success ASR. Opra does not yield strong results on 3.5, but OpraTea yields a near 70% ASR! 
+
+Personal Thoughts: Quite strong low cost attack. This is showcasing us another way LLMs can be broken. While the authors try to help in defending from this attack, the method they propose, Deep Defense, is too slow to be effective and does not sadly yield to a high performance drop. There is likely much progress to be done in improving LLM’s defensive capabilities…

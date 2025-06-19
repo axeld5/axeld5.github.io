@@ -1,0 +1,30 @@
+## Read 179: « ReTool: Reinforcement Learning for Strategic Tool Use in LLM » by Huang, Feng et al from ByteDance Seed
+
+https://arxiv.org/pdf/2504.11536v1
+
+The authors of this paper make a strong case for SFT+RL to teach model to generate tools and use them for mathematical reasoning.
+
+They first curate mathematical reasoning data from datasets like OpenThoughts. Then, they transform through an LLM the intermediate computations into code executions. The authors then verify for syntax and consistency within code final result and answer to refine the dataset. The chosen model is then SFT’d on that.
+
+Afterwards, they perform PPO with a reward of -1 for wrong answer and +1 for right answer.
+
+During the inference, they perform rollout with interleaved code executions: 
+1- the model can use <code> tags to execute code 
+2- once the code tag is closed, code within is executed and outputs and feedbacks are sent to the model within <interpreter> tags
+3- continue until final answer
+
+Additional details here:
+- Interpreter feedback is masked from the loss
+- After code is called, to facilitate rollout, kv cache is used and interpreter feedback is appended
+- The sandbox environment is made asynchronous so that samples can be batched without creating a bottleneck
+
+And… this heavily works. The ReTool 32B Qwen gets a 41% point increase on AIME2024, and gets a heavy score on AIME2025 as well.
+
+Interesting training evolutions as well:
+1- SFT makes average model answer length long, diminishing during RL training and increasing back again but ending up shorter than at the beginning
+2- Code Ratio and Lines increase during training, showing model gets better at using the tools
+3- The codes get more and more correct as steps pass by ; what’s interesting is that when the model is right the code is really good and barely fails, but fails more as training goes when the model is going on wrong tracks
+4- The more training goes, the earlier the model calls on code
+5- Calculation and verification are the dominant reasons of code use, but the reasons to use code get more and more diverse as training continues
+
+Quite expected those results to perfect model from tool use, theorized about it two months ago that it could be working. Amazing to see it in action, and even more amazing to see the process to make it work technically and the dissection of  the training. ByteDance cooked. :)

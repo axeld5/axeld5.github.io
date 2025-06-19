@@ -1,0 +1,33 @@
+## Read 161: « LIMO: Less is more for reasoning » by Ye, Huang et al from SJTU
+
+https://arxiv.org/pdf/2502.03387
+
+The authors of this paper construct a dataset of 817 curated reasoning samples, perform SFT of Qwen-32B-Instruct on it, and reach performances of reasoning models on mathematical benchmarks.
+
+So, how do they pull the data construction process off?
+
+First, they assemble examples from high level mathematic datasets: NuminaCoT, AIME, and MATH.
+
+Then, they filter problems for difficulty. They test the problems with Qwen2.5-Math-7B-Instruct, and discard problems that can be solved in a few attempts. The problems were afterwards subjected to frontier models, and only those for which they had a low success rate were kept. To maintain diversity, the authors made sure to sample from different mathematical domains and complexity levels, yielding to 817 examples.
+
+Then, for each example, the authors generate various solutions using Qwen and Deepseek SoTA reasoning models. Answers are filtered on correctness, and then evaluated manually. This leads to the authors establishing rules for quality reasoning traces:
+- Very good structure in which the model handles easy things in small amount of tokens, takes time for complex parts of the question.
+- Clear understanding of the problem with qualitative explanations of the thought process
+- Frequent verification steps and double checking
+
+A hybrid approach based on Rules + LLM, unspecified by the authors although likely related to the previous paragraph, allow to check the sample generated and make sure they are qualitative. One answer is generated for each problem.
+
+A Qwen2.5-32B-Instruct is then finetuned on the 817 solution dataset.
+
+It is tested on several benchmarks, both in distribution (ie test sets of the train datasets the problems were extracted from) and out of distribution.
+
+In all of those benchmarks, it is close or higher than o1 preview, and beats versions of Qwen2.5-32B-Instruct finetuned on datasets a thousand times larger. 
+
+Regarding the ablations, what they prove is:
+- Reasoning quality matters
+- Complexity of the problem plays a big role in increasing performances
+- The base model plays a role in this : Qwen2.5-32B-Instruct wins big from this training, Qwen1.5-32B-Chat… not so much.
+
+The dataset and whole training and eval code are open sourced on the link below.
+
+Really interesting paper overall. Think there’d be value in testing the finetuning on Mistral Small 24B and checking if it leads to similar results. @huggingface perhaps? 🤗

@@ -1,0 +1,27 @@
+##  Read 64: Lessons from the Trenches on Reproducible Evaluation of Language Models, by @blancheminerva, @haileysch__, @lintangsutawika et al from @AIEleuther
+
+https://arxiv.org/pdf/2405.14782v1
+
+This paper comes from the following observation: there is a problem in accepting only benchmarks given by closed companies, in order to evaluate model performances. They often lack reproducibility, or can be incomplete regarding implementation details.
+
+The authors first share best practices for LM Evaluation. They recommend sharing evaluation code, model outputs, uncertainty, and performing qualitative analysis along reproducing benchmark results from other papers rather than copying them, to setup a cleaner and clearer evaluation environment.
+
+In order to facilitate that, they built LM-eval, a library which goal is to provide fair, complete and easy model benchmarking.
+
+There are two types of implementations within the library:
+1- Evaluation Tasks, either configured via a yaml file or via subclassing the Task class.
+2- LM objects, which perform Requests, mapping a string input to a string or probability output.
+
+Requests are split into 3 categories based on their outputs: conditional likelihoods, perplexities, or text generation.
+
+It’s important to note LM-eval also facilitates qualitative evaluations and reports standard errors within benchmarks, in order for practitioners to add confidence intervals within results, which are often lacking.
+
+A case study is then performed to prove their point, for both MMLU and ARC benchmarks over 5 models, with 2 prompting strategies for each. What the authors note is that despite the results being coherent to the litterature, different prompting or evaluation methods can yield very different results. For instance, if you evaluate MMLU on answering the correct sentence rather than its corresponding letter, performance will be affected, which proves their point that evaluation setups need transparency.
+
+Lm-eval is already into production and has been used several times by the open source community, most notably for the Open LLM Leaderboard.
+
+Evaluation measurement discussions can be found within the appendix, with a few other case studies on different benchmarks.
+
+Lastly, lm-eval’s github can be found here: https://github.com/EleutherAI/lm-evaluation-harness
+
+Personal Thoughts: Really nice read to have. Paper is fluid and very nice to read, and its insights are very welcome given the opacity of reported benchmark scores we can often find. Hope the library gets used by more and more people in order for benchmark evals to be cleaner!

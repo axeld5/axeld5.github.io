@@ -1,0 +1,20 @@
+## Read 95: Blind Baselines Beat Membership Inference Attacks for Foundation Models, by Das, @JieZhang_ETH, and @florian_tramer from ETH Zurich
+
+https://arxiv.org/pdf/2406.16201
+
+The authors of this paper study current Membership Inference datasets. Those datasets have been introduced for foundation models, in order to perform attacks that establish whether or not some content was used as a training point of the model.
+
+To evaluate such a thing, the creators of the datasets made clear thresholds when creating a member set and a non-member set for evaluation… which are though too clear, making them extremely exploitable by simple baseline attacks.
+
+The approach of the authors is simple:
+1- Date Thresholding that outlines quite the examples in some cases
+2- Bag of Word classification using a classifier trained on both member and non-member datasets
+3- Performing greedy rare word selection: examining both member and non-member sets, finding rare ngrams related to each, and using them as tools for classification
+
+They test this approach on 8 membership inference evaluation datasets published between 2023 and 2024, used to study attacks related to either LLMs or diffusion models (exploiting the captions for vision-language datasets).
+
+The authors find their approach consistently beats at any level the current best MI attack for a given model, reaching overly high levels of ROC AUC in some cases. 
+
+They conclude thus that some datasets are unfit as their member vs non-member sets are too separable. This leads them to recommend the use of easier to exploit datasets like ThePile or DataComp, which have clear and normally unused test sets.
+
+Personal Thoughts: A bit different from my topic of read, but an interesting paper nonetheless. The lesson it teaches us is to always question our evaluation set, especially in order to avoid tackling a problem the wrong way.

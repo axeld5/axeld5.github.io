@@ -1,0 +1,22 @@
+## Read 104: Machine Unlearning Fails to Remove Data Poisoning Attacks, by @MartinPawelczyk, @jimmy_di98 et al from Harvard University and University of Waterloo
+
+https://arxiv.org/pdf/2406.17216
+
+The authors of this paper study the influence of machine unlearning techniques to fight data poisoning.
+
+Their idea goes as follows: if data poisoning goes from a specific set, is it possible to « unlearn » data poisoning by simply removing the suspect data?
+
+To do so, they provide with both methods of data poisoning and of machine learning. They look at 3 data poisoning methods:
+- Targeted data poisoning: Goal is to produce specific answer to specific groups of inputs.
+- Indiscriminate data poisoning: Goal is purely to hurt the model’s performance.
+- Gaussian data poisoning: The authors add a gaussian perturbation to the samples which could end up correlating model parameter updates with gaussian noise. This perturbation does not have a direct effect on performance but has an effect on parameter update. Namely: a model that is trained on poisoned samples will actually have a harder time distinguishing poisoned and healthy samples than one which is not trained on those (measured here by TPR@FPR=0.01).
+
+What the authors do then is test those attacks and defenses on a Resnet18 trained on Cifar-10, and a GPT-2 model with 355M parameters trained on IMDB. They poison the dataset, and see using their metrics if unlearning restores the model back to its unpoisoned state.
+
+The answer is that it does help restoring the model, but it does not fully undo the poisoning. In fact, what’s even worse is that there is no silver bullet algorithm: each algorithm performs more or less better depending on the type of attack and the type of model!
+
+The authors finally investigate what could be the cause. Two possibilities are pointed out: poisons cause a model shift that is too large, or shift the model in a subspace orthogonal to clean samples. 
+
+More details about these hypotheses and their validation can be found within the paper and its appendix, along additional information about the algorithms used within the paper.
+
+Personal Thoughts: A hard paper as I just get introduced to both subjects, but a very interesting one nonetheless. Data poisoning seems like a very annoying problem to tackle, to be completely honest. And a very alarming one to look at, especially for the model training that is to come.

@@ -1,0 +1,24 @@
+## Read 58: Many-Shot In-Context Learning in Multimodal Foundation Models, by @jyx_su, @jeremy_irvin16 et al from @StanfordAILab
+
+https://arxiv.org/pdf/2405.09798
+
+Many-Shot ICL is making your language model learn from feeding it a lot of examples within the prompt. Its capacities were proven for LLMs, but had yet to be examined for multimodal models.
+
+The authors of this paper test the two strongest models at the moment, gpt-4o and Gemini Pro 1.5, on 10 different image classification datasets covering different use cases (natural imagery, medical, satellite, molecular…). Some datasets are multilabel as well. They evaluate those using the Macro-F1 metric, while other datasets are simply evaluated on classification accuracy. The authors measure as well the « data efficiency » of the model, ie a measure of the models’ performance improvement relatively to the amount of examples added.
+
+For those datasets, they vary:
+- The amount of images they feed as in-context examples to the models within the prompt.
+- The amount of images the model is asked to classify within a single prompt (batching vs not batching).
+
+Their findings are the following:
+- Models show consistant improvement on the image classification task after being fed a lot of in-context examples.
+- Gpt-4o shows a sharp drop in a V-curve when fed a few amount of in-context examples, for a sharp rise afterwards.
+- Gemini Pro 1.5 shows a consistant rise when fed in-context examples.
+
+What they also note, strangely enough, is that batching queries, ie asking the model to classify 50 images at the same time, shows substantial improvement vs asking it to classify only 1 image, with or without ICL. 
+
+The authors then perform a cost analysis depending on the ICL and batching of the examples. The verdict is indisputable: many-shot ICL with batching is the best pairing of strong and efficient.
+
+All prompts can be found within the appendix. Code is fully open-source at the following github: https://github.com/stanfordmlgroup/ManyICL
+
+Personal Thoughts: Thanks a lot for this research. This is a result that should happen, but is very important to confirm. It would be amazing if Gemini 1.5 Flash were to be benchmarked as well! If Gemini 1.5 Flash shows the same performances as pro, it will be truly the killer model it is meant to be. ;)

@@ -1,0 +1,29 @@
+## Research Experiment: Can Finetuning a Moshi teach it latent knowledge?
+
+https://github.com/axeld5/moshi_knowledge_learn
+
+I wanted to test if the new Finetuning repository of @kyutai_labs could allow Moshi to latently learn knowledge from annotated audios. The experiment I’ll present here failed, but I wanted to share thoughts below.
+
+## Experiment Setup
+
+First, I need to generate out of distribution data : the idea was to make sure we could measure the model learned, so I needed to cook up something that it could not know and cheat its way out. The answer? I’ve asked  @OpenAI GPT-4.5 to generate a story about the Kingdom of Arphagonie (completely invented name), and iterated on it. This gave me a basis.
+
+Then, I used @GoogleAI Gemini 2.0 Flash to extract a 100 Q/A pairs using structured outputs and 2.5 Pro to generate 20 Eval Q/A pairs that could be inferred from the knowledge given by the 100 Q/A pairs. This gave me training and eval texts. But we needed audios. 
+
+To do so, I synthesized audios using Hexgrad’s Kokoro model available on @huggingface. The audios were mono, so I had to use pydub to turn them into stereo (thanks  @tom_labiausse for helping me here 😅). Once this was done, we could hop on the Moshi-Finetuning repo.
+
+Logged in to @Scaleway H100, but before launching the training, needed to annotate first the audios files using the python annotate file in the repo. And then we were ready to go!
+
+## The Experiment
+
+Launched the training of Moshiko (important, it is the male-voiced model), saw the loss go down, found the first eval to work… and then the second and subsequent evals went to NaN. Model derailed, sadly. Kept on going to check for latent knowledge about the Q/A, and launched the model.
+
+Sadly it did not learn the information. However, I was pleased to see that the voice was leaning to a more female-like voice, which was the one used in the synthesized audios!
+
+## Findings
+
+So basically, my findings could be summed up in that the moshi-finetuning repo: 
+- seems good for voice-cloning related purposes for which it will excel if given enough training time
+- but I am unsure about the ability to LoRA the models so that they learn latent knowledge
+
+Repo can be found at the top, with the text generation and audio synthesis process runnable through a Dockerfile :)

@@ -1,0 +1,28 @@
+## Read 8 : Long-form factuality
+
+https://arxiv.org/pdf/2403.18802.pdf
+
+What if LLM were better at fact-checking themselves than human beings? This is what this paper for Google Deepmind aims to prove.
+
+Their LLM Fact-Checking Pipeline, SAFE, works the following way, given a question and an answer to said question:
+1- Split the answer into individual facts (usually single sentences).
+2- Revise the fact to be self-contained, IE without pronouns that are not explicit.
+3- Check the relevance of the fact related to the question.
+4- Make google searches and assert from the result of those searches if each fact is supported or not.
+5- Deliver results.
+
+In addition to this pipeline, they craft their own dataset of niche prompts that are hard to answer without writing a long paragraph, with lots of information to check. 
+
+For example, one will not give a very simple answer to « What are the dynamics and implications of fandom culture in relationship to celebrities, and how does this interact with and shape public perception of celebrity persona and reputation ? ».
+
+LongFact contains 2 datasets, one about Objects and one about Concepts. Both contain a total of 1140 prompts, covering 38 different topics like Biology or Management.
+
+To evaluate SAFE, they compare it wrt human annotators. We have SAFE agreeing 72% of the time with them, and winning 76% of the disagreement case. It is important to note that SAFE is as well both highly faster and highly cheaper than human fact-checkers. 
+
+Afterwards, they use SAFE to benchmark LLMs on factuality using LongFact-Objects. In doing so, they find that the larger LLMs, the higher the quality of the factual information given, which was to be expected.
+
+One last note I want to add is that the work is fully open-sourced. The dataset, the prompts, and even the code to evaluate SAFE and construct the dataset are all open-sourced!
+
+Personal Thoughts: This work was extremely intriguing to look at. The authors note that a limitation may be that the SAFE pipeline may be too reliant on Google Search, which may complexify its use for instance in RAG applications that takes in private documents. 
+
+However, I think it would be actually really interesting to see a pipeline like SAFE rewritten in the case of RAG! Whether it would be for another way to make searches (like RAT) or to attempt fact-checking sources.

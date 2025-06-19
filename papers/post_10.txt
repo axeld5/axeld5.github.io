@@ -1,0 +1,23 @@
+## Read 10 : LLM2LLM : Boosting LLMs with Novel Iterative Data Enhancement, by UC Berkeley
+
+https://arxiv.org/pdf/2403.15042.pdf
+
+You’ve set yourself upon using a fine-tuned Small LM for a specific case. Let’s say for instance, that you want to see if your tuned model can solve small arithmetic problems like ones from GSM8K, using a small amount of data.
+
+But your fine-tuned Llama2-7B is actually real bad at it. Like real bad. You want to improve it, but you are on a budget and thus cannot exploit GPT-4 to generate 900k examples to power through and make your model real good.
+
+This study presents a novel generation method, using a teacher model… on the training examples that the model fails on.
+
+The process is actually pretty simple:
+1- Finetune the baseline model on a training dataset for the problem you want to solve
+2- Evaluate it on said data, and keep the examples it got wrong
+3- Prompt a teacher model to generate similar examples to the ones it got wrong
+4- Reiterate until you are satisfied
+
+The authors mention as well that they filtered the generated examples based on Regex and ROUGE scores to ensure they were not exactly similar to the training data.
+
+The authors tested their methods on low data samples for which fine-tuning did not yield satisfactory results. Results were overall superior to all other data augmentation methods.
+
+The whole code, prompts and processes are open-sourced. 
+
+Personal Thoughts : Paper is clean and cool to read. It is important though to note that this data augmentation method is only really strong in the low data context. Once the number of examples starts to scale up, the method will be performant as data augmentation, but to a lesser scale. Could be due to a lack of diversity within the outputs, as the only variation the authors include on the prompts are the chosen ICL examples. Would be interesting to pursue a method that tackles this somewhat of a glass ceiling without scaling up the data to colossal amounts.

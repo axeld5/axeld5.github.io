@@ -1,0 +1,20 @@
+## Build Project: MySlidekick, a Cursor for Slides
+
+Had some fun at the @huggingface x @AnthropicAI x @unaitefr hackathon: made MySlidekick, an Agentic Slide Generation tool!
+
+Load in your templates, and ask the multi-agent system powered by Claude 4 Sonnet and Smolagents to make your presentation. 
+
+## Technical Stack
+
+- Background model is Claude-Sonnet-4 (Haiku 3.5 and other optimizations were tried but found to be inconsistent)
+- Agentic Framework is Smolagents, all models are CodeAgents (ToolCalling were tried but less flexible)
+- There are 2 Agents: a manager which can get slide layouts and insert/delete slides; and a writer which can edit a slide given layout information it can fetch, and perform web search to complete its information (it also can fetch a list of icons to insert them at choice in the presentation)
+- A 4 agent setup (manager, slide creator/deleter, writer and web searcher) was first attempted, it is likely more reliable but it ended up short due to time constraints.
+- There is a template prez: "Template_Prez.pptx", which is an empty presentation that contains in the Templates the masks which are used with placeholders to generate the slides
+- There are several tools made here, powered mainly by python-pptx helper functions, but a few others like web search to ground the slides or icon listing to help the agent retrieve the right icons to use.
+
+PS: Video is slightly shortened, real time was ~4 mins a slide. And yes, it is possible to make a 10 slide pitch deck with this. :)
+
+### Video
+
+my_slidekick.mp4

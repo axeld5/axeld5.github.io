@@ -1,0 +1,40 @@
+## Read 175: « Big(O)Bench: Can LLMs generate code with controlled time and space complexity? », by @PierreChambon6, @b_roziere, @bensagot and @syhw from @AIatMeta
+
+https://arxiv.org/pdf/2503.15242
+
+We know that LLMs can generate code well enough. But the code they generate might not be optimized, which can be problematic at production level. The question the authors ask here is if the model actually understands its code outputs on a deeper level, more precisely regarding complexity. 
+
+Namely: Given a code solution to a problem, how good is the model at evaluating its time and space complexity? And given a viable complexity and a problem, how good is the model to generate a solution at that degree of complexity?
+
+First step of the work is to build a dataset, but there’s already a subtlety: estimating the complexity of the solution given the code and example inputs. The authors proceed as follows:
+1- Convert the inputs into a specific Input dataclass, allowing them to become inputs in the sandbox (this process is LLM based, and comes with data loss -only 82% of the original 8139 problems survived this step-)
+2- Expand the inputs through data augmentation methods to evaluate the code with larger input sizes
+3- After several runs, fit a curve on time and memory logs to estimate complexity
+
+As this method remains stochastic, qualitative human evaluation was applied and validated it with 92% acc on time-level and 84% on space-level for 50 samples each. Due to the noise that can come in from empirical measures, the method is also applied several times before outputting a conclusion.
+
+Now, onto the evaluation part. Several models from different series are evaluated on the code benchmarks. They are evaluated on the Time complexity test set of 311 problems and 640 solutions covering 11 complexity classes, and the Space complexity test set of 308 problems and 636 solutions covering 5 complexity classes.
+
+On the program synthesis part, the best models are the Deepseek R1 distilled ones at both Pass@1 and 10. However, it’s worth noting that they take longer in compute than Llama 3.1 405B, but the gap is worth it: +30 in pass@1, and +18 in pass@10.
+
+However, this is not what interests us. What we want to look at is the complexity issue. Results for complexity understanding are as follows:
+- In both space and time, there is a correlation between program synthesis skills and complexity prediction skills
+- Models can predict better the complexity of the best solution to solve the problem when presented than a random solution, which may suggest that the problem learned the optimal solution rather than computing complexity
+- Models heavily struggle to predict well the complexity of all solutions associated to a problem, which is however a hard task
+- There isn’t much of a gap in code capacities between Deepseek R1 Qwen 32B and R1 Llama 70B.
+
+Now, regarding the generation of a solution given a problem and a complexity:
+- Results from previous findings are still there: correlation with program synthesis skills; easier to generate best solution than any complexity; and R1 Qwen 32B and R1 Llama 70B have similar performance 
+- The models also have a very very hard time to generate solutions for all possible complexities.
+
+Another interesting part was looking where generated solutions land in terms of optimizing the solution given time and complexity constraints. When pitted against humans and given 20 attempts, the models are quite performant at optimizing on the subset where they manage to get a solution right: but there are quite the examples for which they fail, dragging down their score. 
+
+It is though very hard for them to succeed completely generation respecting all time space constraints for 1 problem given 1 attempt, which hampers their use in practice: no model has a success rate above 5% in All@1.
+
+The also very peculiar fact noticed on that paper is that Finetuning does not improve much this task. Even after 2000 problems with 20k solutions, little improvement is to be seen everywhere for Llama 3.1 70B.
+
+This leads to quite the peculiar problem! A problem with implications of lack of intelligence regarding code, but also a tougher one to optimize for, nice work here! :)
+
+I wonder how much we can RL that in the end based on complexity and test requirements. It would make sense Finetuning works less: a program with a certain complexity can take many forms in both time and space departments; what we want in the end is for it to work. However, it feels much harder to do in practice: verifying the complexity requirements will likely put a strain on the studies! 
+
+Hoping to see this benchmark become more relevant, as it is a non-negligible problem which informs us pretty well on coding capacities! :)

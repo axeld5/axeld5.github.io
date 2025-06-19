@@ -1,0 +1,24 @@
+## Read 18: LLM2Vec, by @parishadbehnam et al for @mila_quebec
+
+https://arxiv.org/pdf/2404.05961.pdf
+
+While there has been a rise lately in pure embedding models, the authors of this paper try something very interesting: what if LLMs could be repurposed as text embedders?
+
+They name this repurposing framework « LLM2Vec ». They build it the following way:
+1- Enable the model to look at all the tokens instead of the ones that precede it, becoming a bidirectional LM
+2- Adapt the model to this new bidirectional attention through « masked next token prediction » training
+3- Perform unsupervised contrastive learning with max pooling to learn better representation
+
+Step 1 allows the model to encode sentences using the whole contextual information rather than sticking to causal.
+
+Step 2 makes the model able to exploit that information. Masked next token prediction corresponds to masking a group of tokens within the sentence, and training using as loss the tokens’ probabilities based on all non-masked tokens within the sentence.
+
+Step 3 makes the model able to learn embeddings. What they do here is apply SimCSE: given a sentence, they make the model encode it twice, but with independently sampled dropouts. Model is trained to maximize similarity within the two representations, while minimizing the similarity between them and other sequences chosen.
+
+Experiments are performed on 3 models: shared-llama-1.3b, llama-2-7b, and Mistral-7B-v0.2-Instruct. All details from training procedure to compute resources are documented.
+
+The results are really good. The LLM2Vec framework, using the chosen models, are competitive with all other embedding methods, both on unsupervised and supervised grounds.
+
+Whole code is public, which is even better.
+
+Personal Thoughts: Really good read. Smart leveraging of several training methods to get the LLMs to the desired results. Can’t wait to see it get up to scale! The results with a proprietary model, or even simply a bigger size could be actually incredible :)

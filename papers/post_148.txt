@@ -1,0 +1,47 @@
+## Read 148: CodeElo: Benchmarking Competition-level Code Generation of LLMs with Human Comparable Elo Rankings, by @Alibaba_Qwen team (Quan et al)
+
+The authors create this benchmark, CodeElo, from the following needs:  
+1- Evaluating the reasoning models on a suited environment
+2- Finding a way to standardize competitive code evaluation from CodeForces, which is at least one code benchmark that is not yet saturated
+
+The authors exploit CodeForces problem mainly because they are tough and come with robust test cases, due to them using the problem creators’ test cases rather than artificially generating ones, which can lead to false positives.
+
+The benchmarking process for a model is simple :
+1- Extract CodeForces problems from the recently held contests from the pages’ HTML (parsed for better formatting)
+2- Have the model generate code blocks to answer the problem
+3- Submit the model’s answer to the CodeForces platform
+4- Use a bot to parse the results
+
+It is of note that a solution is considered successful only if it passes all the test cases. Model’s elo is then determined for each competition, using the Elo computation formula on its rank. Individual competition Elos are then averaged to form true Elo. Models are all given the same prompt (noted in the paper), so everyone is on the same foot here.
+
+Results down below 👇 
+
+———
+
+Models evaluated are Claude 3.5 Sonnet, GPT-4o, o1-mini, Mistral family, Qwen Family, Deepseek family, specific coder models, and QwQ-32B.
+
+To begin with, when it comes to the overall performance, order is o1-mini > QwQ >> frontier models > the rest. Difficulty matters, as the easy problems are indeed far easier to solve, and increasing the attempts from pass@1 to pass@8 yields better results.
+
+Worth noting: Qwen2.5-Coder-7B is same elo as Codestral. Qwen2.5-Coder-14B is outdoing Mixtral 8x22B, and has a pretty close elo rating to Llama-3.1-70B! Qwen2.5-32B and coder-32B even more so do go over the 70B model in terms of elo.
+
+———
+
+Other interesting finding, exploiting CodeForces’ tagging system: Models have their favored and unfavored problems. 
+
+They will perform well in solving Maths or Sorting problems… and completely whiff tree or dynamic programming-related problems. Consistent success and failure across the leaderboard on those problems, which is relatively interesting.
+
+There is also no model that performs surprisingly well in one category wrt to the others. Power levels of the previous category are found again here, with no surprises, sadly. 
+
+——
+
+Another finding by the authors is that models generate their code most of the time in python. This is suboptimal, as the code they write is less optimized than if it were written in C++: lowering their elos in the end, due to runtime mattering.
+
+They decide thus to ask the models to write their code in C++, and find an increase in elo, meaning they are indeed able to complete the tasks they were doing well in Python in C++. This is another force of the CodeElo benchmark: language can be switched, as it leverages CodeForces’ capacities for the evaluation process.
+
+——
+
+Additional information, like standard deviation of the results, hyper parameters, or other details can be found within the paper’s section 5 and appendices. It is worth noting the authors include a standard deviation curve, though it is quite large, due to the relatively small amount of contests at first. The authors state increasing the amount of chosen contests reduced it.
+
+Overall, this benchmark does help cementing the point of reasoning models at the code level. Am eager to see how and when it will be saturated, if it is ever. I guess trees and dynamic programming will be even more popular in coding interviews now!
+
+Link of the paper here: https://arxiv.org/pdf/2501.01257

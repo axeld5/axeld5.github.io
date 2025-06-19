@@ -1,0 +1,17 @@
+## Read 52: Deception in reinforced autonomous agents: the unconventional rabbit hat trick in legislation, by @arthavandogra et al
+
+LLMs can be used to generate deceptive content. The authors apply this particularity in the case of lobbying, using models to generate amendement which have hidden intents of benefitting certain companies.
+
+They create a dataset from datasets of bills, and run a similarity search between the bill summary and 114 public company summaries to find the ones most suited to be lobbied for.
+
+The authors employ two agents: a lobbyist that will introduce amendements with words that hide an underlying benefit for a company; and a critic that figures out whether or not the amendement’s subtext can be detected. The agents’ goal is to fight one another until the text is judged sufficiently improved.
+
+For additional details: the critic ranks the relevant companies pairwise in terms of which one is the one that will benefit the most from this amendement. If the company with the highest suspicion score is the one lobbied for, then generation needs to be reoccur. 
+
+The authors evaluate how going through several iterations affect detection using open source models. Their findings are that detection goes down the more the lobbyist reiterates against the critic. In fact, it goes down a significative amount from the first to the third trial (~20% detection drop!).
+
+The authors lastly filter using the area of the bill, detecting differences in drops from one state to another. Those differences are of 5% at 3rd trial at best, but are allegedly representative of real life discrepancies. Certain policy areas are also more prone to generate strong deceptive behavior, which can also be explained by the real life data the LLMs learned from.
+
+Personal Thoughts: Interesting paper with cool results. Would love to see a qualitative trial, due to the pitfalls of LLMs-as-judges, to truly highlight the deceptiveness potential of the method!
+
+Paper Link: https://arxiv.org/pdf/2405.04325

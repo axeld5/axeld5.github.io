@@ -1,0 +1,20 @@
+## Read 124: « To Code, or not to Code? Exploring the impact of code in pre-training », by @viraataryabumi et al from @cohereforai
+
+https://arxiv.org/pdf/2408.10914
+
+The authors of this paper study the impact of code data proportion within a pretraining dataset on the resulting LLM’s performances. The impact is studied at both pretraining data mix and use during the end of pretraining.
+
+The authors pre-train a total of 64 models at 470M and 2.8B parameters over 400B tokens with different text and code data mixes.
+
+Performances of the models are studied over natural language reasoning, world knowledge, and code performance.
+
+The authors’ findings are as follows:
+- Models pretrained on a certain amount of code yield better scores in NLR and code performance than a model trained with no code. World Knowledge depends on the mixup.
+- Too much code can reduce performance on non-code task, but a non-negligible quantity yields improval on NLR-related tasks.
+- Code Quality does matter, for all tasks studied. In fact, adding a small amount of synthetic code to the code pretraining dataset yields to a strong boost in both NLR and Code tasks!
+- Considering code data as « high quality data » and thus up-weighting it at the end of pretraining leads to a consistent improvement of results.
+- This up-weighting process of high quality data also consistently improves LLM quality of answers, measured by a comparison of answers from an LLM judge.
+
+Additional details can be found within the appendix of the paper: code dataset details, LLM judge prompt, and generative WR results
+
+Personal Thoughts: Really cool paper as it empirically confirms something that was quite the topic in LLM pretraining. Would be really interesting to see it scaled, both in terms of data and model size! Perhaps going from FineWeb would be a good start, and trying to check the importance of code data on a phi-3-tier model would be of interest… :)

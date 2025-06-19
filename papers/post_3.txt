@@ -1,0 +1,17 @@
+## Read 3 : MathVerse
+
+https://arxiv.org/pdf/2403.14624.pdf
+
+That’s it. You’ve been blown away as your MLLM managed to solve your mathematical question. Buuut you were wondering whether or not the LM actually used the graph you provided it with as a means to answer, or if it simply relied on the text.
+
+MathVerse is a benchmark made to answer that question. They collect 2612 mathematical problems with diagrams, and work on minimizing the amount of texts the model is provided with to solve the question.
+
+6 versions of a problem are contained within that dataset, ranging from text-only to vision-only. It is important to note that they do not remove words at random : they labelled specific parts of the problems’ text related to the information that was contained. This text is then remapped onto the diagram.
+
+Through this dataset, the authors prove that as expected, multimodal LMs do not perform worse the less textual information is given to them. They cannot thus extract all information from the diagram like if it were readable. 
+
+The authors look at the performance of the models depending on the information that is removed. They find that the MLLMs have the most trouble identifying what they call « Essential Information » (ie specific algebraic information, like an angle or a function’s value), when it is written within the diagram and not fed as text.
+
+Exception in terms of performance is GPT-4V, far above all others (note : this paper does not mention Pro 1.5, and the Claude 3 family). It is also worth noting that GPT-4 has similar performance to GPT-4V on the text only sections.
+
+Personal Thoughts: Quite the intriguing benchmark. Although the information that appear does not surprise me, it could perhaps be an interesting way to evaluate multimodal models’ capabilities to interpret graphical data!

@@ -1,0 +1,23 @@
+## Read 168: « SuperGPQA: Scaling LLM evaluation across 285 graduate disciplines », by Du, Yao, Ma, Wang et al from ByteDance
+
+The authors of this paper take the spirit of GPQA and boost it to another level, creating a benchmark much larger, that cover many more topics, and which overall gives a better view of LLM knowledge capacities.
+
+To construct it, they first sample  question/answer pairs from various sources, like textbooks or websites. It is worth noting some of those were erroneous and required correction from expert human annotators.
+
+Once samples are found, crowd-sourced annotators are asked to turn the questions into English MCQ, with standardized rewriting regarding selection of correct or incorrect statements.
+
+After that process, validation of the questions is performed the following way:
+1- Text standardization is done upon the question and answer
+2- Information are verified over question, options, answer, difficulty and discipline to make sure the sample is usable in the benchmark
+3- Several LLM prompts are applied to evaluated correctness of the Q/A pair, if there is only one modality at hand, if the discipline taxonomy is well done, and if the problem appears complete
+4- Examples that pass this filtering are then submitted to expert review
+
+Quite the frontier models are used on that experiment to make sure the benchmark is well done. That process gave a dataset of 26.5k MCQ spanning over several topics, with Engineering, Medecine and Science being the most represented.
+
+This benchmark is then subjected to all models relevant at the time of writing.
+
+Basically, it confirms intuition: strong models are good at this benchmark, without any surprise: top scores are o1 and deepseek-r1 at around 61%. Reasoning models perform better than non-reasoning ones as well (which makes sense considering MCQ can be solved through both knowledge and reasoning with process of elimination!).
+
+Other relevant findings are that instruct models perform better than base ones, and that largeness is not necessarily an indicator of strength: Llama-3.1-70B-Instruct performs slightly worse than Qwen2.5-14B-Instruct and Phi4. However, within the same family, size matters and larger models will show better performances.
+
+Overall, a quite interesting benchmark which will help in evaluating model knowledge, as GPQA was starting to fall. Intrigued to see it being fell in the months to come :)

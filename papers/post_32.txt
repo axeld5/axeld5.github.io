@@ -1,0 +1,22 @@
+## Read 32: Towards Large Language Models as Copilots for Theorem Proving in Lean, by @p_song1 from Caltech
+
+https://arxiv.org/pdf/2404.12534.pdf
+
+There has been a lot of studies over using LLM capacities to solve mathematical problems. In fact, they have been even shown to be able to reach on their own Gold Olympiad level in Euclidean Geometry with the help of solvers!
+
+This approach proposes a more grounded use of LLMs, that leverages a specialized model as a helper in Lean proof solving. Lean is an open source proof assistant and programming language. The work bases itself mainly from the open-source LLM ReProver, specifically tailored for Lean automatic proof making. 
+
+The goal of the authors is to make use of that LLM as a code copilot in order to fasten the process of iteration over Lean proof solving. To do so, they provide 3 modules of help:
+1- suggest_tactics : through that module, their goal is to use the LLM to generate new proof tactics to go through. Each tactic is ran beforehand to see if they are valid according to the problem, and all those that do not lead to errors are proposed. Tactics that can directly finish the proof are highlighted as well.
+2- search_proof : combines the suggest_tactics approach with a solver for Lean proof solving, called aesop. The tactics are added in order for aesop to automatically find nodes to explore, so that it can iterate better.
+3- select_premises : finds a list of premises to add, using a premise embedding, to restrict the theorem that is trying to be proven, making it easier to solve
+
+Method 1 and 2 are evaluated within the paper, on both their capacity at autonomously solving problems, and at helping us solve them faster. They are benchmarked on 50 randomly theorems from the 233 of the book « Mathematics on Lean ».
+
+Results are quite good for them. Aesop alone can only solve 12% of theorems automatically, while suggest_tactics based method reaches 34% and search_proofs reaches 64% theorems solved. In terms of human helping potential, search_proofs automated 81% of the proof steps, while aesop only managed to automate 32%.
+
+Method 3, of premise_selection, does not seem to be evaluated within the paper.
+
+Code is fully open sourced and can be found at : https://github.com/lean-dojo/LeanCopilot
+
+Personal Thoughts: Really interesting read! Love seeing that the LLM + solver approaches are showing nice performances, and thinking as well that copilots are a better way to handle assistants than just letting them run in the wild. Would love to see qualitative examples of tough problems tackled by LeanCopilot! Perhaps as well this framework could extend to other domains, on which specialized LLMs would just be the advisers to already existing solvers!

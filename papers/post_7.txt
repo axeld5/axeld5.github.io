@@ -1,0 +1,21 @@
+## Read 7 : Improving Text-To-Image Consistency via Automatic Prompt Optimization
+
+https://arxiv.org/pdf/2403.17804.pdf
+
+While meta prompt engineering for LLMs is a topic that has been quite studied (and opensourced, check out @mattshumer_ ‘s gpt-prompt-engineer repo), Text-To-Image PE via optimization-by-prompting was not much explored… until now.
+
+This paper aims at giving a framework for meta prompt optimization for text-to-image generative models, using an LLM as the prompt engineer.
+
+How is it done?
+1- Initialize with a prompt describing the image you want to see
+2- Compute the objectives, which are minimizing both DSG score and a modified version of ClipScore. The idea behind those metrics is to evaluate how well each subcomponent of the query is represented within the generated images.
+3- Using a meta-prompt, the task description and prompt history with the prompts and their respective scores, an LLM is charged to generate new, improved prompts.
+4- Images are generated anew using those prompts, and we go back to step 1 until we have reached a certain amount of iterations.
+
+As the LLM meta prompt generation process has some sort of exploitation-exploration tradeoff, the authors balance it by adjusting the amount of generated prompts (exploration) and the LLM’s sampling temperature (exploitation).
+
+Method is benchmarked on MSCOCO and PartiPrompts. It is compared as well to random paraphrasing pipeline (ie without including consistency scores or history). LLMs experimented are Llama2-70B and GPT-3.5/4. T2I models are LDM-2.1 and CDM-M.
+
+Both metrics improvements and generated images declare the worth of their method.
+
+Personal Thoughts: Liking this paper as the meta prompt optimisation approach is pretty interesting to look at. Would be great to see this work reconducted and for other modelling methods, like image captioning!

@@ -1,0 +1,27 @@
+## Read 61: Scaling Monosemanticity: Extracting interpretable features from Claude 3 Sonnet, by @templetonadly, @tomconerly et al from @AnthropicAI
+
+https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html
+
+In order to look at interpretability of the Claude 3 Sonnet Model, the authors train a Sparse Autoencoder on the Middle Layer’s residual stream. They train three models: a 1M, an 8M and a 34M SAE.
+
+They then look at the « feature » part of those SAE, corresponding to the non-zero outputs of the encoder. What they find is that specific features are related to specific terms, like the 31164353th feature of the 34M SAE being related to everything linked to the Golden Gate Bridge. To make sure they’re in the right, they ask Opus to score relevance for terms for which this feature activates (ie magnitude for which it is nonzero), and find that all terms for which activation is maximal are very related to the Golden Gate Bridge. This finding can be also said for other features, and seems as well to be cross-lingual!
+
+The authors next perform feature steering: replacing the output x of the residual stream with SAE(x) + reconstruction_error, but actually modifying SAE(x) by clamping a feature to 10 times its maximum value. They test it on neuroscience and golden gate bridge, and find it is actually possible to steer the Claude Sonnet answer towards the related topic!
+
+But there’s more. Some feature also activate on more complex levels, like the code mistake identification feature. If it’s clamped like the others on a normal code, it will even state the code outputs an error!
+
+They also find their features are barely correlated to the model’s neurons. 
+
+The authors then explore feature neighborhoods, using cosine similarity on the feature vectors to find the closest ones.  The neighborhoods they cover in the paper actually seem pretty interesting, as the words and themes are semantically close: Golden Gate Bridge feature, for instance, is close to San Francisco related features. There are even clusters resulting from feature splitting: where the 1M model only has one San Francisco feature, the 8M has two SF features and the 34M’s got eleven of those.
+
+They then use Claude to look for specific features. More specifically, they pass a prompt with the concept they want to look for, take top 5 features and use Sonnet to find relevant terms for which they activate. Then, a human in the loop evaluates if there is truly something to be noted from that feature. This approach works, but they note that it yields an incomplete amount of features, that could be increased were the size of the SAE to be bigger.
+
+What’s also to be noted is that their concepts can also translate from the training data of Sonnet. In fact, if concept from the SAE is in the form a single unambiguous word, it is very likely for it to be very present within Sonnet’s training dataset!
+
+Another finding they have is that those features can help identify how a model performs inference on a specific topic, like for instance in emotion analysis or multi-step inference.
+
+Lastly, the authors look at safety-relevant features. They find 3 features related to code safety; a feature related to gender bias awareness; sycophantic features related to empathy or sycophantic praise; features related to recursive self-improvement & manipulation/deception. It has also features related to internal conflict and honesty, that can be clamped to make the model more truthful.
+
+Lastly, the authors note features for biological weapon creation and scam email generation, which when clamped elicit unsafe behavior from the model. They also find features related to the model’s perception of self, which when clamped can alter its output.
+
+Personal Thoughts: A very technical paper, which asks in the end more questions than it answers. Finding those features is fascinating. Seeing how it impacts even a model the size of sonnet by changing only one activation is a tremendous finding. Now, the question that’s left and is hanging for us to see: what do we do with it?

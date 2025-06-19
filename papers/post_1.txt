@@ -1,0 +1,23 @@
+## Read 1 : Text Mining at Scale, from Microsoft Corporation and the University of Washington
+
+https://arxiv.org/pdf/2403.12173.pdf
+
+Have you ever had a long text corpus on which you wanted to extract labels, but had no prelabelling done? The idea of that paper is to leverage an LLM to create iteratively a taxonomy, in order to train a lightweight, deployable classifier on said taxonomy!
+
+How do they do it?
+1- They summarize their corpora through LLM calls
+2- They call an LLM to build a taxonomy on a batch of summaries
+3- They prompt the LLM update the taxonomy by inserting batches of summaries one after the other
+4- They ask the LLM one last time to review the taxonomy and make a final version of it
+5- Once that is done, they use said taxonomy to label part of the text corpora
+6- And train a lightweight classifier (MLP, LogisticRegression…) on the corpora for deployment
+
+The amount of labels in the taxonomy can be selected.
+
+In order to evaluate this method, they use a dataset of their own based on Bing history conversations. They compare it with generating labels through an LLM on clusters generated through the use of an embedding method followed by kmeans. The criteria for evaluation are the taxonomy’s coverage, the labelling accuracy, and the relevance of the labels to the use case.
+
+Models chosen are gpt-3.5 and 4. Embeddings chosen are Ada002 and Instructor XL.
+
+Their Method, TnT LLM, has very good taxonomy generation performance based on their results. What’s even better is that the Lightweight models trained on the annotated data show performances similar to using GPT-4 as annotation, which is really good!
+
+Personal thoughts: I think this is a great read, as the paper is ingenious in its method. The method appears to be quite reproducible as well (despite the authors not opensourcing it). It would be interesting as well to compare it to a real already labellized dataset like Amazon Product Reviews, or Newsgroup20, to see if the method holds vs an already established taxonomy.

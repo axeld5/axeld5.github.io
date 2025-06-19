@@ -1,0 +1,22 @@
+## Read 14 : Language Models as compilers : simulating pseudo-code execution improves algorithmic reasoning in language models, from @hyungjoochae et al from Yonsei University
+
+https://arxiv.org/pdf/2404.02575.pdf
+
+LLM reasoning still has a long way to go. The authors of this paper provide us with a smart prompt engineering method in order to improve LM reasoning abilities.
+
+The idea? They cut the reasoning steps in 2, « Think » then « Execute »
+
+For the think step, they proceed the following way in order to solve a given task:
+1- Construct a meta prompt, sampling 3 example questions, analyses and pseudo code from different already annotated tasks
+2- Use that meta prompt to perform first an analysis of your given task
+3- Use that analysis then paired with the meta prompt to build pseudo code to solve the task
+
+Once that pseudo-code is done, a Reasoning LM is used to predict the intermediary and final outputs of the pseudo-code by simulating its execution process, solving the task.
+
+This method shows significant improvement over other PE methods on models that encountered a high amount of code files during pretraining, like CodeLlama-7B or GPT-3.5. 
+
+The gain on models that didn’t have strong code capabilities, like Llama-7B, does not appear to be as high. However, the authors note that the reasoner LM perform as well on human written pseudocode than on LM generated ones, which is pretty interesting regarding the code LM’s capacities.
+
+All details and prompt are within the paper.
+
+Personal Thoughts: Really an interesting method to solve algorithmically a problem. While this has been benchmarked solely on reasoning datasets, I can’t help but wonder how it can broaden itself to bigger, more concrete problems.

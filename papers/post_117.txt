@@ -1,0 +1,24 @@
+## Read 117: Towards Achieving Human Parity on End-to-end Simultaneous Speech Translation via LLM Agent, from the Cross Language Agent Team of ByteDance Research
+
+https://arxiv.org/pdf/2407.21646
+
+The authors of the paper propose a framework for Fast Speech Translation. Their framework achieves fast and strong results on Cn to En translation, making it one of the strongest models existing.
+
+They name their framework CLASI, for Cross-Lingual Agent that accomplishes Simultaneous Interpretation. 
+It is composed of:
+1- An audio encoder that embeds speech into vector form
+2- An adapter that encodes speech embeddings into an LLM’s vector space
+3- A multimodal retriever to fetch relevant translation information given audio and query
+4- An LLM that outputs the translation
+
+In order to provide fast and strong translation, CLASI learns by design to identify semantic chunks of a given speech. Translations of the chunks are saved within the model’s memory, to then be reused for later translations.
+
+The authors then detail the data aspects of their training process. They take first an LLM and audio encoder that were trained separately, and train CLASI on Automated Speech Recognition, Speech Translation and Text Translation. 
+
+Two datasets are constructed: one for complete speech to target language translation, and another for partial semantic speech chunk translation to target language. The datasets are constructed with the help of LLMs for both translation and semantic chunking. Encoder + LLM are afterwards finetuned using human-annotated chunked ST data to boost the performance. Multimodal Retriever is tuned separately on a dataset of speech recognition data.
+
+CLASI is then benchmarked on Latency and Performance, with very promisingly high results. Retriever is benchmarked independently with a strong performance as well.
+
+More details can be found on the appendix and on the github page of the project: https://byteresearchcla.github.io/clasi/
+
+Personal Thoughts: Really interesting to follow evolutions on speech. A promising domain that will sure lead to some interesting usable improvements soon. :)

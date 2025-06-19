@@ -1,0 +1,82 @@
+## Read 149: « Watermark Anything with Localized Messages », by @RednasTom, @pierrefdz et al from @AIatMeta
+
+As watermarking becomes more and more of a necessity to conform with regulations, it still faces caveats. 
+
+Basically, what happens is that even image splicing can kill your current watermarking tools, by removing the ability for your watermark detector to get that this image is watermarked. Bad for copyright, bad for company safety, and unsatisfying overall as a technology.
+
+So what do the authors do?
+They repurpose watermarking to go from the image level to the pixel level, and train Watermark Anything Models, which are watermark image embedders and extractors. This method manages to be robust to several transformations and even be able to encode multiple messages!
+
+So, how do they pull that off? ⬇️
+
+——-
+
+The watermark image embedder is an autoencoder based on the LDM architecture. It takes as input an image and a message in binary.
+
+Its encoder compresses the image to a latent vector with equal height/weight downsampling. The sent message has each of its bit mapped to an embedding table, depending on position and value. All embedded bits are then averaged to create a single vector. This vector is concatenated to each pixel of the encoded image, forming an encoded vector of size (d_encoder + d_bitvector, h’, w’) where h’ and w’ are the resized shapes.
+
+The decoder then projects that input into a watermark, confined within [-1, 1] and shaped like the original image. That watermark is then multiplied by a parameter alpha and added to the original image.
+
+——
+
+Now we’re done with the first component, let’s move to the second.
+
+The watermark extractor maps an image into a vector of shape (1+n_bits, h, w) where n_bits is the size of the message (fixed), and h and w are the image’s shape. The first vector (1, h, w) corresponds to a watermark detection mask, within [0, 1] ; while the second vector (n_bits, h, w) corresponds to the decoding mask, within [0, 1].
+
+Now, to perform watermark detection and message retrieval at the global level using pixel infos passes through thresholding and averaging.
+
+A watermark is detected on pixel i if the watermark detection mask value for that pixel is higher than a value tau.
+
+Once it is settled for all pixels, the message’s extrapolated value for bit k is equal to 1 if the average of decoded predictions for all pixels on axe k where a watermark is detected is superior to 0.5. It is equal to 0 otherwise. Refer to the images below for a mathematical view.
+
+In the multiple watermark detection and decoding task, a modification is applied: for every pixel detected as watermarked, the authors extrapolate the message locally, ie they create a vector of size (n_bits, h, w) where its value for pixel i and bit k is given by the decoder mask value at said pixel and bit to be higher than 0.5.
+
+Then, DBSCAN clustering is applied over the set of locally decoded messages, and centroids are taken as the watermarks for each cluster (a cluster is approximated to a watermark). Quite the innovative approach there!
+
+Now, how do they train those two models?
+
+The training process is split in two steps: a pre-training of the models, and a finetuning to make the watermark as little noticeable as possible.
+
+The first step goes as follows:
+1- Embedder is applied to image and message
+2- Watermarked image is edited using a random mask to keep only certain pixels watermarked,  and an editing technique is used to modify the image
+3- The augmented image goes through the extractor, detecting watermark pixels and extracting the message
+4- Backpropagation is done on a loss regarding the watermark detection based on the mask ground truth and another loss regarding proper message reconstruction
+
+This yields to functional watermarking, but there is one problem fixed by the second step.
+
+—-
+
+The second step is applying a Just-Notable-Difference (JND) Map during the watermarking process, as another multiplicative factor in the embedder’s process.
+
+Multiple Watermarks are also made part of the process. They are created using disjointed masks, of a random number from 1 to 3. Detection loss is now computed using the union of all masks, and reconstruction loss is summed over each message.
+
+That second step allowed the model to handle multiple watermarks and generate watermarks that can’t be detected by the human eye!
+
+Something to be noted: image size is fixed during training at h = w = 256. For higher resolution, image is resized and masks are interpolated. Authors note that the model can indeed be used that way for higher resolution images. Additional training details can be found within the paper and its appendix.
+
+Now, onto the quantitative results. Models are all tested on the MS-COCO segmentation set using the union of segmented masks to represent the watermarked pixels, and on the DIV2k dataset of high resolution images for which the mask is generated randomly (and made to cover 35% of the image). While I did not find it stated, I suppose the bit level accuracy is over random message watermarking.
+
+When it comes to detection and bit decoding, WAM are really, really good compared to other methods.
+
+They are robust to more transformations than any other model, have very competitive TPR with a very low FPR, and do really well on the bit decoding… in both low and high resolution, despite not being trained for high resolution! Even the inpainting results are in fact a side effect, as the model was not trained using inpainting as a transformation. Impressive!
+
+——-
+
+WAM are also strong with different amounts of watermarked area. The Watermark can be detected really well even if it occupies as little as 10% of the image, even with the image being cropped. Bit level accuracy is also really good: in average, 31 out of 32 bits are recovered even if only 10% of the image is watermarked! (25 out of 32 is image is 25% cropped)
+
+——-
+
+And lastly, the second training phase does improve the ability for WAM to generalize to the detection of 5 different messages (even though only up to 3 messages are used in training!).
+
+DBSCAN clusters are very good, and so is are watermark detection and bit recovery, as shown in the figure below.
+
+——-
+
+Overall, quite the original and interesting paper. Differs from my more oriented LLM lectures, but I think it is valuable to broaden horizons and discover new techniques.
+
+Seems like a very strong and robust method for image watermarking. It is currently available in a cc-by-nc license.
+
+Here is the paper’s link: https://arxiv.org/pdf/2411.07231
+
+Watermarking is likely going to be a hot topic in the years to come, so very curious to see where that research leads to!

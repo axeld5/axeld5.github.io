@@ -1,0 +1,19 @@
+## Read 26: BLINK: Multimodal Large Language Models Can See but Not Perceive, by @XingyuFu2, @huyushi98 et al
+
+https://arxiv.org/pdf/2404.12390.pdf
+
+Strengths and full capacities of Multimodal Language Models have yet to be completely explored. As of today, they are not able to be the « one size fits all » kind of models expected for computer vision, as this benchmark proves it.
+
+BLINK is a benchmark of 3807 Multiple Choice Questions, related to 14 classic computer vision tasks. These tasks are very easy for human beings (a normal person should get 95% accuracy on the benchmark), but apparently are much harder for our MLM models to solve.
+
+This group of questions is a test for several capacities of LLMs. They use several different type of questions, and ask about broad enough topics for it to be challenging to a machine. It is important to note as well that the BLINK benchmark does not require expertise or domain knowledge to answer: only the MLM’s visual understanding is required. More details about the dataset’s construction can be found within the paper. It is heavily documented and helps getting a strong understanding about the benchmark.
+
+BLINK is evaluated on 16 recent multimodal LMs, which do have a bit of trouble. GPT-4V gets the best results at 51% average accuracy, which is highly weaker than the human baseline of 95%, but quite better than random (which would score around 38%). Analysis on 140 errors sampled show that they are mainly due (~44%) to hallucinations, either related to attributes or patterns (~24%) or to visual prompt locations (~20%).
+
+The authors try as well Captioning the Images + Using an LM to solve using only text inputs, but it shows worse performance than random on BLINK and slightly better or worse performances on other benchmarks.
+
+However, not all hope is lost for automated solving of BLINK, as task-specialized models happen to perform way better in each task subset evaluated, near human level in some cases! This would mean that distilling their knowledge or having an agent system with model routing could allow MLMs to have a better shot.
+
+Everything related to the work is open sourced, and can be found following this page: https://zeyofu.github.io/blink/
+
+Personal Thoughts: Really cool benchmark to look at. It’s hard to automate, but easy enough for a human to solve to want to make an MLM be able to work autonomously on it. If right now simply prompting does not work, perhaps more complex approach based on either rewriting prompts, or agent systems might have a better shot! Hoping this work gives birth to plenty of strong ideas regarding MLM prompt engineering. :)

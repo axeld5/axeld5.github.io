@@ -1,0 +1,31 @@
+## Read 53: LMD3: Language Model Data Density Dependence, by @jwkirchenbauer, @garretthonke et al
+
+https://arxiv.org/pdf/2405.06331
+
+Regarding current benchmarks, data leakage is a serious concern, as it can bias the score of a model and skew it towards results that are higher than its real performance. But is it truly the case?
+
+To find out about a data leakage discriminator, the authors of this paper used approximate Kernel Density Estimation to estimate the likelihood of drawing any given sample from the distribution over natural language sequences represented by the studied corpus. This approximation uses hierarchical sampling and is detailed within the appendix of the paper.
+
+The embeddings used for KDE approximation are embeddings coming from off-the-shelf pretrained retrieval embedding models. Model used is a model from the sentence-transformer library.
+
+In order to evaluate the impact of data leakage first in finetuning, the authors take 1000 sentences from MMLU’s test set and paraphrase them. They evaluate then performances of a Llama-2 finetuned with a certain amount of leakage (none, the exact sentence, exact sentence + one paraphrase, +two paraphrases…) along with the KDE of the dataset that has this degree of leakage.
+
+What they find is twofold:
+- KDE is a good discriminator for the leaked examples
+- In worst case scenario of a 1000 leaked examples with 3 paraphrases for each in the finetuning set, only an accuracy boost of 8% is happening.
+
+The authors then compute perplexity for groups of queries In Distribution and Out of Distribution for a pretrained model. They take the ID examples from a random sampling of 10k examples from the Deduplicated Pile, and the OoD examples correspond to the MMLU test set of 13k examples. The model studied is Pythia 6.9B.
+
+The authors compare that computed perplexity with computed KDEs and find the following:
+- In the ID setting, KDE is correlated with the perplexity in a negative trend in the setting where it is only computed with respect to the nearest neighbors within the corpus.
+- In the OoD setting, KDE is not correlated with perplexity. 
+
+However, the authors generally find query perplexity decreases as data density increases. 
+
+This is a strong finding, as it means there is interest in studying sample density to increase the quality of the dataset.
+
+The authors do note though that this method requires access to the whole training dataset, which is sadly not usually the case.
+
+More details can as well be found within the paper’s rich appendix.
+
+Personal Thoughts: Pretty interesting yet tough paper to read. Hope I could get a nice understanding of the process within the paper, and think the result could have some nice implication. Even if model providers do not often disclose their training data, there is a probability the sample density finding can be used by them to enrich their dataset. ;)

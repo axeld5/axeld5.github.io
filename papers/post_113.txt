@@ -1,0 +1,19 @@
+## Read 113: Data Mixture Inference: What do BPE tokenizers reveal about their training data? by @JonathanHayase, @alisawuffles et al from @uwnlp
+
+https://arxiv.org/pdf/2407.16607
+
+The authors of the paper exploit tokenizers from commercial models to try inferring their data mixes through a smart attack leveraging Linear Programming.
+
+To do so, they start with a list of potential Data Distribution Candidates. Those candidates are given a coefficient between 0 and 1 that indicates their presence in the training data. Data Distribution Candidates can be « Web Data », « Books », « Code », « French », « Japanese »… any kind of potential subset.
+
+Then, the authors exploit properties of BPE to define a constraint based on those coefficients and the occurence of token pair p at dataset corpora i, at time t. Those constraints are then relaxed through non-negative variables, which become the optimization target (optimization being perfect when they are set to 0). 
+
+Authors also detail within the paper methods to optimize memory and efficiency, as handling the pairs can be quite costly. The Linear Programming problem is then solved iteratively using lazy constraints.
+
+The authors then test their method on tokenizers of their own, training them with code, multilingual, and english data from various sources. They prove on each instance that their method is successful, and leagues beyond random to identify training data mixes. Analyses show that their methods is stronger the more the data, the more the merges considered and that it is robust to distribution shifts.
+
+Once it is done, they apply it to commercial tokenizers. Their findings are interesting: there is a leap between GPT-2 and GPT-3.5 in code data inclusion. In fact, all strong LLMs show massive code data incorporation, with it being usually the data mix that is announced the most present through their attack.
+
+Additional results and more details on data mixes inferred can be found within the paper’s appendix.
+
+Personal Thoughts: Very interesting paper. Subject is interesting, and the method is clever. I’m a bit surprised about the code results for commercial LMs: it seems like a lot, but it could be believable considering they are wanted to be very good at code. A work to be followed! ;)

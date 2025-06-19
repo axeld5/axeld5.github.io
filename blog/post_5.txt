@@ -1,0 +1,63 @@
+## Research Experiment: SFT+RL on Gemma-3-1B-it to teach it to write Haïkus
+
+https://github.com/axeld5/gemma_haiku
+
+Over the last week, I’ve asked myself the following question: what if I taught a Gemma-3-1B model to one-shot haiku generation?
+
+Due to limited resources, I’ve used a @Scaleway H100 and worked on it during evenings. Details below: from 3% haiku accuracy to 23% we go!
+
+## Results
+
+| Model | Haiku Score | Similarity Score | Total Score | Train Overlap |
+|-------|-------------|------------------|-------------|------------|
+| unsloth/gemma-3-1b-it | 0.0372 | -0.0998 | -0.0627 | 0.00% |
+| gemma-3-1b-haiku | 0.1351 | 0.1101 | 0.2453 | 0.00% |
+| gemma-3-1b-sftrl-haiku | 0.0878 | 0.3708 | 0.4587 | 0.00% |
+| gemma-3-1b-sftrl-haiku-sparse | 0.1858 | -0.0880 | 0.0978 | 0.00% |
+| gemma-3-haiku-rl-sparse | 0.1537 | -0.1206 | 0.0331 | 0.00% |
+| gemma-3-1b-fullrun | 0.2348 | 0.0588 | 0.2936 | 0.00% |
+
+## Experience Setup
+
+First, let’s define a Haiku. A Haiku is a text of three lines, following a 5-7-5 syllabus pattern.
+
+To find my haikus, I’ve used the https://kaggle.com/datasets/hjhalani30/haiku-dataset dataset. However, this dataset wasn’t exactly it: a lot of poems weren’t haiku! Which made me filter it, using the three lines rule and the Pyphen library for the syllabus part. After this, I went from around 100k samples to 10k... But it wasn’t done, because I needed instructions.
+
+To do so, I used @GoogleDeepMind's Gemini-2.0-Flash model to quickly summarize haikus into a sentence. But there was a subtlety: I wanted the summary to be as close as possible to the haiku semantically, for later use. Therefore, I used an embedding model (MiniLM-L6-v2), to keep only summaries which had a cosine similarity over 0.5 with the generated haiku
+
+Due to compute restrictions, I chose to keep only around 1500 examples. This created my conversational dataset, the question being « Generate a haiku about X » and the answer being the haiku. We had thus SFT data! Which could even be used for RL, in fact… Data was split threefold: an SFT split, an RL split and an eval split. Splits were even.
+
+Now, for the metrics I wanted two things:
+- To measure whether or not we had a haiku generated
+- To measure whether or not the haiku satisfied the demand
+
+First criteria was evaluating a haiku just like we did prior, and measuring the demand was through the use of embeddings: score being cosine_similarity(topic, haiku) - 0.5
+
+Before going through SFT, let’s ask the simple question: can Gemma-3-1B-it generate a Haiku? Ask it, and it will harm its answer with unneeded text « sure, let’s generate a haiku… » « here are three types of haiku… »
+Which overall harms its score!
+
+## The Experience
+
+So first, we will then rigor it through SFT. 590 examples, and 100 steps with rank 64 LoRA to avoid overfitting. This is the gemma-3-1B-haïku, on which are improved both Haiku and Similarity Score. Qualitative analysis of the results yields that it does generate haikus, but fails at the syllabus part! However, the instruction following is good and the model does not repeat training examples, which allows it to maintain a good instruction following score.
+
+Now, onto the RL process, with GRPO: My first approach was to train the SFT model using both the Haiku and IF rewards defined earlier, adding on top of that a penalty for not respecting the 3 lines format. The issue? It reward hacked. It realized just repeating the instruction and trying to wrap words afterwards maximized the similarity based reward, which is easier to tackle than fabricating a haiku: Hence the spike in the second reward, with the decrease in the first one.
+
+So I’ve modified it. The similarity based reward was only used if the model could make a haiku in the first place: This ended up increasing the haiku score, at the cost of the other reward. And now that the model was better at making haikus, what if we loosened the reward? 
+
+So I’ve retrained the model using both similarity and rule-based rewards at the same time, to a better effect! Improved instruction following, and haiku scores. And thus, going from ~3% to ~23% of haiku well generated!
+
+## Imperfections and additional tidbits
+
+The issue: Pyphen library is imperfect. Evaluated it on Gemini-2.0-Flash Haiku outputs. They were most of the times Haiku, which were in fact misclassified by Pyphen in some occasions: leading to a score of 20%, which is below what it really is. The metric being imperfect will make the model imperfect, but I suppose we have to live with it here.
+
+In fact, it is likely the similarity metric is imperfect as well due to the use of a lightweight embedding model, although the IF results seem to match! Letting this project go now, but it was honestly fun to have a go at SFT+RL.
+
+Sharing now a few tidbits from other runs. First, the RL only run confirmed my thoughts about early instability: model took much longer than the SFT’d model to adapt to the 3 lines rule. Even after 1000 training steps, it did sometimes produce large outputs: while the SFT one never showed that behavior.
+
+Second, I’ve made a run overfitting the SFT model. 
+
+On that run, RL was interestingly  transformed into a retrieval problem: the model generated samples from the SFT set (thus maximizing the haiku reward) and tried generating the ones closest to the query semantically! Was in the end quite the learning experience about SFT+RL and pitfalls, although I still have much more to learn. Thanks to @vanstriendaniel and @huggingface for the first tutorial on SFT+DPO for haiku which served as an inspiration for this project!
+
+Repo: https://github.com/axeld5/gemma_haiku
+Last Run Model: https://huggingface.co/axel-darmouni/gemma-3-1b-haikuspec
+Dataset: https://huggingface.co/datasets/axel-darmouni/haiku_dataset

@@ -1,0 +1,34 @@
+## Read 34: The Instruction Hierarchy: Training LLMs to prioritize privileged instructions, by @Eric_Wallace_, @KaiKaiXiao, Reimar Leike et al from @OpenAI
+
+https://arxiv.org/pdf/2404.13208.pdf
+
+Most of us have seen the meme in which a car company’s chatbot was asked to pull out Navier Stokes, and obliged. As a brand, you do not want this to happen, as it can lower your standing. This is an attack called prompt injection. Its goal was to steer away the model from its intended purpose, to output something completely unrelated to what it is supposed to answer.
+
+The authors in this paper aim to tackle prompt injection (alongside jailbreaking and system message extraction) by aligning instructions with the model’s functionality. What that means is that given a system prompt, they train the model to be only able to output answers that stay in line with this fundamental prompt. They split the instruction types in two categories: aligned (in line with system instruction) and misaligned (not in line).
+
+In order to defend from each type of attacks, the authors create datasets tailored to the attack they try to answer:
+- Direct Prompt Injection for Open Domain Tasks: 
+—> Aligned instructions are created from an LLM that generates compositional requests, that are then split into individual components, placed at different levels of hierarchy (between system and user). Model is trained to answer as if the full request was within the system prompt.
+—> Misaligned instructions are created using an LLM that generates a system message with constraints, and then that generates queries that trick the model into breaking its rules. Model is trained to ignore the adversarial instructions, and answer as if they were not in the prompts. Additional examples which do not break the constraints are added for training.
+
+- Direct Prompt Injection from Closed Tasks:
+—> Only misaligned instructions are generated. They are generated using a model to create prompt injections, paired with specific prompting to get ground truth answers, ignoring the injections. Model is trained to be ignorant of overriding attempts.
+
+- Indirect Prompt Injections
+—> Existing examples are taken for Misaligned examples, paired with red teaming. Model is trained to behave as if the prompt injections did not exist.
+
+- System Message Extraction
+—> Aligned data : Generation of basic questions and training of model to comply
+—> Misaligned data : Few shot prompting to generate questions that ask directly about the system prompt, or for sensible information within the system prompt. Model is trained in that case to act as if the system prompt does not exist.
+
+Jailbreaking is not attempted to be beaten specifically.
+
+Using all that synthetic data, the authors finetune a gpt-3.5 turbo model using both finetuning and rlhf on the generated data, along regular data to ensure model capacities are not lost. 
+
+Results are impressively good, as the ASR in all cases -even for jailbreaking- is severely reduced. Datasets used for evaluation can be found within the appendix. 
+
+Besides, it is important to note that this training does not result in an increase in refusal rate for harmless prompts. In all relevant cases, refusal rate only increases very slightly, which is extremely good.
+
+Personal Thoughts: Really strong results! Very interesting leveraging of synthetic data, although it remains a bit sad that the data mixes cannot be open sourced, as this method could have a lot of industry application. Hoping hard though that it goes into GPT models, as it would cement their use as the go-to for customer-level chatbots. 
+
+However, I am incredibly curious at how this method performs vs the strong current jailbreaking methods. Namely, can it overcome @elder_plinius’ leetspeak jailbreak prompts, and @maksym_andr’s random search suffix attacks?

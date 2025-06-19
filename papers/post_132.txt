@@ -1,0 +1,19 @@
+## Read 132: « Eagle: Exploring the Design Space for Multimodal LLMs with Mixture of Encoders », by @__flying_lynx__, @FuxiaoL et al from @nvidia
+
+https://arxiv.org/pdf/2408.15998
+
+The authors of this paper explore strategies for improving the current landscape of VLM by focusing on using the many many encoders we have, which excel for most at one specific task. 
+
+The paper focuses on how to combine them and exploit their different strengths, and provides a nice overview of what exists in the literature.
+
+Base setup is based on LLaVA architecture. CLIP encoder is upscaled to 448 input resolution through interpolation and finetuning, as this enables better results. Their study in fusion strategies reveal Channel Concatenation is overall the better one in the performance/efficency tradeoff, which is the one they choose.
+
+The authors then propose a pre-alignment strategy, which involves finetuning each expert separately with the LLM remaining frozen, then training a projector using the channel concatenation of each expert output, and then finetuning it all. The LM for the first step can be different from the ones that follow. This pre-alignment strategy allows to bridge the gap between encoders trained on image-to-image tasks and encoders trained on visual alignments.
+
+Then, the authors study different types of expert combinations. The one they land on is the following: CLIP (Visual Language Alignment), ConvNeXt (Image Classification), SAM (Image Segmentation), Pix2Struct (Text Recognition) and Eva-02 (Object Detection).
+
+The models are then used with different LLMs, but the result I want to focus on is the one that is on Continued Pretraining and Finetuning with Cambrian-I data. Aside from MathVista which is slightly lower, results with a Llama-3-8B backbone are comparable to Idefics-3, with a completely different method. This deserves to be looked at.
+
+Github page can be found here: https://github.com/NVlabs/Eagle
+
+Personal Thoughts: Really interesting method as it’s a very different one from current VLM SotA, which goes its own direction, offering a new perspective to look at. Hope it will bring some nice improvements in the VLM landscape!

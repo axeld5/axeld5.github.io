@@ -1,0 +1,25 @@
+## Read 41: Visual Fact Checker: Enabling high-fidelity detailed caption generation, by Ge et al. from Nvidia
+
+https://arxiv.org/pdf/2404.19752
+
+The paper proposed here shows a training-free way to improve captioning on both 2D and 3D images. Additionally, they introduce a new metric, Clip-Image-Score, that relies on a using a generative model on the generated caption to perform comparison.
+
+What is the methodology of the authors?
+1- Caption the images using various captioners (for 3D, use all views available)
+2- Use an LLM to pair those captions into a full caption
+3- Use an LLM to detect all objects cited within the caption for another model to pass and verify their presence
+4- Use either an object detection model like GroundingDino, or a multimodal model to perform VQA and confirm number and presence of cited objects
+5- Use the results of the previous step along the caption generated at step 2 to generate a fact-checked caption
+
+For the Clip-Image-Score, their approach is as follows:
+1- Generate caption from an image
+2- Using that caption, query a text-to-image model like Dall-e to generate an image
+3- Compare the clip embeddings from the original and generated image using cosine similarity
+
+Clip-Image-Score is consistent with Clip-Score, providing another point of view on the captioning process.
+
+As for the authors’ VisualFactChecker approach, this approach shows slightly higher scores than the open source models they use as captioners, but a considerably higher winrate pairwise, in terms of clip-scores, gpt4-evaluations, and human-evaluations, even versus human annotations!
+
+All prompts and qualitative results are within the appendix.
+
+Personal Thoughts: Really cool paper with nice potential for reproducibility. Method could be reworked as well to be highly usable to other domains (like for instance math VQA), and I’m loving that idea of pairing MLM & LLM with more traditional type of object detection models like Grounding Dino.

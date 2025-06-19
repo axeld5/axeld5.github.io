@@ -1,0 +1,36 @@
+## Read 154: « Reinforce++: A simple and efficient approach for aligning Large Language Models », by Jian Hu
+
+https://arxiv.org/pdf/2501.03262
+
+This work takes from the base Reinforce algorithm, improves it for it to turn into a more reliable algorithm usable for SFT, evaluates its performances for RLHF, and gives an open-source implementation of it.
+
+So, what do they do ? ⬇️
+
+——-
+
+First, the author appends a penalty in the reward function in the form of a KL divergence between the trained model and the supervised model’s distributions at the token level.
+
+Second, they modify the policy update: the loss is changed with a clipping mechanism inspired by PPO to enable the model to leverage better positive advantages without having excessively large updates that disturb training.
+
+Third, additional updates are done to make training more efficient (mini-batching updates)and stabilized (reward normalization  aand clipping, applying of a scaling factor).
+
+Lastly, the advantage function at token t is not determined by a value function. It is determined by the sum of all sub-rewards from token t to the EOS, and is then normalized. This is where the Reinforce parallel comes in, as it would seem.
+
+——
+
+Base models used to test the algorithm are Llama-3.1-8B-SFT on General domain datasets and Qwen-2.5-7B-Instruct on mathematical domain datasets. Reinforce++ is compared to PPO and GRPO for RLHF.
+
+Results are overall pretty interesting:
+- PPO and Reinforce++ training for general domain result less in length hacking of outputs than GRPO, where the model artificially generates supplementary content to boost its reward function
+- Analysis of curves show that Reinforce++ and GRPO behave similarly in mathematical domain with a rule-based reward model
+- Analysis of curves show that Reinforce++ shows a greater increase than GRPO with a mathematical reward model
+
+Also, when compared to PPO… reinforce++ is 30% faster!
+
+——
+
+Interesting work overall, that could provide an alternative to PPO I suppose.
+
+Was a pretty cool and fast read you can find here: https://arxiv.org/pdf/2501.03262
+
+With the work on the GitHub in the paper in « ray »-related folders and files! ;)

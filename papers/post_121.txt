@@ -1,0 +1,43 @@
+## Read 121: MiniCPM-V: A GPT-4V level MLLM on your phone, from @yaoyuanAIR et al from the MiniCPM-V team
+
+https://arxiv.org/pdf/2408.01800
+
+The authors of this paper introduce a new Vision-Language Model, of impressive strength for its size.
+
+Architecture is the usual one: a vision encoder followed by an adapter layer, that taps into an LLM. 
+
+What differs though here from the usual is that the image inputs are preprocessed before being sent: 
+- The image is first divided into slices based on its resolution wrt to the ViT’s training resolution. 
+- Each slice is then resized, then embedded by the ViT. 
+- The embedded slice is then reshaped from 1D to 2D, and positional embedding wrt the slice position is applied. 
+- Each slice is then compressed by the adapter layer. 
+-A special token « \n » is given to split slices from different rows. 
+
+It’s also worth noting the complete image is going through the process as well, while being at the first position, in order to grand holistic information.
+
+Model is going under three stages of pretraining:
+1- Warm up of the compression layer, trained for 200M captioning samples while rest is frozen
+2- Upscaling input image resolution to 448x448, training the vision encoder on an additional amount of 200M captioning samples
+3- Training both vision encoder and compression layers with both image captioning data and ocr data
+
+It’s worth noting that low quality captions were rewritten as well through a finetuned LLM on a small set of GPT4 rewritten samples.
+
+Supervised finetuning is then applied to the MiniCPM-V ensemble, using 2M samples from the Cauldron, and 90k multilingual data over 36 languages to bolster multilingual capacities.
+
+And then, RLAIF is applied. Here is how they grade their samples: using Llama-3-8B, each response is divided into atomic claims and converted into a yes/no question. An MLLM is then employed to score the question. The final score is then number_of_invalid_claims * -1. DPO is applied using that grading strategy to obtain preference pairs between different answers generated using sampling decoding with high temperatures.
+
+3 models are released: 
+1- MiniCPM-V 1, a 2.8B based on MiniCPM 2B LLM, trained with only stage 1&2 of pretraining to then SFT.
+2- MiniCPM-V 2, a 2.8B based on MiniCPM 2B LLM, fully trained but with RLHF instead of RLAIF
+3- MiniCPM-Llama3-V-2.5, using Llama-3-Instruct-8B as base LLM, and trained through whole pipe described here.
+
+MiniCPM-V 2 is actually pretty good for its size, but the real kicker is in the Llama3 based model. Its performances are basically near SotA on most benchmarks, both OCR and generalist.
+
+Additional information about results and end-side deployments can be found within the paper and its appendix.
+
+Github Page can be found on the following link. It announces as well another model : MiniCPM-V 2.6, built upon Qwen2-7B and even better than its predecessors… 
+Models can be downloaded from there!
+
+https://github.com/OpenBMB/MiniCPM-V
+
+Personal Thoughts: Really interesting read. The VLM open-source world moves fast. The second they scale that MiniCPM up to 70B, think we’ll have a very nice open source VLM to play with, especially considering Meta paved the way with its technical report! ;)

@@ -1,0 +1,26 @@
+## Read 92: Connecting the dots: LLMs can infer and verbalize latent structure from disparate training data, by @j_treutlein, @damichoi95 et al from UC Berkeley and the University of Toronto
+
+https://arxiv.org/pdf/2406.14546
+
+The authors of this paper prove an LLM can infer from finetuning latent informations. They call this phenomenon « inductive out-of-context reasoning » (shortened as OOCR).
+
+Basically, what happens is that you take a latent state « z ». This can be a city, this can be a function… anything. The LLM is then finetuned on examples that use the variable z. For a city, it can be its distance within the city and another one. For a function, it can be its outputs given some parameters.
+
+Then, the model is asked to answer questions out of the training domain that require the use of the latent variable.
+
+Here are all the cases that are studied:
+1- Inferring a city’s name from its distances with other cities
+2- Inferring a biased coin’s probabilities given several of its outputs
+3- Predicting a function through its outputs
+4- Learning over a distribution of functions and getting all possible outputs given a variable
+5- Learning values of boolean variables from parity formulas
+
+Models used are Llama-3-70B, GPT-3.5 and GPT-4. Performances are compared with many-shot ICL as well.
+
+The finetuned models obliterate the ICL-helped models, and it’s not even close. In all tasks except Mixture of Functions (which is a very hard one), the finetuned models exhibit very high performances, especially GPT-4.
+
+Additional details can be found within the appendix.
+
+Code is open-sourced at: https://github.com/choidami/inductive-oocr
+
+Personal Thoughts: Super interesting results. Revitalises model fine-tuning for specific use-cases, and could have extremely interesting consequences. For instance, what’s used with cities shows one can encrypt latently an assignment to a model: City 50337 becoming Paris could be replaced by actual information that could be interesting for the LLM to have, but not for the average user to get. :)

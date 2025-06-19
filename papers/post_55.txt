@@ -1,0 +1,31 @@
+## Read 55: Capabilities of Gemini Models in Medecine, by @KhaledSaab11, @taotu831, Weng, @RyutaroTanno et al from Google Deepmind
+
+https://arxiv.org/pdf/2404.18416
+
+Domain specific models have been creeping up lately, and this paper is one proof of their interest. The authors provide a finetuning method of Gemini that leverages as well self-training capabilities for the medical domain. In doing so, they create 4 models based on all Gemini versions available (until I/O introduced Flash) : Med-Gemini S 1.0, Med-Gemini M 1.0, Med-Gemini L 1.0 and Med-Gemini M 1.5, finetuned respectively on Nano, Pro, Ultra, and Pro 1.5.
+
+To perform the finetuning, the authors generate two new datasets from MedQA, leveraging Ultra and Google Search APIs. This is notably how they self train the model:
+- For each question of MedQA, they ask gemini to generate search queries which results are retrieved 
+- A set of five hand-curated expert answers is then taken into account, modified to quote from the results of the queries if they are to be used within the prompt
+- MedGemini-L then generates CoTs for each question, and finetunes itself on them after filtering of the wrong answers.
+
+This leads to two datasets: MedQA-R (removing the search results), and MedQA-RS (with the search results). Those datasets are used for finetuning the other models.
+
+To improve MedGemini-L’s inference, the authors ask Gemini to make multiple reasonings that lead to answers. If those answers are very conflicting, the model is given 3 search queries to help itself make a better decision. This is to be looped until the model converges to an answer.
+
+Multimodal finetuning is done over specific image-to-text datasets. The authors also claim it is possible to integrate biomedical signals into MedGemini-S.
+
+The authors evaluate all their models on several medical benchmarks, all detailed within the papers.
+
+They note that :
+- MedGemini-L is SOTA on all advanced medical text-related benchmarks and image-related benchmarks
+- Its text generation (reports, summaries) is more preferable to those of medical experts
+- MedGemini-M 1.5 has incredible performances on video processing and strong needle-in-a-haystack performance for EHR reports
+
+The authors then discuss potential use cases of long context understanding in the medical field, to assess there are several of them answered by MedGemini (help in clinic practice, biomedical research, ehr understanding).
+
+Models should be available through the Google Cloud API after validation of research partners, regulators and providers.
+
+Several qualitative examples and additional training and evaluation details can be found within the appendix.
+
+Personal Thoughts: A very dense yet impressive technical report. Domain-specific models really have future, as they can provide strong help to workers with professional vocabulary and context understanding that makes it easier for them to work.

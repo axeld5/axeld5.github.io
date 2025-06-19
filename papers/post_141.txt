@@ -1,0 +1,32 @@
+## Ready 141: New paper by @AIatMeta that makes quite the move in the AI community, by @ArtidoroPagnoni et al : « Byte Latent Transformer: Patches scale better than Tokens »
+
+https://dl.fbaipublicfiles.com/blt/BLT__Patches_Scale_Better_Than_Tokens.pdf
+
+Currently, for all the frontier LLMs, Byte-Pair Encoding is used. This means that the bytes in the input are transcribed into tokens (for instance : « lowest » -> « low » & « est »), which are then fed to an embedding matrix, to the LLM, and then decoded.
+
+This is an inefficient process. Scaling tokens available means scaling both input and output matrices, ending up putting some large strains on computations.
+
+The authors of this paper aim to remedy that, by working at the byte-level. They modify the current LLM architecture in the following way:
+1- Bytes are encoded individually by a Local Encoder.
+2- Groups of encoded bytes are created and made into patches, embedded via cross-attention.
+3- A Latent Global Encoder is then used to output next patch.
+4- Cross-attention is used to unpatch the output into encoded bytes.
+5- A Local Decoder is applied to perform textual output.
+
+Additional information:
+A- Between step 1 and 2, byte encodings are augmented by applying an embedding over byte n-grams of size 3 to 8.
+B- Patching in step 2 can be done in multiple ways, main ones used in the paper are : per k byte; using spaces; or at entropy level.
+C- Entropy level patch extraction is computed using a small Byte-Level-Transformer trained for Next Byte Prediction. D- Patch boundaries for the entropy level patch extraction are created using either a global threshold or comparing entropy at point x_t to point x_{t-1}. 
+E- Entropy model is a 100M transformer, and will be the one used for the patching in the BLT with the best results.
+
+BLT Models are trained using a dataset of 1T tokens, which is approx 4.5 bytes per patch using entropy-based extraction. They are trained at scales ranging from 400M to 8B. Additional training details like hyperparameters can be found within the paper.
+
+Model is compared with Llama-3 trained with BPE. Here are the findings:
+1- Bits-Per-Byte (tokenizer indépendant version of perplexity) shows similar trend from BPE and BLT at even high levels of FLOPs.
+2- BLT performs as well as Llama-3 architecture trained on same amount of tokens, even better in some benchmarks in fact. And it trumps over Llama-3 in all character related tasks. It even beats Llama-3.1 in some benchmarks, which was trained over 16T tokens !
+
+What’s even more impressive is that models pretrained using BPE can be repurposed into BLT. This was experienced with Llama-3.1 over 220B tokens. Performance is dropped from Llama-3.1, but increased when you look at the 8B BLT directly trained with the 220B tokens.
+
+Additional ablations detail that validate the hyperparameters can be found within the paper.
+
+A complex topic, handled masterfully as the paper is really smooth to read and overall very instructive. A very interesting work, that may usher a new era for the LLM architecture !

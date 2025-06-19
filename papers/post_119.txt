@@ -1,0 +1,17 @@
+## Read 119: MuChoMusic: Evaluating music understanding in multimodal audio-language models, by Weck, @Ilaria__Manco et al
+
+https://arxiv.org/pdf/2408.01337
+
+The authors of this paper create a dataset to evaluate model capacities at understanding music. Their dataset is composed of 1187 multiple-choice questions, which test understanding of 644 unique music tracks. Each question has only 1 answer along 3 distractors.
+
+Questions test knowledge (capacity to exhibit musical-level comprehension of several aspects) and reasoning (exploiting knowledge to analyze the audio in some aspect).
+
+Their dataset is built from human-written captions turned into MCQ using Gemini 1.0 Pro. The generation questions are then filtered thanks to the contribution of human annotators, to only keep the ones for which the q/a pairs are well made. They are then classified into the authors’ taxonomy with Gemini 1.0 Pro.
+
+The authors then evaluate 5 open source audio-language models, with 3 that are music-specific. They measure both accuracy and instruction-following rate.
+
+What they note is that Qwen-Audio is so far the best ~7B available audio model when it comes to music understanding. Performances are not great (~50% correct answers overall), but still better than random. Music-specific models fail at instruction following in terms of answering the question, which lowers their score.
+
+Additional details can be found within the paper and the authors’ github page: https://mulab-mir.github.io/muchomusic/
+
+Personal Thoughts: Quite the interesting read. Musicality is peculiar to analyze, and can reveal quite the information about model audio understanding, as it is not speech. I wonder how it correlates to model speech understanding results, when it comes to everything that is not language: tone, intensity, pauses… feeling like there should be some correlation. 

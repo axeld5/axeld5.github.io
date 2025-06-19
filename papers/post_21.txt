@@ -1,0 +1,22 @@
+## Read 21: JetMoE: Reaching Llama2 Performance with 0.1M Dollars, by @yikang_shen, @Zhen4good et al
+
+https://arxiv.org/pdf/2404.07413.pdf
+
+We used to think high performing LMs needed a heavy amount of compute resources, and a budget reaching millions for them to see the day.
+
+This paper proves us otherwise. With $100k only, they manage to make a model that is of the size of Llama2-7B while reaching higher performances and speed.
+
+What was the trick? Make an MoE architecture where not only the feed-forward, but also the attention layers are Experts! The authors set the number of experts to 8, and the top-k chosen to 2, meaning the model will behave in practice like a 2B model.
+
+For training, they leverage 3 loss functions detailed in the paper to optimize their network while maintaining stability. 
+
+
+They use fully accessible data for their training set, that they disclose in the paper. Their training datasets are composed of both real and synthetic data in both pretraining and instruction-tuning phases. The proper data mixture used during training itself is documented as well. 
+
+Every hyperparameter, every gpu hour, and every method is detailed within the paper as well, making it fully comprehensible on its own.
+
+In terms of result, despite being pretrained with way less training tokens (~0.75T less) than models of its size, JetMoe manages to have quite similar performances, even standing above them in some benchmarks.
+
+Model and code are fully available at https://github.com/myshell-ai/JetMoE.
+
+Personal Thoughts: A really interesting paper, as it is one of the few to be completely transparent. The data and the processes are fully documented, which is pretty nice to read. To have good results with lower training data and a small size can be quite promising. Excited to see it scaled!

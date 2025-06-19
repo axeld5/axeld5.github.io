@@ -1,0 +1,25 @@
+## Read 107: ChartGemma: Visual Instruction-tuning for Chart Reasoning in the Wild, by @Ahmed_Masry97, @Megh1211 et al from York University and Mila - Quebec AI Institute
+
+https://arxiv.org/pdf/2407.04172
+
+The authors of this paper introduce an instruction-tuned version of PaliGemma specifically for Chart Analysis.
+
+For those who haven’t followed up on my Multimodal path, PaliGemma is a 3B VLM that uses a SigLip encoder followed by a linear projection, to feed image and text tokens into a Gemma 2B. The authors use the 448-pt version. All models were retuned using massive amounts of data, and the model was especially built for finetuning cases. This is one of them.
+
+To build their Chart Corpus Instruction-Tuning dataset, they proceed the following way:
+1- Take charts from common datasets like PlotQA, curated charts from specialized websites like Statista, and in the wild charts like from WebCharts. Only chart images are retained. This yields to a 130k image dataset.
+2- Use a VLM (here: Gemini Flash 1.5) to generate answers for a large amount of predefined tasks.
+
+To make sure Gemini Flash didn’t hallucinate, the authors investigated manually 100 captions, and found that only 10% had unpleasant answers: 8% were partially correct, and the remaining 82% was accurate in its use of the chart content, which is a large improvement over previous versions in the literature.
+
+The authors then freeze the vision component of PaliGemma and instruction-tune the LLM component on their full dataset, thus creating ChartGemma. It’s worth noting this is unlike the previous literature, that went through two stage training with an aligning step followed by instruction tuning. The authors quote the specificity of PaliGemma’s training conditions vs other VLMs as justification.
+
+ChartGemma is then tested and compared to several other chart-specialized models on different chart related tasks. It has performances on par or better than much larger Chart-Specialized SoTA (which are 13B models), which is quite impressive! 
+
+It’s also very relevant that the authors’ Chart Corpus dataset is better than an old version that they produced earlier, ChartInstruct. A PaliGemma finetuned with ChartInstruct yields much worse results than the one trained with their corpus, which is a win for their data collection method. ChartGemma also has much better GPT-4 and Human ratings overall on its outputs than the comparable and strong ChartInstruct-Llama2 previously created by the authors, making it a nice improvement.
+
+Additional information about dataset generation, training details and results can be found within the appendix.
+
+Model and demo are available at: https://github.com/vis-nlp/ChartGemma
+
+Personal Thoughts: Lots of things I like here: an interesting fine-tuning case (specifically adapting a VLM to charts), and an interesting data collection process (hello synthetic data), for intriguing results (low param with high performance). The second PaliGemma process gets scaled to get Gemma-7B or even 27B that are very finetunable with high performance, think there could be some very strong specialized models over there. ;)

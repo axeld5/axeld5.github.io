@@ -1,0 +1,32 @@
+## Read 72: Reverse image retrieval cues parametric memory in multimodal llm, by @liamjxu, @michael_d_moor, and @jure from @stanford
+
+https://arxiv.org/pdf/2405.18740
+
+The authors of this paper propose a novel method to improve multimodal llm VQA capacities: using chromium image web search api to bring more information for the model to complete its understanding of the presented image.
+
+They then capture a screenshot of the image search results, and feed it to the model alongside original image with a small layout explanation.
+
+The authors evaluate their method on 4 models: GPT-4v, GPT-4o, GPT-4-Turbo, and Idefics2. They test the models on two visual question answering datasets: Infoseek, which contains fine-grained world knowledge questions across multiple categories; and SnakeClef, a somewhat « long-tail » dataset related to the identification of snake species.
+
+While RIR does not yield strong improvement on Idefics2, it yields substantial improvement on the GPT-4 models, more able to leverage the presented knowledge (up to a 10% recall gain for 4V and Turbo).
+
+The interesting things the authors note are the following:
+- RIR helps the model access to its own knowledge: if the entity in the image is captioned for the infoseek dataset, then models are able to leverage their knowledge to answer their question with higher accuracy than if just presented the image. So the models know, but the visual+text aspect appears to restrain them.
+- Human Evaluation and GPT-4 as a judge are coherent on the samples tested.
+- RIR is great to improve results for long-tailed concepts and objects which could be less supported by the training data.
+- A search agent that is given the option to use RIR or not does not seem to outperform RIR.
+
+It’s also important to tell that while RIR can be helpful, there are examples for which it can be harmful, which means there is still more to explore and to improve!
+
+Code is available for reproducibility at the following address: https://github.com/mi92/reverse-image-rag
+
+Personal Thoughts: Cool method! Quite interesting to see web search exploited like that to improve the results, and even more interesting that the method feels like it can be improved. 
+
+Potential idea from my end: in order to improve results, how about adding search outputs from model’s first answer to help itself make its decision with an RIR and an image search?
+
+I mean with this the following:
+- Ask the model to describe the image, and make a web search based on that description and return a screenshot of images found
+- Use RIR again
+- Pair both results with the original image within the prompt, and ask the question again
+
+Perhaps this could in the end reduce hallucinations? Should work on the wolf and castle examples at least. :)

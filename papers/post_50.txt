@@ -1,0 +1,28 @@
+## Read 50: Granite Code Models: A family of open foundation models for open intelligence, by Mishra, Stallone, Zhang et al from Ibm Research
+
+This paper details the work that was done to produce the Granite code model family. This family is composed of 4 models: a 3B, an 8B, a 20B and a 34B.
+
+The authors detail the whole data collection and filtering process within the paper. Most notably:
+- Filtering using file extensions to include only a hundred of code language (out of 300+)
+- Filtering out low quality code based on textual rules
+- Filtering out Github issues using quality metrics
+- Performing exact and fuzzy deduplication on documents
+- Filtering out documents based on hateful, abusive, profane language employed
+- Using StarPII to detect and replace PII by special tokens
+- Performing malware detection on the dataset to remove any potential issues
+- Curating and adding high quality natural language and mathematical datasets
+
+Models are based on transformer decoder architecture, with all details related to each model within the paper. 
+
+What’s notable is that they created the 34B model from the 20B one using Depth Upscaling: the authors put the two 20B near one another, removing the 8 final layers of the first and the 8 first layers of the second, and continued pretraining.
+
+Pretraining was done in two phases, code only training and code + high quality language training. All details are within the paper. Instruction tuning datasets are as well noted within the paper.
+
+The Granite code models are then evaluated on several layers of use of code models: code generation; code explanation and fixing; code editing and translation; code reasoning, understanding and execution; math reasoning; and function and tool calling. On all those benchmarks, it performs relatively well compared to its class of open source models, being at the top (or close to) for each category.
+
+All models are released under the Apache-2.0 license.
+
+Personal Thoughts: A really interesting read, as this is a very thorough paper on the capacities of IBM’s code model. Every process is well detailed, with a very complete benchmarking part. Code generation improvement is going to be a hot topic to follow, as code assistants have already been noted to have quite the impact on productivity! :)
+
+Paper link : https://arxiv.org/pdf/2405.04324
+Github link : https://github.com/ibm-granite/granite-code-models

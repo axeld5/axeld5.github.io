@@ -1,0 +1,22 @@
+## Read 89: Scaling the codebook size of VQGAN to 100000 with an utilisation rate of 99%, by Zhu et al
+
+https://arxiv.org/pdf/2406.11837
+
+Methods of image quantization right now fail at quantizing beyond a list of 16k tokens (making for what’s called here a codebook).
+
+The authors of this paper propose a method to encode into a larger amount of discrete tokens, through a novel method that exploits previous VQGAN work. They name their method VQGAN-Large Codebook, shortened as VQGAN-LC.
+
+VQGAN-LC is trained the following way:
+1- Use an image encoder to encode the training dataset into vector space
+2- Make N clusters where N is the size of your codebook, and pick them as the tokens that will be used for quantization
+3- Train a projector to project those tokens into the vector space that will be used by a frozen decoder
+
+The trainable part here is the projector, that will be trained through several losses taking overall the entire process  into account.
+
+Model is evaluated on Image Reconstruction, Image Classification and Image Generation, for which it all trumps over previous work.
+
+Implementation details and ablation studies can be found within the paper.
+
+Project is open sourced at: https://github.com/zh460045050/VQGAN-LC
+
+Personal Thoughts: Image Quantization is quite a new topic for me, but it seemed like an interesting paper that scales image quantizers where they were stuck before on a glass ceiling! Could mean something in the upcoming future, for instance for improving image synthesis. :)

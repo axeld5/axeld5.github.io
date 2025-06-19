@@ -1,0 +1,24 @@
+## Read 36: AdvPrompter: Fast Adaptive Adversarial Prompting for LLMs, by @anselmpaulus, @ArmanZharmagam1 et al from Meta FAIR
+
+https://yuandong-tian.com/papers/co4prompt_llm.pdf
+
+While an earlier paper this week proved that universal suffixes found through random searches did not carry over models, this one proves that there can be specialized models which attacking methods do carry over.
+
+Basically, what the authors of this paper perform is finetuning an existing model (here Llama-2 7b) to be able to generate human-readable suffixes that make LLMs produce harmful answers.
+
+Their finetuning algorithm is detailed within the paper, but here are the main ideas:
+- Perform smart sampling from the model, to generate optimized human-readable suffixes for jailbreaking (here, the prompt is optimized relatively to the target harmful answer)
+- Optimize the model to be able to reproduce those suffixes, used as a regression target (here, the weights are optimized relatively to the target suffixes)
+- Iterate for each batch and for each n_iter 
+
+The authors compare the approach using ASR@10 and ASR@1 to other whitebox and blackbox existing attacks… and their method shows a similar standing to the others on the test set, while being extremely faster! It also has much lower perplexity than the GCG method, which makes it tougher to identify.
+
+Their attack method can also be used to improve other attacks like AutoDan. They can make for a deadly pair in the whitebox setting, as their pair’s ASR is stronger than when the models are used on their own, with a very fair inference time of only 100s. The authors also experiment different things, like varying attack trials and decoding strategies for optimal success. 
+
+The cherry on top? This model is extremely powerful to generate examples for red teaming. In fact, finetuning an LLM specifically using AdvPrompter-generated prompts makes it way more robust to AdvPrompter-based attacks. 
+
+This could lead thus to automative safety training in a GAN-like way, although this field has yet to be explored. 
+
+More details about the exploration process and qualitative results can be found within the appendix.
+
+Personal Thoughts: Really cool results on this very interesting read. The perspectives look great, as this might be a cornerstone in making models safer, were the GAN-like red teaming to work. Am also interested to see if it’s possible to specialize AdvPrompter into different attack strategies! Imagine if we had an advprompter specialized in many-shot jailbreaking, code-based attacks, leetspeak attacks… this could be also great for generating more diverse defensive examples for red teaming!

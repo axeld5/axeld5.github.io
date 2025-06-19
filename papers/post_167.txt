@@ -1,0 +1,17 @@
+## Read 167: « LIMR: less is more for RL scaling », by Li, Zou and Liu from GAIR-NLP
+
+https://arxiv.org/pdf/2502.11886
+
+The authors of this paper present a method for math sample selection to successfully RL a Qwen2.5-7B-Math with far better performances than SFT.
+
+They start with around 8500 examples from the MATH-FULL dataset, and select samples after launching a training run over a few epochs. The samples are selected based on the Learning Impact Measurement (LIM) score, a score that quantifies alignment between the sample’s learning pattern and the model’s learning trajectory over that test run.
+
+Reward design is straightforward: +1 for correct answer, -1 for answer wrongly formatted, -0.5 for incorrect answer but rightly formatted
+
+LIM-based sample selection is compared with Random and sample selection based on consistency in showing progress over epochs (referred to as Linear Progress Analysis method).  
+
+For the results: LIM applied to Qwen2.5-Math-7B with 1400 samples show similar performance to full dataset of 8500 samples, and better performance than the two compared baselines. It is also better than SFT with s1 or LIMO methods.
+
+Overall, this paper is interesting: especially considering the work is open sourced. Having the math rewards defined and shown to work is pretty neat, and that RL may yield better results over reasoning problems might be the beginning of a new paradigm. Hyped. :)
+
+Repo link: https://github.com/GAIR-NLP/LIMR

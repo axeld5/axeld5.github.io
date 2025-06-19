@@ -1,0 +1,35 @@
+## Read 131: « Diffusion Models are real-time game engines », by @daniva, @yanivle, @ArarMoab, and @shlomifruchter from Google Research
+
+To watch the mindblowing doom reproduction:  https://gamengen.github.io
+
+https://arxiv.org/pdf/2408.14837
+
+The authors of this paper provide a framework to repurpose a strong diffusion model (here SD v1.4) to reproduce an interactable 2D game, here Doom. 
+
+First, they collect Doom data from making an RL agent play the game: in order to gather training data alike to human play, a reward function is designed, here specific to the environment. They record a set of trajectories, composed from the agent’s observations and actions.
+
+The diffusion model then sees severe conditioning:
+- Observations are taken as image inputs after being sent through a latent space using SD v1.4’s autoencoder
+- Actions are embedded as text tokens
+- And through the Unet denoising network of SD v1.4, the next frame of the game is generated
+
+The SD v1.4 model is trained with velocity parametrization, conditioned on the trajectories of the agent. All previous actions and observations are taken into account when generating the next frame.
+
+However:
+- To prevent auto-regressive drift that causes a large decrease in frame quality, an embedded varying Gaussian noise is added to each input vectors taken into account (both actions and observations). This stabilizes quality over time of the generation.
+- The AutoEncoder of SD v1.4 generates artifacts when predicting game frames: it is thus also finetuned through an MSE loss against the target frame pixels. This makes the small details work out better.
+
+Inference is fast: 4 denoising steps of 40 ms for a total inference cost of 50 ms, leading to 20 frames per second. This is not yet even fully optimized, as the authors stated distillation into a 1-step model and parallelizing frame generation on additional hardware could lead to even more time gain.
+
+Training details can be found within the paper. It is to be noted though that 900M doom frames were generated in the RL step, and that the actual context length of the model is 64 (ie 64 last generations and actions). 
+
+Regarding the results, they’re good. The most striking one: when users were asked to compare generated videos and real game videos in 3.2s clips, the success rate was below 60%.
+
+Ablations explored reveal:
+- Context length matters, but the improvement diminishes the more context is added. The model is only able to go at best at 64 context, which remains small (3s of history).
+- Noise augmentation plays a big part in image consistency
+- Agent trajectories rather than random ones allow for more exploration, which makes overall the generation better
+
+Additional results and qualitative generations can be found within the appendix of the paper.
+
+Personal Thoughts: This paper is the beginning. Results are impressive, and there’s much more to do. Although generating games as a whole may remain a pipe dream due to aspects of control and consistency that are hard to entrust to a stochastic model, just the fact we could break that barrier of generating a game engine is passionating. An inspiring work that shows we can indeed break our limits. And there’s much to be improved! Model, denoising steps, longer runs, context length… eager to see what will come next!

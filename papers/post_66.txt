@@ -1,0 +1,16 @@
+## Read 66: Towards transferrable attacks against Vision LLMs in Autonomous Driving with Typography, by Chung et al
+
+https://arxiv.org/pdf/2405.14169v1
+
+The authors of this paper introduce a very simple attack method: poisoning the image viewed by the LM by introducing to it false textual information.
+
+What they do is the following:
+1- They prompt a LLM to generate an incorrect answer to a question related to an image, using its correct answer as a basis.
+2- They then incorporate the wrong answer within the image.
+3- (Optional) They modify the answers so that they have guidance (like ANSWER: written in front of the text) or connectors that act as directives (AND, WITH, etc) when multiple information is being fed into the attack.
+
+And the attack appears to work! It reduces the performances of the models in different benchmarks and qualitative examples show it can be a peculiarly dangerous attack in the case of autonomous driving.
+
+Source code will be released upon paper acceptance.
+
+Personal Thoughts: Pretty simple attack that can have scary consequences for anything autonomous related, hence why having a human in the loop will likely remain nice. Would love as well to have within the paper the original perfs of the models for an easy comparison, or an evaluated ASR to see the full potential of the attack! There is still a lot to explore as well in attacking/jailbreaking VLMs, and this paper is likely the beginning of more to come.

@@ -1,0 +1,13 @@
+## Read 69: Yuan 2.0-M32: Mixture of experts with attention router, by Wu et al
+
+https://arxiv.org/pdf/2405.17976v1
+
+New model out! 40B, 32 experts with 2 lit up at each inference, making it at use time a 3.8B model. Model could be reaching perfs near Llama-3 70B.
+
+What’s the authors’ trick? They take their old model, Yuan 2.0, and replace FFN layers with MoE ones with Attention routing. Instead of just using a simple routing process for the experts, use attention to perform filtering.
+
+Data mix is included within the paper. Model is trained on 2T tokens dataset, with code making for most of the pretraining and instruction tuning datasets.
+
+Model has results near the top open source models on all benchmarks, and even tops Llama-3 70B on some.
+
+Personal Thoughts: Impressive results. Simple architecture, yet the only main change was the attention routing. Am also curious at why they chose mainly code data for pretraining: it seems like a choice I hadn’t read elsewhere. Pretty cool!

@@ -1,0 +1,26 @@
+## Read 183: « Putting the value back in RL: Better Test Time Scaling by Unifying Reasoners with Verifiers », by Sareen et al from Mila Institute
+
+https://arxiv.org/pdf/2505.04842
+
+The main idea behind the authors of this paper is the following: train a model for the application of an RL algorithm, but add a component as well to help it distinguish a good answer from a bad one
+
+Two objectives are thus optimized:
+- RL objective of given verifiable problem, generate answer
+- SFT objective of given a list of problem and potential solutions, classify them as correct or incorrect (pred « Yes » or « No » tokens to the question is the solution correct)
+
+They are optimized at the same time during training. The solutions are known as correct or incorrect thanks to the verifiability of the issue.
+
+What’s great about this method is that it enables to use the model at inference time as a scorer! If you sample 64 solutions at the same time, you can use the probability of the « Yes » token regarding a prompt like « is given the problem the solution valid » and use that to better perform weighted voting (or Best-of-N) to pick a solution.
+
+And the authors exactly prove the validity of their method. On Qwen2.5-Math-1.5B, they apply Leave-One-Out PPO and Leave-One-Out PPO with the RL^V method on the MATH dataset. 
+
+Using Weighted Voting, the RL^V method is FAR more efficient than the simple RL, with much higher generalization results the more you sample!
+
+Bonus points:
+- Works as well with GRPO, showing the same efficiency+perf results
+- The method scales with model sizes, showing strong gains for also the 7B model
+- The model used as verifier is as effective as using another version of the model, trained specifically to be a verified
+
+It is worth noting that the coefficient of balance between the weight of the RL objective and SFT objective has to be tweaked depending on the RL algorithm at play.
+
+Overall, quite an interesting RL work that shows a method that could be used to maximize the efficiency of reasoning models, through smart training to allow powerful leveraging of their high capabilities!

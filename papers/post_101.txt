@@ -1,0 +1,26 @@
+## Read 101: LLM-Select: Feature Selection with Large Language Models, by @danielpjeong, @zacharylipton, and @RavikumarPrad from @mdlcmu
+
+https://arxiv.org/pdf/2407.02694
+
+The authors of this paper study LLM’s capabilities at performing feature selection.
+
+Given a dataset with a number n of features, they study if LLM can help select k features relevant to an objective (regression or classification), with k << n. 
+
+The authors take the target objective, take the feature names from the dataset studied, and feed it to the LLM. They can exploit the LLM in 3 different ways:
+1- Assign a score to each feature separately related to the target objective. Score is between 0 and 1, and a high score means that the feature is more interesting than the others for the objective. Select features with k-top scores.
+2- Send all features at once and have the LLM rank them in relevance regarding the objective. Select k first features.
+3- Iteratively select k features, adding them one-by-one through LLM iteration until k features are reached.
+
+The authors experiment on GPT-3.5, GPT-4 and the Llama-2 suite. They test on 7 datasets for regression and 7 for classification -all with at most 70 features-, training Logistic/Linear Regression Models on selected features. MAE is used for regression eval, and AUROC for classification. The authors compare the LLM-feature-powered models’ performance with models trained on features obtained through other, more traditional methods.
+
+What’s to be noted is that LLMs perform as well that all other methods. In fact, GPT-4 is actually better than most on the targeted use cases! 
+
+It’s also relevant that there is little variance in results between the 3 above methods of feature selection for GPT-4, while the lower models exhibit dataset dependency when it comes to the strength of the method.
+
+Strong results with GPT-4 expand to datasets with much larger features (around 3000), both in regression and classification tasks.
+
+It is worth noting that unlike other methods, GPT-4 does not have access to the data, and solely uses feature names as guidance.
+
+Additional results, all prompts related to each studied dataset and model, and dataset and model training details can be found within the appendix of the paper.
+
+Personal Thoughts: Pretty nice-to-read paper with quite the interesting result at hand. Frontier models’ « intuition » and ability to process large feature amounts could be invaluable in compute-poor use cases.

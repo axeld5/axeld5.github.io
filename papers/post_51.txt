@@ -1,0 +1,24 @@
+## Read 51: Fishing for Magikarp: Automatically Detecting Under-Trained Tokens in Large Language Models, by @magikarp_tokens and @max_nlp from @cohere
+
+Tokenizers can have useless tokens. These tokens were there during creation, but no training was ever done on them, and so they just happen to be there, with a model that is not even trained to react on them. This work focuses on string formatted useless tokens.
+
+How do they single them out? Using the model’s final layer, noted as U for « unembedding » layer. They then preemptively gather a set of already known unused embedding indices (through already known unused tokens or knowledge of the embedding size) and isolate the unembedding matrix’s first principal component.
+
+Doing so, they then compute cosine and L2 distances between the modified unembedding matrix and a mean unused token embedding vector, obtained by taking the average of the columns indexed by the already known unused indices.
+
+They compare then those metrics obtained for each token index with probabilities of appearance of the token. Those probabilities were obtained averaging the results of 3 prompts in appendix A.
+
+The authors test this approach on several open source models, for which they estimate a token is suspicious if it is below a 2% threshold of appearance. They find a correlation between tokens that fall below this threshold and their previously established indicators.
+
+Specific results for each tested open source model family are included within the paper.
+
+For closed source models, using information gathered about their tokenizers, the authors test a list of candidates for repetition, like they did before to estimate token training probability. 
+
+The authors conclude on their discussion part that models with the largest amount of unused tokens are the ones for which a large external tokenizer was taken, and then the model was retrained from scratch but not the tokenizer. They then proceed to give several recommandations for tokenizer improvement.
+
+Personal Thoughts: A really interesting paper to read, which made me discover some nice property of tokenizer. Am in fact even more curious about how these tokenizer issues affect model behavior. From the examples that can be read, the model just does not seem to understand the word asked and proceeds as if everything was normal. 
+
+But I’m intrigued if there could be jailbreaking implications, as in using an unknown token to disturb the model’s behavior in detecting harmful content from the input…
+
+Paper Link: https://arxiv.org/pdf/2405.05417
+Github Link: https://github.com/cohere-ai/magikarp

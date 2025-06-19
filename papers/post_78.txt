@@ -1,0 +1,22 @@
+## Read 78: ShareGPT4Video: Improving Video Understanding and Generation with better captions, by Chen et al
+
+https://arxiv.org/pdf/2406.04325
+
+The authors of this paper build a dataset that can be used to improve large video language models, with a smart construction method.
+
+They do the following way:
+1- Collect videos from high resolution small length video datasets. They use Panda-70M, Ego4D and BDD100K.
+2- Remove all videos longer than 2 minutes, caption them in one sentence, and embed them. Add videos iteratively, and do not add those above a similarity threshold. Models used are Panda-student for the captioning, and Bert-Base-Uncased for the embedding.
+3- For each video, embed each frame using an image encoder. Add frame Y into constitutive captioning frames if the distance between the embedding of frame Y is higher than a distance d of the embedding of the previous constitutive frame X. Encoder used here is CLIP-Large. First and last frames of the videos are always kept.
+4- Caption constitutive frames using differential captioning. That means you caption constitutive frame 1, then ask model to describe differences between constitutive frame 2 and frame 1, frame 3 and frame 2, and so on. Keep results with timestamps. Model used for captioning is GPT-4-turbo.
+5- Ask the model to summarize the whole group of captions to make a larger caption of the video. Model used is GPT-4-turbo.
+
+The authors test this dataset on improving models. First, they find it shows some small yet consistent amelioration of already existing video models performance when finetuned on ShareGPT4Video. 
+
+Then, they repurpose LlaVa-Next-8B pairing ShareGPT4Video with VQA dataset and get to actually very high results. On average, their model is league betters than the current opensourced models, which is pretty impressive.
+
+The authors also use this dataset to finetune an IXC2-4KHD for 4 different matters: fast captioning, sliding captioning, clip summarizing and prompt recaptioning. They compare their captioning method vs GPT4V and find them to be quite similar in terms of winrate. They also test the prompt recaptioning for generation of videos using text-to-video models and find qualitative results to be quite nice.
+
+A github page for the project has been created here: https://sharegpt4video.github.io
+
+Personal Thoughts: Interesting dataset creation method here, can give some insight as well in the captioning of small-to-medium sized videos. Pretty strong results, hoping it gets open sourced soon.

@@ -1,0 +1,30 @@
+## Read 96: Fantastic Copyrighted Beasts and How (Not) to Generate Them, by @luxihelucy, @yangsibohuang, @weijashi2 et al from @PrincetonPLI and @uwcse
+
+https://arxiv.org/pdf/2406.14526
+
+This paper studies the generation of copyrighted characters and methods to avoid outputting images that contain them.
+
+They try a few types of attacks:
+1- Direct one, asking only for the character’s name
+2- Indirect one, using keywords associated with the characters. Those keywords can be established by exploitation of the embedding space related to the characters, cooccurence in common large captioned or fully textual datasets, or LLM prompting.
+3- Indirect one, using a 60 word description of the copyrighted character.
+
+Characters are taken from a wide range of possibilites, from movies, video games, from different studios as well. 
+
+The authors measure their generation through GPT-4V, asking it if the character is present (DETECT score), and if the image is consistent with the description nonetheless (CONST score).
+
+They then examine their methods on 5 open source models and Dall-E-3. They notice that it’s a common occurence that simply prompting the name works for a few character, but focus on indirect prompting as well and find it still works, even on Dall-E, a non-negligible amount of time! 
+
+The authors finally propose two strategies to counter their attack:
+1- Add prompt rewriting like in Dall-E to prevent quite the direct and even some indirect attacks from working
+2- Add negative prompts as well, using keywords extracted like in the second attack, to prevent the generation from being too fitting to the character
+
+Those two methods, when combined, manage to reduce the attack success rate while not modifying the consistence rate. However, it’s important to note it does not suppress it.
+
+Code can be found from the following github page: https://copycat-eval.github.io
+
+Additional details and prompts can be found within the paper’s appendix.
+
+Personal Thoughts: This paper outlines that fighting for copyright defense with our current models will be an uphill battle, as smart enough attacks can make defended characters be generated. 
+
+This might be an issue directly related to model training. What if it was possible to treat copyrighted characters like PII, retrain a model, and see if that affects generation?

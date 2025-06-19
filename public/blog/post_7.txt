@@ -1,0 +1,76 @@
+## Research Experiment: Can we teach a small model latent knowledge through RL?
+
+https://github.com/axeld5/story_experience
+
+Hopping on with Gemma, a @Scaleway H100, and  @huggingface libraries, I went head first…
+Yet no model answered more than 5 questions correctly.
+
+## Experiment Setup
+
+First let’s dive into the why of the experience. Currently when you want to answer knowledge about a technical documentation the best way to do so, without heavy resources, is RAG. While RAG is great, it heavily depends on how you setup your search engine, especially as the documentation grows larger and larger. 
+
+Considering results about RL generalization, what I was wondering was that perhaps we could have a directly tuned model, over the documentation, that can answer the questions and cross information between the others. This would alleviate in part the need for RAG if resources are up.
+
+I needed data. I need data that could avoid the model « cheating » by using the knowledge it learned, as this could be actually very problematic because it would bias results, so I needed a way to circumvent this. So, I used @googleaistudio’s trusty Gemini 2.5 pro to generate 100 plotlines. Main reason I chose 2.5 pro was because it was the best at one-shotting a heavy amount of diverse answers (if you were to try with less creative models, just go iteratively).
+
+Then, for each plot line, I asked Gemini 2.5 flash to generate 1 paragraph to develop it, and told it to be heavy on names, events and locations for future QA creation. Gemini 2.5 flash was chosen for best cost/performance ratio for that task.
+
+It’s worth noting I first tried 10 paragraphs to limit test, then 3, but ran into computation issues at training time so decided to roll with 1. After that, we had our stories, time to generate the QA!
+
+Asked Gemini 2.5 Flash again to generate those ; QA pairs, but added the context for filtering: I wanted each of them to be grounded. Now we had the eval set as well, so let’s tune :)
+
+## Experience & Results
+
+There were two tuning frameworks:
+- Regular SFT on « Tell me more about this story {storyline} »
+- And RL on the same prompt… using the following reward : difflib.SequenceMatcher(completion, ground_truth)
+
+Main reason why was I went for the following loss was because this was used with success on @AIatMeta SWE-RL work to improve code capacities through its application on patch editing. It seemed like some sort of « generalizable SFT » to me at the time, so wanted to check.
+
+The model I use for the experiment is Gemma-3-1b-it. I wanted a good and very small model, was either this, SmolVLM2 or Qwen-0.5/1.5 and decided on feels for a first.
+
+I made 3 LoRA SFT runs:
+- One with 500 steps: seemed like a block on which the loss wasn’t too high
+- One with 1000 steps: loss showed beginning signs of overfit
+- One with 2000 steps: loss seemed to tell the model started overfitting
+
+As planned, none of the three models managed to get above than a score of 6/100 on a subset of a 100 random sampled QA. Qualitative inspection showed the models were often stating unrelated stuff to the learned stories. 
+
+Moving on to the RL, it seemed that starting without an SFT version was a mistake. Model always went for max of its budget and couldn’t make anything of the loss; even in 250 steps of training it did not show signs of learning.
+
+But the RL’d models which were started from the SFT’d checkpoints weren’t much better to be honest. What was interesting was that they output the same average tokens as the base story distribution, meaning they had indeed a better start than the chaotic RL’d one. However, despite the difflib reward having a better start, no matter the Finetuning process, it never started nor went higher than 0.05 (which is honestly catastrophic).
+
+Which made me feel as a result that despite having a very existant loss this time, the models were not learning. This was confirmed by their catastrophic score at the same questions that the SFT’d one were subjected to. So overall, can’t say the experience was much of a success: there’s still much to do to teach latent knowledge to a model, with very limited budget, from a sample documentation. I think that the difflib reward is an interesting path to explore, but it needs tuning here. Either on the data level (perhaps cheat and reproduce masked language modeling with several masked tokens all over the document?), or on the loss/reward level: perhaps the difflib reward is not enough. It is certain however that if the model can’t game what is going on, which it can’t without already slight knowledge of the topic, it will get stuck.
+
+I think this can be powered through with resources however, but due to my limited compute I am currently putting this experience on hold: an RL run with TRL takes 4 hours of training on an H100 due to the heavy amount of output tokens… But despite the failure, I am thinking there might be something interesting to explore. Don’t know if it will once again validate the bitter lesson of « you need more compute » or to reshape the data, or to have a more powerful model
+
+## PS1: Update of the loss
+
+I have replaced the RL training set with a masked modeling set ie given the story fill in the masked blanks
+
+The difflib reward this time does not get stuck and goes up during training, even nearing one!
+However, the model seems not to learn, which would run in contradiction with RL generalization results
+
+Theee arguments against however:
+1- I’m using the small Gemma-3-1b model, which may be an intelligence issue
+2- I’m using a 4 bit model, which could create learning issues
+3- I’m performing LoRA, which can create same as the above
+
+However, the fact the difflib reward goes up means that the model can leverage between epochs the cheating trick between the training examples: given it has access to multiple masked versions, it can learn the stories!
+
+## PS2: Still underwhelming results
+
+Updating it pre-scaling: modified from unsloth Gemma 1B to Qwen 2.5 0.5B, with goal of scaling experience.
+
+Performance is catastrophic and learning does slight happen but too slow: out of random subset of 100 questions, after SFT and SFT+RL we don’t go above 3 good answers. Updated afterwards to Qwen-2.5-3B, still did not make it.
+
+================================================================================
+SUMMARY OF ALL MODELS
+================================================================================
+Model                                    Correct Answers Total Questions Score   
+--------------------------------------------------------------------------------
+qwen-3b-stories-sft                      8               100             0.0800  
+qwen-3b-stories-rl                       4               100             0.0400  
+qwen-0.5b-sft                            1               100             0.0100  
+qwen-0.5b-sftrl                          0               100             0.0000   
+================================================================================

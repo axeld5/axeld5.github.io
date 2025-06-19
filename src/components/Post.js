@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import dataManager from '../utils/dataManager';
 
 function Post() {
@@ -28,6 +30,22 @@ function Post() {
 
     loadContent();
   }, [type, id, content]);
+
+  // Function to extract content without the video section
+  const getContentWithoutVideo = (fullContent) => {
+    const lines = fullContent.split('\n');
+    let stopIndex = lines.length;
+    
+    // Find the video section
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim().toLowerCase() === '### video') {
+        stopIndex = i;
+        break;
+      }
+    }
+    
+    return lines.slice(0, stopIndex).join('\n');
+  };
 
   if (isLoading) {
     return (
@@ -62,6 +80,7 @@ function Post() {
   }
 
   const isBlogPost = type === 'blog';
+  const markdownContent = getContentWithoutVideo(content.content);
 
   return (
     <div className="page-content">
@@ -73,21 +92,40 @@ function Post() {
 
       <article className="full-post">
         <div className="full-post-content">
-          <div className="post-content-full">
-            {content.content.split('\n').map((paragraph, index) => {
-              if (paragraph.trim().startsWith('##')) {
-                return <h2 key={index}>{paragraph.replace('##', '').trim()}</h2>;
-              } else if (paragraph.trim().startsWith('https://')) {
-                return <p key={index}><a href={paragraph.trim()} target="_blank" rel="noopener noreferrer">{paragraph.trim()}</a></p>;
-              } else if (paragraph.trim().startsWith('-')) {
-                return <li key={index}>{paragraph.replace('-', '').trim()}</li>;
-              } else if (paragraph.trim().startsWith('**') && paragraph.trim().endsWith('**')) {
-                return <h3 key={index}>{paragraph.replace(/\*\*/g, '').trim()}</h3>;
-              } else if (paragraph.trim()) {
-                return <p key={index}>{paragraph.trim()}</p>;
-              }
-              return null;
-            })}
+          <div className="post-content-full markdown-content">
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              components={{
+                // Custom styling for different elements
+                h1: ({children}) => <h1 className="markdown-h1">{children}</h1>,
+                h2: ({children}) => <h2 className="markdown-h2">{children}</h2>,
+                h3: ({children}) => <h3 className="markdown-h3">{children}</h3>,
+                h4: ({children}) => <h4 className="markdown-h4">{children}</h4>,
+                p: ({children}) => <p className="markdown-p">{children}</p>,
+                ul: ({children}) => <ul className="markdown-ul">{children}</ul>,
+                ol: ({children}) => <ol className="markdown-ol">{children}</ol>,
+                li: ({children}) => <li className="markdown-li">{children}</li>,
+                blockquote: ({children}) => <blockquote className="markdown-blockquote">{children}</blockquote>,
+                code: ({inline, children}) => 
+                  inline ? 
+                    <code className="markdown-code-inline">{children}</code> : 
+                    <code className="markdown-code-block">{children}</code>,
+                pre: ({children}) => <pre className="markdown-pre">{children}</pre>,
+                table: ({children}) => <table className="markdown-table">{children}</table>,
+                thead: ({children}) => <thead className="markdown-thead">{children}</thead>,
+                tbody: ({children}) => <tbody className="markdown-tbody">{children}</tbody>,
+                tr: ({children}) => <tr className="markdown-tr">{children}</tr>,
+                th: ({children}) => <th className="markdown-th">{children}</th>,
+                td: ({children}) => <td className="markdown-td">{children}</td>,
+                a: ({href, children}) => (
+                  <a href={href} className="markdown-link" target="_blank" rel="noopener noreferrer">
+                    {children}
+                  </a>
+                ),
+              }}
+            >
+              {markdownContent}
+            </ReactMarkdown>
           </div>
           
           {content.video && (

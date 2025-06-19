@@ -1211,3 +1211,159 @@ body {
     width: 100%;
   }
 }
+
+/* Success and Error Messages */
+.success-message {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.success-message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+/* Video Support Styles */
+.post-video-indicator {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.6rem;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.post-video-preview {
+  background: #f8f9ff;
+  border: 2px solid #e3e8ff;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.video-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.video-icon {
+  font-size: 1.2rem;
+}
+
+.video-filename {
+  font-weight: 600;
+  color: #4c51bf;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+}
+
+.video-preview-text {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.post-video-section {  
+  background: #f8f9ff;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-top: 2rem;
+  border: 2px solid #e3e8ff;
+}
+
+.post-video-section h3 {
+  color: #4c51bf;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.post-video-section h3::before {
+  content: "🎬";
+  font-size: 1.2rem;
+}
+
+.video-container {
+  position: relative;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.video-container video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.video-fallback {
+  background: #f8f8f8;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+}
+
+.video-fallback p {
+  margin-bottom: 0.5rem;
+}
+
+.video-fallback code {
+  background: #f1f1f1;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+}
+
+.video-info {
+  text-align: center;
+}
+
+.video-info .video-filename {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.video-info .video-filename strong {
+  color: #4c51bf;
+}
+
+/* Responsive Video Styles */
+@media (max-width: 768px) {
+  .post-video-section {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .video-container {
+    margin: 0;
+  }
+  
+  .post-video-preview {
+    padding: 0.75rem;
+    margin: 0.75rem 0;
+  }
+  
+  .video-filename {
+    font-size: 0.8rem;
+  }
+}

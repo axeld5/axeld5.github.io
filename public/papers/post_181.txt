@@ -1,0 +1,21 @@
+## Read 181 : « TTRL: Test Time Reinforcement Learning », by Zuo, Zhang et al from Tsinghua University
+
+https://arxiv.org/pdf/2504.16084
+
+The main idea behind this paper is to improve a model at inference time by using an aggregation-based reward.
+
+For one step:
+1- Output multiple answers of a verifiable problem
+2- Use an aggregation function (here voting average) to find an element to compare to
+3- Compare all elements to the one found at step 2: reward is 1 if equal, 0 if not
+4- Perform GRPO using the rewards as defined to update the model
+
+And this works surprisingly well on mathematical benchmarks, with steady improvement over most of them. Very small models do fail to improve though on AIME 2024, but the improvement is very noteworthy on the other benchmarks, this being done without a shred of labeled data!
+
+Interestingly enough, the authors find that:
+- Best@64 for base model is lower than Avg@64 for TTRL model
+- TTRL is almost equivalent to applying RL on the benchmark!
+
+They then hypothesize about success and failure of TTRL, exploring the track of reward signals being generalization guidelines with respect to the objective rather than memorization of answers ; but that prior model abilities could also matter regarding success, explaining the lack of generalization on AIME.
+
+Overall, a very neat result right here with a smart inference method. Eager to see where it will go!

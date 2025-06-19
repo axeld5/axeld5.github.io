@@ -1,0 +1,27 @@
+## Read 187: « Data Recipes for Reasoning Models », by Guha, Marten, Keh, Rahoof, Smyrnis et al from DataComp and Bespoke Labs
+
+https://arxiv.org/pdf/2506.04178
+
+The authors of this paper study data recipes to optimize model downstream performance after finetuning.
+
+They perform several ablations over different strategies, training at medium scale (31.6k questions sampled to generate answers) with Qwen-2.5-7B used at the test model and a larger model like Deepseek-R1 used as the answer generator. They then scale that dataset to 1.2M Q/A pairs over code, science and math related topics. And the results are strong: the finetuned Qwen is SoTA for its 7B scale, with a fully open sourced dataset!
+
+Quick summary of their findings:
+1- Some QA datasets perform better than others in each topic
+2- Mixing different QA datasets from the same topic at fixed size (ie n_samples = 31.6k, with samples taken from k datasets) does not yield improvement beyond two datasets
+3- Question filtering based on difficulty (taking the hardest) and taking the ones for which a test LLM (gpt-4.1-mini here) answers the longest yields the better answers
+4- Sampling 16 answers for each question and deduplicating for exact match yields better results than 1-4 answers and fuzzy-no deduplicating
+5- Filtering QA pairs with respect to answers yields little to no improvement compared to not filtering, no matter the filtering method 
+6- QwQ-32B is a better teacher than the larger Deepseek-R1, and both are better teachers than the smaller phi-4-reasoning-plus.
+
+Applying those recipe results to the larger versions of the question sets that were tested upon allows to scale up to 1.2M samples, giving the great results that are claimed.
+
+The appendix is full of details: all the training parameters, the evaluation setup, the decontamination setup used regarding the training data to remove contaminated samples, additional experiments with their results and details on the datasets as well.
+
+And the best for last: the fact that this method works as well with Llama-3.1-8B-Instruct as the tuned model!
+
+Really interesting work overall, can only recommend the read! Something I’m very curious about: does the method upscale and downscale? 
+
+Can a smaller Qwen model (Qwen-2.5-3B) or a larger (Qwen-2.5-14B) see better or worse results? 
+
+I’m seeing strong improvements over 7B, but I’m curious to which scale can the reasoning carry on, and if upscaled if the results shown carry up higher!

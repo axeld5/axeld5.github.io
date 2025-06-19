@@ -1,0 +1,21 @@
+## Build Project: Fullstack Medical Assistant, Atomed
+
+This project was made during the 6 hours @DustHQ Hackathon (that took place two months ago), hosted with @getqonto and @qdrant_engine.
+
+Finished 2nd place with it, so I'm pretty proud! This assistant's goal is to help people (like me) who have a hard time getting out of bed when they're sick by having in one page two functions:
+1- Identify symptoms and recommend over the counter medication
+2- Find nearby pharmacies based on the address input
+
+Now for the learnings:
+1- A 6 hour hackathon is short. While I had the idea before and planned it down, definitely wouldn't have made the app work without the use of coding tools. Huge thanks to @vercel's v0 and @cursor_ai for existing, as they are such a power boost. 
+2- GenAI models are surprisingly good at classifying diseases for symptoms. Truth be told, it's not just Gemini-2.5-Flash, which I used here; even @MistralAILabs's Mistral Small 3.1 24B model is good for that purpose. I was genuinely impressed, might show more later.
+3- MCP/Tools are pretty fun in theory, but hard to make reliable in practice. Tried to have the model automatically fetch pharmacies and rank them distance-wise with the Maps MCP, but could not make it reliable in time so I've made a workflow, and kept MCP for the fetch.
+3.5- To follow up: the model outright stated (for the ranking) around half of my tests that it did not have the right tools (and did not proceed), despite actually having them. This was before the latest Gemini Flash upgrades, so things might change now.
+4- I was honestly surprised that some components that I think would be hard to implement were very easy with Cursor/Vercel: smooth chat interface, voice input... took me less than 3 hours to do the frontend! 
+
+It was very intense, but I had a great time at this hackathon. Was a very well organized one and the hosting was super cool :)
+
+Had the chance to present it to a great jury as well, so can't say I won't be excited if I see another one pass by!
+
+### Video
+atomed_demo_vid.mp4

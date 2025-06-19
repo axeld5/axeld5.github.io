@@ -1,0 +1,25 @@
+## Read 180: « Reinforcement Learning for Large Language Models with one training example », from Wang et al from University of Washington
+
+https://arxiv.org/pdf/2504.20571
+
+The authors of this paper basically show that with GRPO, even one example can massively improve performances on mathematical related benchmarks.
+
+They perform RLVR (ie RL with ground truth reward) on Qwen-2.5-Math-1.5B and notice that the model, while overfitting on the train example, keeps on learning when it comes to the test set. After enough steps, it even matches the pace of a dataset with thousands more samples!
+
+Examples were first extracted using Historical Variance after RLVR training on the full dataset on various epochs. First notes from that metric:
+- Problems with highest variance are not necessarily the hardest
+- Model saturation on single example training happens quickly, but can keep on increasing on test set for a thousand more epochs!
+
+The metric ends up not being really important : in fact, even choosing example with lower or near lowest historical variance does not change the post-saturation generalization result, excepted when the answer is incorrect or the problem too challenging. In fact, the generalization even goes beyond domain: training on an algebra-related example improves geometry-related results, and vice-versa! 
+
+It’s worth noting as well that there is an impact in response length and reflection step: this method tends to make the model self-reflect more, increasing response length compared to a model that has seen more data.
+
+Few shot RLVR also works! What’s interesting is also that on the distilled R1 version of Qwen-2.5-1.5B, the authors remarked that 1-shot RLVR overfits after a few steps, but 4-shot and 16-shot pick up the slack with very convincing results.
+
+Ablations reveal that:
+- The policy and entropy component losses in GRPO veRL pipeline are very relevant to the improvement
+- Large answer issues within the sample can lower performance but still improves results somewhat
+
+Honestly this feels like a big work. I am impressed at the existence of « post-saturation generalization », which would imply that for post-training the characteristics of the data or training time might be more relevant than the data size itself ; which is a whole new performance law. Really cool work, which is fully open sourced!
+
+Github Link: https://github.com/ypwang61/One-Shot-RLVR

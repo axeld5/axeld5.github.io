@@ -63,16 +63,25 @@ function Blog() {
                 <article key={post.id} className="blog-post">
                   <div className="post-header">
                     <h2 className="post-title">{post.title}</h2>
-                                    <div className="post-meta">
-                  <span className="post-type">📝 Blog Post</span>
-                  <span className="post-id">#{post.id}</span>
-                </div>
+                    <div className="post-meta">
+                      <span className="post-type">📝 Blog Post</span>
+                      <span className="post-id">#{post.id}</span>
+                      {post.video && <span className="post-video-indicator">🎬 Has Video</span>}
+                    </div>
                   </div>
 
                   <div className="post-content">
                     <p className="post-excerpt">{post.excerpt}</p>
                     
-                    
+                    {post.video && (
+                      <div className="post-video-preview">
+                        <div className="video-preview-header">
+                          <span className="video-icon">🎬</span>
+                          <span className="video-filename">{post.video.filename}</span>
+                        </div>
+                        <p className="video-preview-text">This post includes a video demonstration</p>
+                      </div>
+                    )}
 
                     <Link 
                       to={`/blog/${post.id}`}

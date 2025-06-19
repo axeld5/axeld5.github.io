@@ -1,4 +1,12 @@
 {
   "posts": [
+    {
+      "id": 1,
+      "filename": "post_1.txt"
+    },
+    {
+      "id": 2,
+      "filename": "post_2.txt"
+    }
   ]
 }

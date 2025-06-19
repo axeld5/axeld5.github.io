@@ -36,7 +36,7 @@ function Papers() {
   return (
     <div className="page-content">
       <div className="page-header">
-        <h1>Paper Reviews</h1>
+        <h1>Paper Reads</h1>
         <p className="page-subtitle">My journey through academic papers and research</p>
       </div>
 

@@ -174,7 +174,12 @@ Write your main content here. The system will automatically:
 
 ### Conclusion
 
-Wrap up your blog post here.`;
+Wrap up your blog post here.
+
+### Video
+your-video-filename.mp4
+
+Note: Videos are optional! To add a video, create a "### Video" section and put your video filename on the next line. Place your video files in the public/videos/ directory.`;
     } else {
       return `## Paper Title: Amazing Research Paper
 
@@ -209,7 +214,12 @@ Give your rating here (e.g., ⭐⭐⭐⭐⭐)
 
 ### Verdict
 
-Would you recommend this paper? Why or why not?`;
+Would you recommend this paper? Why or why not?
+
+### Video
+demo-video.mp4
+
+Note: Videos are optional for papers too! You can add a video explanation or demo by creating a "### Video" section.`;
     }
   };
 
@@ -308,6 +318,9 @@ Would you recommend this paper? Why or why not?`;
             <li>The system automatically finds the next available number</li>
             <li><strong>Dev server must be running</strong> for posts to be saved automatically</li>
             <li>Content clears after each post so you can quickly create multiple posts</li>
+            <li><strong>Adding videos:</strong> Create a <code>### Video</code> section and put your video filename on the next line</li>
+            <li><strong>Video storage:</strong> Place video files in <code>public/videos/</code> directory</li>
+            <li><strong>Supported formats:</strong> .mp4, .webm, .ogg, .mov, .avi, .mkv</li>
           </ul>
 
           <h3>🔧 Management</h3>

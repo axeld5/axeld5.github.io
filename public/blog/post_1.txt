@@ -1,0 +1,29 @@
+## Research Experiment: OCRSynth, Automatically Generating diverse OCR datasets from any textual dataset
+
+https://github.com/axeld5/ocrsynth
+
+Basically this project started from @MistralAI releasing Mistral-OCR, getting me down the rabbit hole of OCR evaluation and dataset creation. It turned out there wasn’t in my (admittedly small) research an OCR dataset creation method that leveraged our libraries that handled pdf/docx documents!
+
+Which are actually strong currently, as with libs like reportlab, Fitz, python-docx, there is quite a lot that can be done. 
+
+How the project works is as follows:
+- Take a textual dataset
+- The pipe will select a random font, a random font size, a random about of words per line
+- Then, it fits as many text in random positions as possible before not being able to and goes to create another page and repeat the process
+
+The small tidbit we can leverage here: instead of directly adding the text, we can insert it as an image! This allows to leverage degradations, stretching, compressing… anything to make the text more challenging to read! And since we are working with pdf, what we can do is:
+- Modulate page form, here it is simple A4 but we can work with A3, modulate layouts etc
+- We have the bounding boxes!!! Because we place ourselves the text, we can evaluate either full text or bounding box recognition, which is actually very interesting for the training of OCD+OCR pipelines!
+
+Used it as bench on Gemini 2.0 Flash and Mistral OCR with 100 examples from Gsm8k’s test set and was kinda surprised by the results:
+- ~35% word accuracy for mistral ocr
+- ~40% word accuracy for Gemini flash
+
+The culprits? (WARNING FIRST: The numbers are to be taken with a grain of salt. There are imperfections in the pipe, and I expose it open-source as well for feedback!)
+
+- Mistral OCR has an eager image detection tool: its ocr capacities are quite good, but it can decide not to take words in sometimes
+- Gemini OCR seems really good on surface but can forget words, or add words
+
+Also, there is a bug with some fonts, which often leads to ~2 images being totally blacked out, massively harming the performance of the models regarding a page! Could not identify the fonts yet, but should increase performance once fixed. While there are some fixes to do, I think there are quite the good ideas that can be used for the creation of multilingual ocr (or even simple ocr benchmarks) which can be worth the read of the repo! Opening it, and might come around sometimes for modification.
+
+I would say honestly though regarding the results that half of it might be due to me making eval mistakes, although it’s a bit hard to examine manually due to the examples being very very dense. Considering it’s word level evaluation it is very punitive, typos completely screw over the score. I’d think Mistral OCR would be higher though without the image hallucinations (likely fixed since latest release in May, as this work was in March).

@@ -1,0 +1,23 @@
+## Read 188: « Coding agents with multimodal browsing are generalist problem solvers », by Soni et al from Carnegie Mellon University and All Hands AI
+
+https://arxiv.org/pdf/2506.03011
+
+The authors of this paper introduce a re-iteration on the OpenHands agent, giving it more capacities to improve its abilities!
+
+The ingredients of the new OpenHands-Versa:
+1- Coding Agent -> this does not change
+2- Ability to use Vision when browsing -> rather than just the DOM for openhands
+3- Use of search API (tavily here) -> new
+4- Multimodal file viewing -> used to be only text view, even for PDF with text and images
+5- Agent remains single -> no change here
+
+And thus, we have here a single agent with those 4 components, with the backbone being Claude 3.7 Sonnet, which is going to outperform the older version by a large margin on three different benchmarks: GAIA, The Agent Company and SWE-Bench Multimodal. It greatly outperforms as well other current open source Agentic frameworks.
+
+A few notes as well:
+- Despite having same LLM backbone, the tool selection of OpenHands-Versa is better than OpenHands
+- Error patterns appear to be benchmark specific, like for instance non-exhaustive test coverage for SWE-Bench or Captcha failure for GAIA
+- Search API does matter, with Tavily being quite better than Exa or Brave
+
+The appendix contains multiple additional details, most notably covering the other agents used for benchmarking.
+
+Overall, a great work that does indicate us the power of the beasts we are toying with. Hyped to see up to where can agents lead us!

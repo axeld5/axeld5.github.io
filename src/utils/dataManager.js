@@ -29,6 +29,53 @@ class FileDataManager {
     return 'No excerpt available';
   }
 
+  // Utility function to extract video information from content
+  extractVideo(content) {
+    const lines = content.split('\n');
+    
+    // Look for a "### Video" section
+    const videoSectionIndex = lines.findIndex(line => 
+      line.trim().toLowerCase() === '### video' || 
+      line.trim().toLowerCase() === '## video'
+    );
+    
+    if (videoSectionIndex !== -1) {
+      // Look for the next non-empty line after the video header
+      for (let i = videoSectionIndex + 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (line && !line.startsWith('#')) {
+          // Check if it's a video file (common video extensions)
+          if (line.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i)) {
+            return {
+              filename: line,
+              url: `/videos/${line}` // Assuming videos are stored in public/videos/
+            };
+          }
+          // Also support direct URLs
+          if (line.startsWith('http') && line.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i)) {
+            return {
+              filename: line.split('/').pop(),
+              url: line
+            };
+          }
+        }
+      }
+    }
+    
+    // Fallback: look for video files mentioned anywhere in the content
+    const videoFilePattern = /(\w+\.(mp4|webm|ogg|mov|avi|mkv))/gi;
+    const matches = content.match(videoFilePattern);
+    if (matches && matches.length > 0) {
+      const filename = matches[matches.length - 1]; // Use the last mentioned video
+      return {
+        filename: filename,
+        url: `/videos/${filename}`
+      };
+    }
+    
+    return null;
+  }
+
   // Load post files using manifest approach
   async discoverPostFiles(type) {
     const posts = [];
@@ -57,17 +104,19 @@ class FileDataManager {
             const content = await response.text();
             const title = this.extractTitle(content);
             const excerpt = this.extractExcerpt(content);
+            const video = this.extractVideo(content);
             
             posts.push({
               id: postInfo.id,
               title,
               excerpt,
               content,
+              video,
               filename: postInfo.filename,
               type
             });
             
-            console.log(`Successfully loaded: ${postInfo.filename}`);
+            console.log(`Successfully loaded: ${postInfo.filename}${video ? ' (with video)' : ''}`);
           } else {
             console.log(`Failed to load ${url}: ${response.status}`);
           }
@@ -111,12 +160,14 @@ class FileDataManager {
           const content = await response.text();
           const title = this.extractTitle(content);
           const excerpt = this.extractExcerpt(content);
+          const video = this.extractVideo(content);
           
           posts.push({
             id: postNumber,
             title,
             excerpt,
             content,
+            video,
             filename: `post_${postNumber}.txt`,
             type
           });
@@ -198,12 +249,14 @@ class FileDataManager {
         const content = await response.text();
         const title = this.extractTitle(content);
         const excerpt = this.extractExcerpt(content);
+        const video = this.extractVideo(content);
         
         const post = {
           id: numericId,
           title,
           excerpt,  
           content,
+          video,
           filename: `post_${numericId}.txt`,
           type: 'blog'
         };
@@ -232,12 +285,14 @@ class FileDataManager {
         const content = await response.text();
         const title = this.extractTitle(content);
         const excerpt = this.extractExcerpt(content);
+        const video = this.extractVideo(content);
         
         const post = {
           id: numericId,
           title,
           excerpt,
           content,
+          video,
           filename: `post_${numericId}.txt`,
           type: 'paper'
         };

@@ -1,0 +1,22 @@
+## Read 189: « Self-adapting large language models », by Zweiger, Pari et al from the MIT
+
+https://arxiv.org/pdf/2506.10943
+
+The authors of this paper take a glance at LLM RL self-play with respect to an objective with a twist.
+
+Their pipe goes as follows:
+1- Generate synthetic data regarding an objective
+2- SFT model on generated data
+3- If data improves score on a test set, all answers with respect to that data are assigned a reward of one (else zero)
+4- Rinse and repeat to get a batch of self play edits
+5- Perform on-policy RL algorithm with the batches
+
+It is tested in two domains:
+1- Compared with Oracle Test Time Tuning on 11 train /8 test samples of Arc-AGI as a heuristic for augmentations ; model used is Llama-3.2-1B-Instruct
+2- Compared with several synthetic augmentation method for knowledge incorporation on the SQuAD dataset ; model used is Qwen2.5-7B-Instruct
+
+In both cases, it does fend off remarkably well. It reaches 72.5% of the perf of TT finetuning in the solvable arc-agi examples, and is on par with good knowledge incorporation synthetic approaches.
+
+However, the approach is prone to catastrophic forgetting, can introduce additional compute against some approaches that are just as good if not better (eg ttft) and can’t yet work for unlabeled corpora
+
+It’s though extremely interesting to see we are trying to self play on a lot of works right now, with uncertain success. I am wondering if self-play will be proven to work by a big lab (if that’s not already the case) or if it will remain a public research fever dream. To be continued!

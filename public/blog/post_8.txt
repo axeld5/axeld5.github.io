@@ -1,52 +1,21 @@
-## Research Experiment: Can you use a textual dataset to synthetically create a dataset of another modality, useful in another downstream task?
+## Build Project: Public Data Anaylst
 
-https://github.com/axeld5/reasoning_charts.git
+The project was to make an agent that was able to explore http://data.gouv.fr and generate analytic reports
 
-Dataset: https://huggingface.co/datasets/axel-darmouni/anychart-vqa
+It’s still a work in progress, especially for it to be production ready, but I did like cooking it up for the @Gradio hackathon :)
 
-## Making the benchmark
+CodeAgents from @huggingface SmolAgents roaming wild are something to behold: even though the code does create mistakes, it is pretty good at fixing itself until report generation is performed.
 
-📊 First, let me explain where this experience comes from.
+## Lessons Learned
 
-Analyzing charts using small models is pain: lots of image concepts intertwine, and charts can be tricky.
-Last year, I did SFT a PaliGemma on reasoning data and saw the model often hallucinated on chart understanding.
+- CodeAgents are very, very strong. Impressive to see all it can do with just a set of library. Even a single agent was enough to get good results.
+- Tooling is basically "smart fixes for the agent to perform well". You tool an agent with anything you think is critical to be done well, can be controlled, and is pretty easy to describe.
+- I'd say it's better to overtool than overcharge with libraries. I feel that I have given the agent too much freedom to perform here. Definitely fixable, either by retooling or with multi-agents with specific functions.
 
-📝 So what I thought, which I had slightly seen on @IBMResearch literature to some extent, was actually the following: « can I create, from a textual dataset, charts from which I can extract verifiable questions to get verifiable reasoning data? » The answer is yes.
+I'd say there's still much to do with this project, so perhaps I'll come back soon to rework on it and get better results. Time will tell. :)
 
-🧮 Let’s take a sentence.
-Count letter frequency with a threshold (here 3).
-From frequency dict, make bar plot
+PS: The video is indeed shortened, as the generation process does take ~6 mins. Right now, it’s mono dataset but the latent objective is to build a DeepResearch agent on data gouv datasets, as open French public data is a trove waiting to be used! ;)
 
-From that bar plot, you can ask the following:
-- How many letters?
-- k-th frequency?
-- Median frequency?
-- Mean frequency?
+### Video
 
-All those leading to verifiable answers!
-⚙️ And we can do the same for pie charts! Except we work in percentages now, but we can still ask the two first questions easily, even if slightly tweaked.
-
-📒 And that is with a sentence, but what about multiple sentences? Let’s create word clouds for instance and ask:
-- amount of words?
-- k-th most present word?
-- taken X word: is word in wordcloud?
-
-📚With this approach, I have created around 300 samples which were answered by Gemini-2.5-Flash. Answers were verified with ground truth, but question was asked using the graph. 2.5-Flash had a pretty great result of higher than 90% valid answers, with very solid reasoning traces!
-
-🔩This was what was done for the competition, which was already quite nice and fun. But once it was over, I wanted to go deeper.
-And so, yesterday, booted up an H100 GPU and tested small models on it. Isolated 60 test samples, and benchmarked and tuned models.
-
-## Benchmarking
-
-🔬SmolVLM2-256M-instruct totally whiffs on this dataset taken as a benchmark. 0 instruction following, and answers are usually irrelevant with respect to the question
-🔬SmolVLM2-2.2B-instruct is slightly better, with an accuracy of 10% on the bench. This is more often due to the failure in instruction following (ie formatting in \boxed{}) than actually being bad, even though it maxing the IF would not make it shoot that high (I suspect a +20%)
-🔬Qwen2.5-3B-VL-Instruct reaches quite acceptable results of nearly 43%. Mainly because of the « word in wordcloud » and « letter count » questions which are easier, yet it is a pretty honest result for a small VLM
-
-## Finetuning
-
-🔧Tuning SmolVLM2-256M on just answer, without reasoning: was quite successful, reached acc of ~37%. Basically, just like Qwen2.5-3B, had an easier time handling the easy questions. Most « is word in wordcloud » are False, and letter count is quite easy.
-🔧QLoRA-ing Qwen2.5-3B-VL on reasoning data: success! Model reached around 67% of accuracy, which was unexpected given how much I had to give up due to resource constraints. Was quite impressed, the reasoning traces looked good and the model was able to follow instructions well
-
-## Results
-
-🧩Overall, was a fun challenge, done for the @bespokelabsai competition: netted me a @huggingface Pro subscription, and I think there’s much more to do in terms of curves to generate to improve chart understanding for small models ; like temporal curves, more complex graphics… there’s a lot we can do from only text! One last thanks to @vanstriendaniel for promoting the competition which gave me the final push to go in, and overall was quite a nice fun experience!
+public_data_analyst.mp4

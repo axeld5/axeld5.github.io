@@ -1,0 +1,25 @@
+## Research Experiment: can we RL a small model (SmolLM2-360M-Instruct here) to be stronger at translating?
+
+https://github.com/axeld5/smol_translate
+
+The reason why I wanted to RL was mainly because I was thinking we could leverage our already trained Embedding Models, like the small Qwen3 embeddings, to act as some sort of verifier of the translation quality
+
+In fact, analyzing on some translation datasets like Tatoeba reveal that the embeddings of a Sentence and its translation in French are close!
+
+So I’ve picked up my embeddings, langdetect and tried to GRPO SmolLM2-360M-Instruct with the following losses:
+- « -1 » if lang isn’t detected as French
+- « cosine(embedding(text_to_translate), embedding(proposed_translation)) - 0.5 » to guide the model towards translating
+
+Tests were performed on subsets of En -> Fr samples of the tatoeba dataset.
+
+But this wasn’t taking in mind the hacking potential of that reward…
+
+Basically the Smol model realized that if you repeat the text_to_translate and add (_some French words_ + que que que que que que)… langdetect would think it’s French, but the embedding reward would also shoot up!
+
+So I’ve added a length penalty instead, but the model noticed that speaking franglish maximized the reward…
+
+So so far, if we want to tune a small model into a smart one-direction translator with RL, this approach is not going to cut it. Am sad that it hacked! Also it was predictable a posteriori 😅
+
+If you’ve got any inspiration from this idea, feel free to leave a message, am curious on how I could go further ; would like to trigger strong translation capacities in low sample regime.
+
+Also, this was a great opportunity to assess @googleaidevs' Gemini-2.5-Flash-Lite as a judge: the model is blazingly fast, and is especially relevant for a simple use case like evaluating the quality of a translation. Google definitely cooked well there!

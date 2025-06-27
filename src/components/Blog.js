@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import dataManager from '../utils/dataManager';
+import ProgressBar from './ProgressBar';
 
 function Blog() {
   const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(null);
 
   // Utility function to convert URLs in text to clickable links
   const linkifyText = (text) => {
@@ -33,9 +35,26 @@ function Blog() {
 
   // Load posts from dataManager on component mount
   useEffect(() => {
+    const progressCallback = (progress) => {
+      if (progress.type === 'blog') {
+        setLoadingProgress(progress);
+        
+        // Clear progress when complete
+        if (progress.current === progress.total) {
+          setTimeout(() => {
+            setLoadingProgress(null);
+          }, 1000);
+        }
+      }
+    };
+
     const loadPosts = async () => {
       try {
         console.log('Blog component: Starting to load posts...');
+        
+        // Add progress callback
+        dataManager.addProgressCallback(progressCallback);
+        
         const allPosts = await dataManager.getBlogPosts();
         console.log('Blog component: Loaded posts:', allPosts);
         setPosts(allPosts);
@@ -44,10 +63,17 @@ function Blog() {
       } finally {
         console.log('Blog component: Finished loading posts');
         setIsLoading(false);
+        // Remove progress callback
+        dataManager.removeProgressCallback(progressCallback);
       }
     };
 
     loadPosts();
+
+    // Cleanup function
+    return () => {
+      dataManager.removeProgressCallback(progressCallback);
+    };
   }, []);
   
   const filteredPosts = posts.filter(post => {
@@ -78,7 +104,11 @@ function Blog() {
 
         {isLoading ? (
           <div className="loading-state">
-            <p>Loading posts...</p>
+            {loadingProgress ? (
+              <ProgressBar progress={loadingProgress} />
+            ) : (
+              <p>Loading posts...</p>
+            )}
           </div>
         ) : (
           <>

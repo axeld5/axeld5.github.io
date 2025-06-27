@@ -1,0 +1,61 @@
+## Read 191: Magistral, by @MistralAILabs
+
+https://arxiv.org/pdf/2506.10910
+
+The latest paper from Mistral Research introduces the two models from their Magistral series, Magistral Small and Medium.
+
+Magistral Medium is an RL’d version of Mistral Medium 3, while Magistral Small is an SFT+RL’d version of Mistral Small 3.1 using traces from Magistral Medium.
+
+The RL process to build Magistral Medium is pretty similar to Deepseek R1-zero, but with modifications in the Algorithm:
+- It is GRPO loss, but no KL div
+- Loss is normalized by total length of generations
+- Minibatch normalization of advantages rather than group-normalized advantages
+- Upper bound of GRPO clip term increased
+- Groups which have all generations correct or wrong are not taken into account
+
+It’s worth noting as well that here, Mistral specifies working with both Code and Math data, and only that (for the RL process of Medium).
+
+Rewards are as follows:
+- Formatting: <think> xml tags presence ; answer in \boxed{} after <\think> if math problem ; code responses within triple backticks with programmation language stated. 0 if any non-respected, +0.1 otherwise.
+- Valid answers: using parsers and sympy to compare to ground truth for math; execution against blocks of tests (with potential timeout) for code. +0.9 if correct.
+- Length penalties are applied to avoid answer being too long. They are between 0 and -0.1.
+- An additional reward is given if question/reasoning/answer are all under the same language. To make sure model learned multilinguality, it’s worth noting they translated 10% of problems to non-English European languages.
+
+Interestingly enough, they note that RL sensitivity is also affected by the system prompt. Which means specific words or prompt optimization may matter there!
+
+Afterwards, they make a fun part about their RL infrastructure to make the online process run continuously. What I understood from that is -correct me if I get it wrong- the following:
+- There are instances of the model that turn full time to generate answers. 
+- Whenever an answer is done, it is sent to a verifier instance that attributes the reward and sends it to a random trainer instance.
+- Once every instance has enough to form a batch, GRPO steps with minibatches are performed and weights of generators and trainers are updated. 
+- If trainers are too slow to update, which is the case usually at the beginning of the training, the generations are accumulated into a queue waiting for the update process to be done
+
+What is funny and cunning though is that due to the way the update process works, generations can have changes of weights mid flight! 
+
+Regarding their data processing:
+- Math data is filtered first for difficulty using Mistral Large. Problems which are too easy or impossible to solve over 16 generations are removed. A Mistral Small model is RL’d over this data, and performs actual filtering afterwards to go from 501k valid samples to 39k relevant ones.
+- Code data is filtered on test validity. For problems which have not enough tests, tests are generated, irrelevant tests are however discarded. If possible, problems are duplicated from Python to C++ and vice-versa.
+
+Onto experiments and results:
+- RL was done for Magistral Medium to be created from Mistral Medium, with some sort of curriculum learning from easy to hard and updates in hyperparameters like max length for length penalty or batch related params
+- SFT + RL for Magistral Small from Mistral Small, by cold starting from Magistral Medium answers on reasoning problems
+
+General and multilingual perfs from the models are both quite good.
+Ablations Reveal:
+- RL-ing small on solely math or solely code does yield improvement on both, less than training on both but still a substantial improvement. 
+- RL only, on 24B sized-model, yields quite the good improvement, around the level of SFT on reasoning traces (but slightly less better on reasoning bench). But SFT+RL remains better.
+- Batch-size related hyperparameter and Advantage Normalization Choices are validated through studies done by varying the params or methods.
+
+Additional analyses are done after on the models, which are quite interesting to read. What they reveal:
+- Top 2 eigenvectors of covariance matrix of weights of Magistral Small RL-only appear to show there appears to be a direction of evolution, increasing mean reward and mean length as updates go, until the model hits the wall related to output length reward. Length and rewards increase fast at first, until model hits high throughput at which time it seems to stabilize.
+- RL on text-only data does have a positive impact on multimodal capacities. My guess is because this could improve the performance on the examples on which the model can analyze well the images, but fails in reasoning.
+- RL does not appear to have a negative impact, if any, on instruction following and tool calling.
+- Partially rewarding for successful tests is less reliable than binary rewarding for success of all tests. Makes sense as it teaches model partial solutions are good, but the idea was interesting: it’s true some tests might fail despite the model having right intuition due to typos on code… but empirically, the binary reward seems better. Even though now I think people are going to try more ByteDance’s CURE approach, which is massively interesting.
+- Entropy bonus or KL divergence terms in the loss were found to be less stable in training than loosening the upper bound of GRPO Clip parameter.
+
+Lastly, here we have an RL-only model in Magistral Medium: the SFT+RL version appears to be on its way, and it’s already very promising with scores tackling Deepseek-R1 at release…
+
+A quite strong technical report, with lots of additional learnings with respect to Deepseek R1. Can only recommend the read!
+
+I’d be curious to see a few things more later on: if self-play approach does work on magistral-like model (as it would be a first time scale in public!) ; and if there are other losses or rewards that were attempted on broader topics than code or math : verifiable QA? Using LLM as judge for simple question-answering problems? 
+
+I think there can be an evolution in the RL paradigm, but perhaps I’m wrong on it: will see how time proves me right or not!

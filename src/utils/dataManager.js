@@ -7,6 +7,34 @@ class FileDataManager {
     this.blogCache = new Map();
     this.paperCache = new Map();
     this.isLoading = false;
+    this.progressCallbacks = new Set();
+  }
+
+  // Add progress tracking
+  addProgressCallback(callback) {
+    this.progressCallbacks.add(callback);
+  }
+
+  removeProgressCallback(callback) {
+    this.progressCallbacks.delete(callback);
+  }
+
+  updateProgress(current, total, type, message = '') {
+    const progress = {
+      current,
+      total,
+      percentage: total > 0 ? Math.round((current / total) * 100) : 0,
+      type,
+      message
+    };
+    
+    this.progressCallbacks.forEach(callback => {
+      try {
+        callback(progress);
+      } catch (error) {
+        console.error('Error in progress callback:', error);
+      }
+    });
   }
 
   // Utility function to extract title from content
@@ -82,9 +110,10 @@ class FileDataManager {
 
     try {
       console.log(`Loading ${type} manifest...`);
+      this.updateProgress(0, 100, type, 'Loading manifest...');
       
       // First, load the manifest file
-      const manifestResponse = await fetch(`/${type}/index.json`);
+      const manifestResponse = await fetch(`/${type}/manifest.json`);
       if (!manifestResponse.ok) {
         console.log(`No manifest found for ${type}, falling back to discovery mode`);
         return await this.discoverPostFilesLegacy(type);
@@ -92,12 +121,16 @@ class FileDataManager {
       
       const manifest = await manifestResponse.json();
       console.log(`Found manifest with ${manifest.posts.length} ${type} posts`);
+      const totalPosts = manifest.posts.length;
+      this.updateProgress(0, totalPosts, type, `Found ${totalPosts} ${type} posts`);
       
       // Load each post file listed in the manifest
-      for (const postInfo of manifest.posts) {
+      for (let i = 0; i < manifest.posts.length; i++) {
+        const postInfo = manifest.posts[i];
         try {
           const url = `/${type}/${postInfo.filename}`;
           console.log(`Loading: ${url}`);
+          this.updateProgress(i, totalPosts, type, `Loading ${postInfo.filename}...`);
           
           const response = await fetch(url);
           if (response.ok) {
@@ -117,11 +150,14 @@ class FileDataManager {
             });
             
             console.log(`Successfully loaded: ${postInfo.filename}${video ? ' (with video)' : ''}`);
+            this.updateProgress(i + 1, totalPosts, type, `Loaded ${posts.length}/${totalPosts} posts`);
           } else {
             console.log(`Failed to load ${url}: ${response.status}`);
+            this.updateProgress(i + 1, totalPosts, type, `Failed to load ${postInfo.filename}`);
           }
         } catch (error) {
           console.log(`Error loading ${postInfo.filename}:`, error);
+          this.updateProgress(i + 1, totalPosts, type, `Error loading ${postInfo.filename}`);
         }
       }
       
@@ -131,6 +167,7 @@ class FileDataManager {
     }
 
     console.log(`Loaded ${posts.length} ${type} posts from manifest`);
+    this.updateProgress(posts.length, posts.length, type, `Completed! Loaded ${posts.length} posts`);
     return posts;
   }
 
@@ -239,29 +276,35 @@ class FileDataManager {
   async getAllPaperPostsForSearch() {
     try {
       console.log('Loading ALL papers for search...');
+      this.updateProgress(0, 100, 'papers', 'Loading papers manifest for search...');
       
       // Get the manifest to know which papers exist
-      const manifestResponse = await fetch('/papers/index.json');
+      const manifestResponse = await fetch('/papers/manifest.json');
       if (!manifestResponse.ok) {
         throw new Error('Could not load papers manifest');
       }
       
       const manifest = await manifestResponse.json();
       console.log(`Found ${manifest.posts.length} papers in manifest`);
+      const totalPosts = manifest.posts.length;
+      this.updateProgress(0, totalPosts, 'papers', `Loading ${totalPosts} papers for search...`);
       
       // Sort by ID descending (newest first)
       const sortedPosts = manifest.posts.sort((a, b) => b.id - a.id);
       
       // Load ALL papers
       const papers = [];
-      for (const postInfo of sortedPosts) {
+      for (let i = 0; i < sortedPosts.length; i++) {
+        const postInfo = sortedPosts[i];
         try {
           // Check if already cached
           if (this.paperCache.has(postInfo.id)) {
             papers.push(this.paperCache.get(postInfo.id));
+            this.updateProgress(i + 1, totalPosts, 'papers', `Loaded ${papers.length}/${totalPosts} papers (cached)`);
             continue;
           }
           
+          this.updateProgress(i, totalPosts, 'papers', `Loading ${postInfo.filename} for search...`);
           const url = `/papers/${postInfo.filename}`;
           const response = await fetch(url);
           if (response.ok) {
@@ -283,13 +326,16 @@ class FileDataManager {
             // Cache it for future use
             this.paperCache.set(postInfo.id, paper);
             papers.push(paper);
+            this.updateProgress(i + 1, totalPosts, 'papers', `Loaded ${papers.length}/${totalPosts} papers for search`);
           }
         } catch (error) {
           console.log(`Error loading ${postInfo.filename}:`, error);
+          this.updateProgress(i + 1, totalPosts, 'papers', `Error loading ${postInfo.filename}`);
         }
       }
       
       console.log(`Loaded ${papers.length} papers for search`);
+      this.updateProgress(papers.length, papers.length, 'papers', `Search ready! Loaded ${papers.length} papers`);
       return papers;
     } catch (error) {
       console.error('Error loading all papers for search:', error);
@@ -300,8 +346,10 @@ class FileDataManager {
   // Get paginated paper posts (NEW METHOD)
   async getPaginatedPaperPosts(page = 1, limit = 20) {
     try {
+      this.updateProgress(0, 100, 'papers', 'Loading papers manifest...');
+      
       // First, get the manifest to know which papers exist
-      const manifestResponse = await fetch('/papers/index.json');
+      const manifestResponse = await fetch('/papers/manifest.json');
       if (!manifestResponse.ok) {
         throw new Error('Could not load papers manifest');
       }
@@ -318,17 +366,21 @@ class FileDataManager {
       const paginatedPostsInfo = sortedPosts.slice(startIndex, endIndex);
       
       console.log(`Loading ${paginatedPostsInfo.length} papers for page ${page}`);
+      this.updateProgress(0, paginatedPostsInfo.length, 'papers', `Loading ${paginatedPostsInfo.length} papers for page ${page}`);
       
       // Load only the papers for this page
       const papers = [];
-      for (const postInfo of paginatedPostsInfo) {
+      for (let i = 0; i < paginatedPostsInfo.length; i++) {
+        const postInfo = paginatedPostsInfo[i];
         try {
           // Check if already cached
           if (this.paperCache.has(postInfo.id)) {
             papers.push(this.paperCache.get(postInfo.id));
+            this.updateProgress(i + 1, paginatedPostsInfo.length, 'papers', `Loaded ${papers.length}/${paginatedPostsInfo.length} papers (cached)`);
             continue;
           }
           
+          this.updateProgress(i, paginatedPostsInfo.length, 'papers', `Loading ${postInfo.filename}...`);
           const url = `/papers/${postInfo.filename}`;
           const response = await fetch(url);
           if (response.ok) {
@@ -350,12 +402,15 @@ class FileDataManager {
             // Cache it for future use
             this.paperCache.set(postInfo.id, paper);
             papers.push(paper);
+            this.updateProgress(i + 1, paginatedPostsInfo.length, 'papers', `Loaded ${papers.length}/${paginatedPostsInfo.length} papers`);
           }
         } catch (error) {
           console.log(`Error loading ${postInfo.filename}:`, error);
+          this.updateProgress(i + 1, paginatedPostsInfo.length, 'papers', `Error loading ${postInfo.filename}`);
         }
       }
       
+      this.updateProgress(papers.length, papers.length, 'papers', `Completed! Loaded ${papers.length} papers`);
       return papers;
     } catch (error) {
       console.error('Error loading paginated papers:', error);
@@ -366,7 +421,7 @@ class FileDataManager {
   // Get total paper count (NEW METHOD)
   async getPaperCount() {
     try {
-      const manifestResponse = await fetch('/papers/index.json');
+      const manifestResponse = await fetch('/papers/manifest.json');
       if (!manifestResponse.ok) {
         throw new Error('Could not load papers manifest');
       }

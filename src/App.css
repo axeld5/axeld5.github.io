@@ -846,6 +846,190 @@ body {
   .stats-grid {
     grid-template-columns: 1fr;
   }
+
+  /* Blog Posts Mobile Responsive */
+  .blog-posts {
+    gap: 1rem;
+  }
+
+  .blog-post {
+    padding: 1rem;
+  }
+
+  .post-title {
+    font-size: 1.2rem;
+    line-height: 1.4;
+  }
+
+  .post-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .post-excerpt {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .read-full-post-btn {
+    display: block;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+  }
+
+  /* Papers Grid Mobile */
+  .papers-grid {
+    gap: 1rem;
+  }
+
+  .paper-card {
+    padding: 1rem;
+  }
+
+  .paper-title {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .paper-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .paper-summary {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  /* Contact Links Mobile */
+  .contact-links {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-links a {
+    display: block;
+    text-align: center;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  /* Skills Grid Mobile */
+  .skills-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  /* Video Elements Mobile */
+  .post-video-preview {
+    padding: 0.75rem;
+  }
+
+  .video-filename {
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile-first breakpoint for smaller screens */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.75rem;
+  }
+
+  .nav-brand h2 {
+    font-size: 1.4rem;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .nav-links a {
+    padding: 0.75rem;
+    border-radius: 6px;
+  }
+
+  .main-content {
+    padding: 0.75rem;
+  }
+
+  .page-header {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .page-subtitle {
+    font-size: 1rem;
+  }
+
+  .content-section {
+    padding: 0.75rem;
+  }
+
+  .blog-post,
+  .paper-card {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-title,
+  .paper-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-meta,
+  .paper-meta {
+    font-size: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-excerpt,
+  .paper-summary {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .search-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 0.75rem;
+  }
+
+  .placeholder-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .profile-info h2 {
+    font-size: 1.5rem;
+  }
+
+  .role {
+    font-size: 1rem;
+  }
+
+  .back-to-top {
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+    bottom: 15px;
+    right: 15px;
+  }
 }
 
 /* Enhanced Dev Mode Styles */
@@ -1004,6 +1188,145 @@ body {
 .loading-state p {
   font-size: 1.1rem;
   margin: 0;
+}
+
+/* Progress Bar Styles */
+.progress-container {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progress-title {
+  font-size: 1.1rem;
+  color: #2d3748;
+  margin: 0;
+  font-weight: 600;
+}
+
+.progress-percentage {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  min-width: 60px;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 1rem;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.3),
+    transparent
+  );
+  animation: progress-shimmer 2s infinite;
+}
+
+@keyframes progress-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.progress-count {
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.progress-message {
+  color: #667eea;
+  font-style: italic;
+  max-width: 50%;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mobile responsive progress bar */
+@media (max-width: 768px) {
+  .progress-container {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .progress-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .progress-title {
+    font-size: 1rem;
+  }
+
+  .progress-percentage {
+    font-size: 1rem;
+    padding: 0.2rem 0.6rem;
+    align-self: flex-end;
+  }
+
+  .progress-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .progress-message {
+    max-width: 100%;
+    text-align: left;
+    font-size: 0.8rem;
+  }
 }
 
 /* Responsive Design for Enhanced Features */
@@ -1705,5 +2028,122 @@ body {
   .papers-count,
   .search-results-count {
     font-size: 0.85rem;
+  }
+
+  /* Full Post Mobile Responsive */
+  .full-post {
+    margin: 0;
+  }
+
+  .full-post-content {
+    padding: 1rem;
+  }
+
+  .post-navigation {
+    padding: 1rem;
+    margin-bottom: 0;
+  }
+
+  .back-link {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .full-post-header {
+    padding: 1rem;
+  }
+
+  .full-post-title {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .full-post-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .full-post-tags {
+    margin: 1rem 0;
+  }
+
+  .full-post-tag {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Override markdown responsive styles for better mobile display */
+  .markdown-h1 {
+    font-size: 1.8rem !important;
+    line-height: 1.3 !important;
+    margin: 1.5rem 0 1rem 0 !important;
+  }
+
+  .markdown-h2 {
+    font-size: 1.4rem !important;
+    line-height: 1.3 !important;
+    margin: 1.25rem 0 0.75rem 0 !important;
+  }
+
+  .markdown-h3 {
+    font-size: 1.2rem !important;
+    line-height: 1.4 !important;
+    margin: 1rem 0 0.5rem 0 !important;
+  }
+
+  .markdown-h4 {
+    font-size: 1.1rem !important;
+    line-height: 1.4 !important;
+    margin: 0.75rem 0 0.5rem 0 !important;
+  }
+
+  .markdown-p {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .markdown-ul,
+  .markdown-ol {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    margin-left: 1rem !important;
+  }
+
+  .markdown-li {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .markdown-blockquote {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    margin: 1rem 0 !important;
+    padding: 0.75rem 1rem !important;
+  }
+
+  .markdown-code-inline {
+    font-size: 0.8rem !important;
+    padding: 0.2rem 0.4rem !important;
+  }
+
+  .markdown-pre {
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+    padding: 0.75rem !important;
+    overflow-x: auto !important;
+  }
+
+  .markdown-table {
+    font-size: 0.8rem !important;
+    min-width: 100% !important;
+  }
+
+  .markdown-th,
+  .markdown-td {
+    padding: 0.5rem !important;
+    font-size: 0.8rem !important;
   }
 }

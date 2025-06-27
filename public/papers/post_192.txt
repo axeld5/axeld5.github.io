@@ -1,0 +1,28 @@
+## Read 192: Surfer-H meets Holo1, Cost-Efficient Web Agent powered by Open Weights, by H Company
+
+https://arxiv.org/pdf/2506.02865
+
+This technical report covers H Company’s web agent system along with their first open source models, Holo1-3B and 7B, which are finetunes of Qwen-2.5-VL-3B and 7B with very strong performance in web-related tasks.
+
+Surfer-H works as follows:
+- It is powered by three modules: a Policy, a Localizer and a Validator.
+- The Policy outputs an action given the trajectory and task. It can write down its thoughts and notes. The action space is restricted to: refresh, go to an url, go back, scroll, wait, write on an element, click on an element, and answer that its task is complete.
+- If the Policy module chooses to write or click on an element, the Localizer Module intervenes to get the element’s coordinates in order to make the action work.
+- When the Policy module decides it is done, its answer is sent along with the trajectory to the Validator module for validation. If the validator module does not validate, it reports back to the Policy that the answer is not correct. The Policy module then resumes operation.
+
+The three modules can be done by multiple models, or a single one able to perform all three tasks. And here comes Holo1! Holo1 is H’s custom made VLM family, which is a finetune of the Qwen-2.5-VL-Instruct 3B and 7B models over web-related data.
+
+Holo1 data mixture is precise and specified, with some funny processes done for its creation. Its data spans over 30B tokens, with the split in three ways: GUI Grounding Data, Complex Visual Understanding Q&A, and Behavior Learning from trajectories.
+
+The method for construction for each dataset is pretty cool, with custom methods each time :
+- For GUI Grounding, they crawl the web and parse pages, extract interactable elements and label them with frontier models to an intent. They also augment this generalist mixture with specific datasets that they have crafted to improve performance on common tasks, table interpretation or icon literacy. This dataset ends up being around 51% of the mix.
+- For Complex Visual Understanding, they train on action confirmation with respect to an intent; detailed extraction of all interactive elements within a screenshot; and chart, table and document understanding samples from the Cauldon
+- For Behavior Learning, they collect trajectories of (actions, thoughts, notes, and screenshots) with screenshots taken up to the last 3 with respect to the relevant action. They also create a set to train the model in its ability to validate or not the end of a trajectory given a task, an answer and the three last screenshots taken.
+
+Holo1 is trained thus on all three sets, to be able to be both Policy, Localizer or Validator.
+
+And the results are honestly pretty good. The models are above UI-Tars level for UI grounding and Localization. Surfer-H is a strong framework as well, nearing frontier framework performance on WebVoyager. It is also very good even if only powered by the Holo1 models.
+
+I like this report. I find it interesting as well that we do end up topping Ui-Tars, even if the stronger backbones definitely play a part in this. I am honestly surprised they were topped without DPO, or even any online RL. 
+
+I feel that there’s a whole subset of online RL work to explore over there tbh, although the infrastructure requirements might complexify it. But the web seems like a really, really good and fit part for this, especially considering how easy it is to create negative trajectories :)

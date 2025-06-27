@@ -1,0 +1,29 @@
+## Read 195: GenRecal: Generation after Recalibration from Large to Small Vision-Language Models, by Lee et al from Nvidia
+
+https://arxiv.org/pdf/2506.15681
+
+Insane results that essentially come from another take on distillation, allowing small models like an InternVL-2.5-8B to reach extraordinary results like a *74.9%* on MathVista or *68.1%* on MMMU.
+
+What’s the big idea? The main problem of distillation from one family to another when it comes to VLM are different processing procedures, like tokenizers for texts… or procedures for image handling.
+
+So how do they handle that? By bypassing the problem altogether and creating a way for the large VLM head (ie language predictor) to understand the inputs of both the small and large VLM bodies. 
+
+They call it a recalibrator model, which is made of a pre-projection operation to align large with small dimensions, 2 decoder blocks, and a post-projection operation.
+
+The procedure of the first stage of training goes as follows:
+- Embed Question + Answer Tokens for both small VLM and large VLM using their bodies (ie VLM minus the head)
+- Take embedded question from small, embedded answer tokens from large
+- Pass them through recalibrator
+- Take recalibrated embedded answer tokens and pass them through the head to obtain logits
+- Compute CE AR Loss between those logits and the ground truth values
+- Add a KL loss between the logits and answer logits that would occur if there were no recalibrator
+
+On top of that, another loss is added that uses the same process, but instead of using the embedded question tokens from the small VLM in the recalibrator, it uses the embedded question tokens from the large one. This serves as regularization.
+
+Second stage of training does the same process, but without a regularization. Instead, there is an additional loss parameter which is the Cross-entropy AR Loss between non-recalibrated embedded answer logits from the small VLM, and ground truth.
+
+Training conditions are described within the paper. 9M ViT samples are overall used.
+
+And this seems to work great. Basically makes little InternVL-2.5-8B-Instruct reach *GPT-4o* perf in most multimodal benchmarks under guidance of either InternVL-2.5-78B-instruct or Qwen2-VL-72B-Instruct.
+
+Honestly a very impressive result. Am stoked to know if this isn’t what big labs already do over there, or if it could become a norm to produce newly improved Gemini-2.5-Flash/Flash-lite.

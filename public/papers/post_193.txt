@@ -1,0 +1,38 @@
+## Read 193: V-Jepa 2: Self-supervised video models enable understanding, prediction and planning by @AIatMeta FAIR
+
+https://arxiv.org/pdf/2506.09985
+
+The basic idea behind V-Jepa 2 is that you can train a very, very strong world model embedding through learning from videos.
+
+After reading Dino papers, basically had thoughts lingering about Masked Video Modeling, and this paper answers them by showing the power of it!
+
+Builds from the V-Jepa experience, but massively scales it. The scaling:
+- Data : 2M videos -> 22M videos, from various sources.
+- Model: 300M -> 1B
+- Longer training due to hyperparam optimizations : 90 iterations -> 252 iterations
+- Higher resolution and clip rate
+
+The training procedure goes as follows:
+1- A mask is applied to tokens of a video
+2- A student model predicts an encoding for the unmasked tokens of the video
+3- A predictor model predicts the encoding for the masked tokens of the video
+4- Those tokens are compared against a prediction from a teacher model, which is an EMA of the student that has access to the full video
+
+And that’s the first step! Worth noting as well that 3D RoPE are applied to encode positional information. Also, one dataset, the YT1B one, had unbalanced distribution wrt the others: so for each video, scenes were extracted and embedded, and a cluster-based retrieval process was performed to select scenes similar to the other datasets’ cumulative distribution.
+
+So once this was done along with a few other training optimizations specified within the paper, V-Jepa 2 was trained. But the FAIR team did not stop there.
+
+What they did afterwards is train V-JEPA 2-AC, a version of V-JEPA 2 specifically for action understanding.
+
+V-JEPA 2-AC is trained for next image prediction given a set of frames of a video (of 4 seconds here) and the actions taken up until then. It’s trained with two losses:
+- Reconstruction loss on each of the frames after the first one. Teacher forcing is used so that a mistake does not propagate.
+- Rollout loss on the last output, allowing for error propagation.
+
+In total, it is up for 62 hours of video of 4 seconds each with 4 fps. The next-state predictor is a 300M trainable transformer network, while the encoder is frozen.
+
+Once the predictor is trained, to output actions to get from a state A to state B, what is being done is sample a set of K (which is a parameter) actions until the model arrives. Then, the reconstruction loss between the encoding of the predicted image after those K actions and the image of state B is optimized, with the actions being the parameter optimized for.
+
+Now, for the results.
+Basically the model performs super well: it’s SoTA in everything video related, whether it’s motion or appearance understanding, action anticipation… or video question answering using V-Jepa 2 as the encoder for a LLaVA-like architecture! It also beats the Kosmos world model when applied to robotic tasks, both in time and performance.
+
+Overall, super cool to look at. Yet another win for EMA teacher-student training. Results are to be looked at with a step back: 16s of inference time for robotics might be too slow for realtime application… but it was gotten down from 4 minutes, which is impressive. Eager to see how it evolves!

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import dataManager from '../utils/dataManager';
+import ProgressBar from './ProgressBar';
 
 function Papers() {
   const [papers, setPapers] = useState([]);
@@ -10,6 +11,7 @@ function Papers() {
   const [papersPerPage] = useState(20); // Show 20 papers per page
   const [totalPapers, setTotalPapers] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(null);
 
   // Utility function to convert URLs in text to clickable links
   const linkifyText = (text) => {
@@ -37,9 +39,25 @@ function Papers() {
 
   // Load papers with pagination or search
   useEffect(() => {
+    const progressCallback = (progress) => {
+      if (progress.type === 'papers') {
+        setLoadingProgress(progress);
+        
+        // Clear progress when complete
+        if (progress.current === progress.total) {
+          setTimeout(() => {
+            setLoadingProgress(null);
+          }, 1000);
+        }
+      }
+    };
+
     const loadPapers = async () => {
       setIsLoading(true);
       try {
+        // Add progress callback
+        dataManager.addProgressCallback(progressCallback);
+
         if (searchTerm.trim()) {
           // Search mode: load ALL papers and filter
           console.log(`Papers component: Searching for "${searchTerm}"...`);
@@ -70,10 +88,17 @@ function Papers() {
         console.error('Error loading paper posts:', error);
       } finally {
         setIsLoading(false);
+        // Remove progress callback
+        dataManager.removeProgressCallback(progressCallback);
       }
     };
 
     loadPapers();
+
+    // Cleanup function
+    return () => {
+      dataManager.removeProgressCallback(progressCallback);
+    };
   }, [currentPage, papersPerPage, searchTerm]);
 
   // Reset to first page when search term changes
@@ -195,7 +220,11 @@ function Papers() {
 
         {isLoading ? (
           <div className="loading-state">
-            <p>Loading papers...</p>
+            {loadingProgress ? (
+              <ProgressBar progress={loadingProgress} />
+            ) : (
+              <p>Loading papers...</p>
+            )}
           </div>
         ) : (
           <>

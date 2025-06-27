@@ -1,0 +1,20 @@
+## Read 194: Drag and Drop LLM: Zero-Shot prompts-to-weights, by Liang et al from the National University of Singapore
+
+https://arxiv.org/pdf/2506.16406
+
+The authors of this paper train a model to generate LoRAs given a set of samples.
+
+Basically, to do so, they:
+- Take a dataset and divide it into prompt batches
+- Sample a checkpoint of the model they want to LoRA trained on the dataset randomly
+- Sample a random prompt batch
+- Apply an encoder on the prompt batch and tokenize the layer parameters of the checkpoint by concatenating the normalized weights (and applying padding if necessary so that everything is at same size)
+- Train a decoder that takes as input the prompt batch encoding and that outputs weights in the tokenized space (easy to decode)
+
+And at inference time: feed prompts to the encoder, get a batch that generates embedding, and pick your best (on an eval subset).
+
+It works like crazy on Qwen-2.5-0.5B and 1.5B for text based « finetuning », which is pretty impressive as it can even go over the perfs of full tuning in some samples
+
+Oddly enough, best strat is to go with 128 prompts: too much and you risk running out of memory + heavy compute while also perhaps overloading the model
+
+Might be a streak of luck, might be heavy overfitting which underperfs in generalization, or might be a breakthrough in model specialization: curious to see where those parameter generation approaches lead to; although I do think it might need a big win to convince :)
